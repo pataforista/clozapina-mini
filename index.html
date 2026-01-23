@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#111111" />
+  <title>CLZ Mini PWA</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon-192.png" />
+  <style>
+    :root{
+      --bg:#0f1115; --card:#171a21; --muted:#9aa3b2; --text:#e9eef7;
+      --line:rgba(255,255,255,.10); --ok:#34d399; --warn:#fbbf24; --bad:#fb7185; --info:#60a5fa;
+      --radius:16px; --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0; font-family:var(--sans); background: radial-gradient(1200px 600px at 20% 10%, rgba(96,165,250,.16), transparent 55%),
+      radial-gradient(1200px 600px at 80% 20%, rgba(52,211,153,.12), transparent 60%), var(--bg);
+      color:var(--text);
+    }
+    header{
+      position:sticky; top:0; z-index:10;
+      background: rgba(15,17,21,.78); backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .wrap{ max-width: 1050px; margin:0 auto; padding: 16px; }
+    .top{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      padding: 8px 0;
+    }
+    .brand{
+      display:flex; gap:12px; align-items:center;
+    }
+    .logo{
+      width:40px; height:40px; border-radius:12px;
+      background: linear-gradient(135deg, rgba(96,165,250,.35), rgba(52,211,153,.25));
+      border:1px solid var(--line);
+      display:grid; place-items:center;
+      font-family: var(--mono); font-weight:700;
+    }
+    .brand h1{ margin:0; font-size:16px; letter-spacing:.2px; }
+    .brand p{ margin:2px 0 0; color:var(--muted); font-size:12px; }
+    nav{
+      display:flex; gap:8px; padding: 10px 0 12px; flex-wrap:wrap;
+    }
+    .tab{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-size: 13px;
+    }
+    .tab[aria-selected="true"]{
+      background: rgba(96,165,250,.18);
+      border-color: rgba(96,165,250,.35);
+    }
+    main{ padding: 18px 0 40px; }
+    .grid{
+      display:grid; gap:14px;
+      grid-template-columns: 1.2fr .8fr;
+      align-items:start;
+    }
+    @media (max-width: 940px){ .grid{ grid-template-columns: 1fr; } }
+    .card{
+      background: rgba(23,26,33,.92);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+    .card h2{ margin:0 0 10px; font-size: 15px; }
+    .note{
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.4;
+    }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .row > * { flex: 1 1 160px; }
+    label{ display:block; font-size: 12px; color: var(--muted); margin: 8px 0 6px; }
+    input, select, textarea, button{
+      width:100%;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 11px;
+      color: var(--text);
+      outline:none;
+      font-size: 14px;
+    }
+    textarea{ min-height: 92px; resize: vertical; }
+    button{
+      cursor:pointer;
+      font-weight: 600;
+      letter-spacing: .2px;
+    }
+    button.primary{
+      background: rgba(52,211,153,.16);
+      border-color: rgba(52,211,153,.30);
+    }
+    button.danger{
+      background: rgba(251,113,133,.12);
+      border-color: rgba(251,113,133,.26);
+    }
+    button.ghost{
+      background: transparent;
+    }
+    .pill{
+      display:inline-flex; gap:8px; align-items:center;
+      border: 1px solid var(--line);
+      padding: 6px 10px; border-radius: 999px;
+      font-size: 12px; color: var(--muted);
+    }
+    .pill strong{ color: var(--text); font-family: var(--mono); font-size: 12px; }
+    .divider{ height:1px; background: var(--line); margin: 12px 0; }
+    .list{
+      display:flex; flex-direction:column; gap:10px;
+      max-height: 520px; overflow:auto; padding-right: 6px;
+    }
+    .item{
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(255,255,255,.02);
+      cursor:pointer;
+    }
+    .item:hover{ background: rgba(255,255,255,.03); }
+    .item .meta{ display:flex; justify-content:space-between; gap:10px; align-items:center; }
+    .item .date{ font-family: var(--mono); font-size: 12px; color: var(--muted); }
+    .tags{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+    .tag{ padding: 4px 8px; border-radius: 999px; font-size: 11px; border:1px solid var(--line); }
+    .tag.ok{ border-color: rgba(52,211,153,.35); color: rgba(52,211,153,.95); }
+    .tag.warn{ border-color: rgba(251,191,36,.35); color: rgba(251,191,36,.98); }
+    .tag.bad{ border-color: rgba(251,113,133,.35); color: rgba(251,113,133,.98); }
+    .tag.info{ border-color: rgba(96,165,250,.35); color: rgba(96,165,250,.98); }
+
+    .kpi{
+      display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;
+    }
+    @media (max-width: 940px){ .kpi{ grid-template-columns: repeat(2, 1fr); } }
+    .kpi .box{
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px;
+      background: rgba(255,255,255,.02);
+    }
+    .kpi .box .lbl{ color: var(--muted); font-size: 11.5px; }
+    .kpi .box .val{ font-family: var(--mono); font-size: 16px; margin-top: 6px; }
+    .kpi .box .val small{ color: var(--muted); font-size: 11px; font-family: var(--sans); }
+    canvas{ width:100%; height: 280px; background: rgba(255,255,255,.02); border:1px solid var(--line); border-radius: 14px; }
+    .small{ font-size: 11.5px; color: var(--muted); }
+    .mono{ font-family: var(--mono); }
+    .hidden{ display:none !important; }
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      background: rgba(23,26,33,.95);
+      border:1px solid var(--line);
+      padding: 10px 12px;
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      color: var(--text);
+      font-size: 12.5px;
+      max-width: 92vw;
+      display:none;
+    }
+    .toast.show{ display:block; }
+    .refs code{ font-family: var(--mono); font-size: 12px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="logo">CLZ</div>
+        <div>
+          <h1>CLZ Mini PWA</h1>
+          <p>Registro local de monitoreo (BH/ANC) + efectos. Sin servidores.</p>
+        </div>
+      </div>
+      <div class="row" style="max-width:520px">
+        <div class="pill" title="Los datos se guardan solo en este navegador (localStorage).">
+          <span>Paciente:</span> <strong id="patientLabel">—</strong>
+        </div>
+        <button class="ghost" id="btnInstall" title="Instalar como app (si el navegador lo permite)" disabled>Instalar</button>
+      </div>
+    </div>
+    <nav role="tablist" aria-label="Secciones">
+      <button class="tab" role="tab" aria-selected="true" data-tab="registro">Registro</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="graficas">Gráficas</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="import">Importar/Exportar</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="ajustes">Ajustes</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="referencias">Referencias</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Registro -->
+  <section id="tab-registro">
+    <div class="grid">
+      <div class="card">
+        <h2>Entrada</h2>
+        <p class="note">
+          Esto es un cuaderno digital local. No sustituye el criterio clínico ni los protocolos institucionales.
+          Evita capturar datos identificables si no es estrictamente necesario.
+        </p>
+        <div class="divider"></div>
+
+        <div class="row">
+          <div>
+            <label>Fecha</label>
+            <input type="date" id="f_date" />
+          </div>
+          <div>
+            <label>Semana (opcional)</label>
+            <input type="number" id="f_week" min="1" max="99" placeholder="p.ej., 6" />
+          </div>
+          <div>
+            <label>¿BEN?</label>
+            <select id="f_ben">
+              <option value="0">No / General</option>
+              <option value="1">Sí (Benign Ethnic Neutropenia)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h2>Laboratorios (en x10³/µL)</h2>
+        <div class="row">
+          <div>
+            <label>ANC / Neutrófilos</label>
+            <input type="number" step="0.01" id="f_anc" placeholder="p.ej., 2.3" />
+          </div>
+          <div>
+            <label>Leucocitos</label>
+            <input type="number" step="0.01" id="f_wbc" placeholder="p.ej., 6.5" />
+          </div>
+          <div>
+            <label>Plaquetas</label>
+            <input type="number" step="1" id="f_plt" placeholder="p.ej., 250" />
+          </div>
+          <div>
+            <label>Eosinófilos</label>
+            <input type="number" step="0.01" id="f_eos" placeholder="p.ej., 0.3" />
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h2>Efectos / síntomas (0–5 o texto)</h2>
+        <div class="row">
+          <div><label>Sialorrea (0–5)</label><input type="number" min="0" max="5" step="1" id="f_sial" /></div>
+          <div><label>Estreñimiento (0–5)</label><input type="number" min="0" max="5" step="1" id="f_const" /></div>
+          <div><label>Somnolencia (0–5)</label><input type="number" min="0" max="5" step="1" id="f_somn" /></div>
+          <div><label>Fiebre</label>
+            <select id="f_fever"><option value="0">No</option><option value="1">Sí</option></select>
+          </div>
+        </div>
+        <div class="row">
+          <div><label>Mareo (0–5)</label><input type="number" min="0" max="5" step="1" id="f_diz" /></div>
+          <div><label>Visión borrosa (0–5)</label><input type="number" min="0" max="5" step="1" id="f_blur" /></div>
+          <div><label>Apetito (0–5)</label><input type="number" min="0" max="5" step="1" id="f_app" /></div>
+          <div><label>Otros</label><input type="text" id="f_other" placeholder="p.ej., cefalea" /></div>
+        </div>
+
+        <label>Notas clínicas (breves)</label>
+        <textarea id="f_notes" placeholder="Libre. Evita datos identificables."></textarea>
+
+        <div class="divider"></div>
+
+        <div class="row">
+          <button class="primary" id="btnSave">Guardar / Actualizar</button>
+          <button class="ghost" id="btnClear">Limpiar</button>
+          <button class="danger" id="btnDelete" disabled>Eliminar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Entradas</h2>
+        <div class="row">
+          <button class="ghost" id="btnNew">Nueva</button>
+          <button class="ghost" id="btnQuickDemo">Cargar demo</button>
+        </div>
+        <div class="divider"></div>
+
+        <div class="kpi">
+          <div class="box">
+            <div class="lbl">Última fecha</div>
+            <div class="val" id="k_last">—</div>
+          </div>
+          <div class="box">
+            <div class="lbl">ANC (x10³/µL)</div>
+            <div class="val" id="k_anc">—</div>
+          </div>
+          <div class="box">
+            <div class="lbl">Plaquetas (x10³/µL)</div>
+            <div class="val" id="k_plt">—</div>
+          </div>
+          <div class="box">
+            <div class="lbl">Siguiente lab sugerido</div>
+            <div class="val" id="k_next"><small>Configura fecha de inicio</small></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div id="alerts"></div>
+
+        <div class="divider"></div>
+        <div class="list" id="entryList" aria-label="Listado de entradas"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gráficas -->
+  <section id="tab-graficas" class="hidden">
+    <div class="card">
+      <h2>Tendencias (x10³/µL)</h2>
+      <p class="note">Gráfica simple (sin librerías externas). Si no hay datos suficientes, no se dibuja.</p>
+      <canvas id="chart"></canvas>
+      <div class="divider"></div>
+      <div class="row">
+        <div>
+          <label>Serie</label>
+          <select id="chartSeries">
+            <option value="anc_k">ANC</option>
+            <option value="wbc_k">Leucocitos</option>
+            <option value="plt_k">Plaquetas</option>
+            <option value="eos_k">Eosinófilos</option>
+          </select>
+        </div>
+        <div>
+          <label>Ventana</label>
+          <select id="chartWindow">
+            <option value="all">Todo</option>
+            <option value="8">Últimas 8</option>
+            <option value="16">Últimas 16</option>
+          </select>
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button class="ghost" id="btnRedraw">Redibujar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Import/Export -->
+  <section id="tab-import" class="hidden">
+    <div class="grid">
+      <div class="card">
+        <h2>Exportar</h2>
+        <p class="note">Descarga un archivo <span class="mono">.json</span> con tu registro completo. Útil para respaldo o migración.</p>
+        <div class="row">
+          <button class="primary" id="btnExportJson">Exportar JSON</button>
+          <button class="ghost" id="btnExportCsv">Exportar CSV (labs)</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Importar</h2>
+        <p class="note">Importa un archivo <span class="mono">.json</span> exportado previamente. Esto reemplaza el registro actual.</p>
+        <input type="file" id="importFile" accept="application/json" />
+        <div class="divider"></div>
+        <button class="danger" id="btnWipe">Borrar todo (local)</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ajustes -->
+  <section id="tab-ajustes" class="hidden">
+    <div class="grid">
+      <div class="card">
+        <h2>Paciente / configuración</h2>
+        <div class="row">
+          <div>
+            <label>Etiqueta (apodo)</label>
+            <input id="s_label" placeholder="p.ej., Paciente A" />
+          </div>
+          <div>
+            <label>Fecha de inicio de clozapina</label>
+            <input type="date" id="s_start" />
+          </div>
+          <div>
+            <label>BEN por defecto</label>
+            <select id="s_ben">
+              <option value="0">No / General</option>
+              <option value="1">Sí</option>
+            </select>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <h2>Umbrales (editables; unidades x10³/µL)</h2>
+        <p class="note">
+          Valores por defecto basados en ficha técnica/guías: ANC general (1.5/1.0/0.5), BEN (1.0/0.5),
+          eosinófilos &gt;3.0 para suspensión, plaquetas &lt;50 para suspensión.
+        </p>
+        <div class="row">
+          <div><label>ANC normal (general) ≥</label><input type="number" step="0.01" id="t_anc_norm" /></div>
+          <div><label>ANC interrumpir (general) &lt;</label><input type="number" step="0.01" id="t_anc_int" /></div>
+          <div><label>ANC grave (def. &lt;)</label><input type="number" step="0.01" id="t_anc_sev" /></div>
+          <div><label>ANC interrumpir (BEN) &lt;</label><input type="number" step="0.01" id="t_anc_int_ben" /></div>
+        </div>
+        <div class="row">
+          <div><label>Eosinófilos suspender &gt;</label><input type="number" step="0.01" id="t_eos_stop" /></div>
+          <div><label>Plaquetas suspender &lt;</label><input type="number" step="1" id="t_plt_stop" /></div>
+          <div><label>Meses para pasar a c/2 sem</label><input type="number" step="1" id="t_mo_2w" /></div>
+          <div><label>Meses para pasar a mensual</label><input type="number" step="1" id="t_mo_4w" /></div>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+          <button class="primary" id="btnSaveSettings">Guardar ajustes</button>
+          <button class="ghost" id="btnResetSettings">Restaurar defaults</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Privacidad operacional</h2>
+        <ul class="note">
+          <li>No hay backend; todo se guarda localmente en este navegador.</li>
+          <li>Si borras datos del navegador, se perderá el registro.</li>
+          <li>Para respaldo, exporta JSON periódicamente.</li>
+          <li>No capturar: nombre, CURP, NSS, teléfono, dirección, etc.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Referencias -->
+  <section id="tab-referencias" class="hidden">
+    <div class="card refs">
+      <h2>Referencias (para los umbrales por defecto)</h2>
+      <p class="note">
+        Estas referencias se incluyen para transparencia de los defaults. Los protocolos locales/institucionales pueden diferir.
+      </p>
+      <div class="divider"></div>
+      <ol class="note">
+        <li><strong>CLOZARIL (clozapina) – Prescribing Information (FDA)</strong>. Baseline ANC ≥1500/µL (general) y ≥1000/µL (BEN); ANC severa definida como &lt;500/µL; monitoreo regular y tablas de modificaciones. (En la app se expresa en x10³/µL: 1.5 / 1.0 / 0.5).</li>
+        <li><strong>Kar et al., 2016 (revisión práctica)</strong>. Recomienda discontinuar si eosinófilos &gt;3000/mm³ o plaquetas &lt;50,000/mm³ (equivalente a eos &gt;3.0 y plt &lt;50 en x10³/µL).</li>
+        <li><strong>SmPC (Europa, 2024)</strong>. Recomienda discontinuación por eosinofilia &gt;3000/mm³ y reinicio cuando &lt;1000/mm³, además de consideraciones de re-titulación tras interrupciones.</li>
+        <li><strong>Sultan et al., 2017</strong>. Describe el cambio en la guía FDA que elimina umbrales por leucocitos totales (WBC) del algoritmo de monitoreo en EE.UU.</li>
+      </ol>
+      <p class="small">Esta PWA es una herramienta de registro/visualización. No constituye consejo médico ni un dispositivo médico.</p>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  const STORAGE_KEY = "clz_mini_pwa_v1";
+  const DEFAULTS = {
+    version: "clz-mini-pwa-v1",
+    patient: { label: "—", ben: false, start_date: "" },
+    thresholds: {
+      // unidades x10^3/µL (k/µL)
+      anc_norm: 1.5,        // general normal >= 1.5
+      anc_interrupt: 1.0,   // general interrupt < 1.0 (FDA US)
+      anc_severe: 0.5,      // severe < 0.5
+      anc_interrupt_ben: 0.5, // BEN: interrupt <0.5; baseline >=1.0
+      eos_stop: 3.0,        // >3.0
+      plt_stop: 50,         // <50 (k/µL)
+      months_to_2w: 6,
+      months_to_4w: 12
+    },
+    entries: []
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const toast = (msg) => {
+    const t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2200);
+  };
+
+  const state = {
+    data: null,
+    selectedId: null
+  };
+
+  const uid = () => "e_" + Math.random().toString(16).slice(2) + Date.now().toString(16);
+
+  const load = () => {
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      state.data = raw ? JSON.parse(raw) : structuredClone(DEFAULTS);
+    }catch(e){
+      state.data = structuredClone(DEFAULTS);
+    }
+    // migrate: ensure keys exist
+    state.data.thresholds = Object.assign({}, DEFAULTS.thresholds, state.data.thresholds || {});
+    state.data.patient = Object.assign({}, DEFAULTS.patient, state.data.patient || {});
+    state.data.entries = Array.isArray(state.data.entries) ? state.data.entries : [];
+    // ensure ids
+    for(const e of state.data.entries){
+      if(!e.id) e.id = uid();
+      if(!e.labs) e.labs = {};
+      if(!e.effects) e.effects = {};
+    }
+    save(false);
+  };
+
+  const save = (notify=true) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
+    if(notify) toast("Guardado local.");
+    renderAll();
+  };
+
+  const fmtDate = (iso) => {
+    if(!iso) return "—";
+    const d = new Date(iso + "T00:00:00");
+    return d.toLocaleDateString("es-MX", { year:"numeric", month:"short", day:"2-digit" });
+  };
+
+  const sortEntries = () => {
+    state.data.entries.sort((a,b) => (a.date||"").localeCompare(b.date||""));
+  };
+
+  const getLatest = () => {
+    if(!state.data.entries.length) return null;
+    sortEntries();
+    return state.data.entries[state.data.entries.length-1];
+  };
+
+  const parseNum = (v) => {
+    if(v === "" || v === null || v === undefined) return null;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  };
+
+  // ---- clinical-ish helpers (transparent + editable thresholds) ----
+  const assess = (entry) => {
+    const th = state.data.thresholds;
+    const ben = entry.ben ?? state.data.patient.ben;
+
+    const anc = parseNum(entry.labs?.anc_k);
+    const plt = parseNum(entry.labs?.plt_k);
+    const eos = parseNum(entry.labs?.eos_k);
+    const fever = !!entry.effects?.fever;
+
+    const alerts = [];
+
+    if(anc !== null){
+      if(anc < th.anc_severe){
+        alerts.push({kind:"bad", tag:"ANC", title:"Neutropenia grave", text:`ANC ${anc} (<${th.anc_severe}). Interrumpir y evaluar urgente según protocolo.`});
+      } else if(ben){
+        // BEN: baseline >=1.0 (informativo); interrupt <0.5 (default)
+        if(anc < th.anc_interrupt_ben){
+          alerts.push({kind:"bad", tag:"ANC", title:"ANC bajo (BEN)", text:`ANC ${anc} (<${th.anc_interrupt_ben}). Considerar interrupción y manejo según protocolo BEN.`});
+        } else if(anc < th.anc_norm){
+          alerts.push({kind:"warn", tag:"ANC", title:"ANC limítrofe (BEN)", text:`ANC ${anc}. Vigilar tendencia y adherirse al algoritmo BEN.`});
+        } else {
+          alerts.push({kind:"ok", tag:"ANC", title:"ANC en rango", text:`ANC ${anc}.`});
+        }
+      } else {
+        if(anc < th.anc_interrupt){
+          alerts.push({kind:"bad", tag:"ANC", title:"ANC bajo", text:`ANC ${anc} (<${th.anc_interrupt}). Interrumpir y manejar según algoritmo.`});
+        } else if(anc < th.anc_norm){
+          alerts.push({kind:"warn", tag:"ANC", title:"Neutropenia leve", text:`ANC ${anc} (<${th.anc_norm}). Aumentar frecuencia de vigilancia según protocolo.`});
+        } else {
+          alerts.push({kind:"ok", tag:"ANC", title:"ANC en rango", text:`ANC ${anc}.`});
+        }
+      }
+    }
+
+    if(plt !== null){
+      if(plt < th.plt_stop){
+        alerts.push({kind:"bad", tag:"PLT", title:"Plaquetas bajas", text:`PLT ${plt} (<${th.plt_stop}). Considerar suspensión y valoración hematología.`});
+      } else if(plt < (th.plt_stop + 50)){
+        alerts.push({kind:"warn", tag:"PLT", title:"Plaquetas a vigilar", text:`PLT ${plt}. Revisar tendencia y clínica.`});
+      }
+    }
+
+    if(eos !== null){
+      if(eos > th.eos_stop){
+        alerts.push({kind:"warn", tag:"EOS", title:"Eosinofilia", text:`EOS ${eos} (>${th.eos_stop}). Considerar suspensión/valoración según guía.`});
+      }
+    }
+
+    if(fever){
+      alerts.push({kind:"warn", tag:"FIEBRE", title:"Fiebre reportada", text:"Vigilar signos de infección, síndrome inflamatorio y otras banderas rojas (según protocolo)."});
+    }
+
+    // overall label
+    const worst = alerts.some(a=>a.kind==="bad") ? "bad" : alerts.some(a=>a.kind==="warn") ? "warn" : alerts.some(a=>a.kind==="ok") ? "ok" : "info";
+    return { alerts, overall: worst };
+  };
+
+  const nextLabDate = () => {
+    const start = state.data.patient.start_date;
+    const latest = getLatest();
+    if(!latest || !latest.date || !start) return null;
+    const th = state.data.thresholds;
+
+    const startD = new Date(start + "T00:00:00");
+    const lastD = new Date(latest.date + "T00:00:00");
+    const months = Math.max(0, (lastD - startD) / (1000*60*60*24*30.4375));
+
+    let intervalDays = 7;
+    if(months >= th.months_to_4w) intervalDays = 28;
+    else if(months >= th.months_to_2w) intervalDays = 14;
+
+    // If ANC warning/bad, suggest sooner
+    const a = assess(latest);
+    if(a.alerts.some(x => x.tag==="ANC" && (x.kind==="warn" || x.kind==="bad"))) intervalDays = Math.min(intervalDays, 7);
+
+    const next = new Date(lastD.getTime() + intervalDays*24*60*60*1000);
+    return next.toISOString().slice(0,10);
+  };
+
+  // ---- UI binding ----
+  const setTab = (name) => {
+    for(const btn of document.querySelectorAll(".tab")){
+      const on = btn.dataset.tab === name;
+      btn.setAttribute("aria-selected", on ? "true" : "false");
+    }
+    const tabs = ["registro","graficas","import","ajustes","referencias"];
+    for(const t of tabs){
+      $("tab-" + t).classList.toggle("hidden", t !== name);
+    }
+    if(name === "graficas") drawChart();
+  };
+
+  document.querySelectorAll(".tab").forEach(btn => {
+    btn.addEventListener("click", () => setTab(btn.dataset.tab));
+  });
+
+  const clearForm = () => {
+    state.selectedId = null;
+    $("btnDelete").disabled = true;
+
+    const today = new Date().toISOString().slice(0,10);
+    $("f_date").value = today;
+    $("f_week").value = "";
+    $("f_ben").value = (state.data.patient.ben ? "1" : "0");
+
+    ["anc","wbc","plt","eos","sial","const","somn","diz","blur","app"].forEach(k => $("f_"+k).value = "");
+    $("f_fever").value = "0";
+    $("f_other").value = "";
+    $("f_notes").value = "";
+  };
+
+  const fillForm = (e) => {
+    state.selectedId = e.id;
+    $("btnDelete").disabled = false;
+
+    $("f_date").value = e.date || "";
+    $("f_week").value = e.week || "";
+    $("f_ben").value = (e.ben ?? state.data.patient.ben) ? "1" : "0";
+
+    $("f_anc").value = e.labs?.anc_k ?? "";
+    $("f_wbc").value = e.labs?.wbc_k ?? "";
+    $("f_plt").value = e.labs?.plt_k ?? "";
+    $("f_eos").value = e.labs?.eos_k ?? "";
+
+    $("f_sial").value = e.effects?.sialorrhea ?? "";
+    $("f_const").value = e.effects?.constipation ?? "";
+    $("f_somn").value = e.effects?.somnolence ?? "";
+    $("f_fever").value = e.effects?.fever ? "1" : "0";
+
+    $("f_diz").value = e.effects?.dizziness ?? "";
+    $("f_blur").value = e.effects?.blurred_vision ?? "";
+    $("f_app").value = e.effects?.appetite ?? "";
+    $("f_other").value = e.effects?.other ?? "";
+
+    $("f_notes").value = e.notes || "";
+  };
+
+  const upsertEntryFromForm = () => {
+    const entry = {
+      id: state.selectedId || uid(),
+      date: $("f_date").value || "",
+      week: parseNum($("f_week").value),
+      ben: $("f_ben").value === "1",
+      labs: {
+        anc_k: parseNum($("f_anc").value),
+        wbc_k: parseNum($("f_wbc").value),
+        plt_k: parseNum($("f_plt").value),
+        eos_k: parseNum($("f_eos").value),
+      },
+      effects: {
+        sialorrhea: parseNum($("f_sial").value),
+        constipation: parseNum($("f_const").value),
+        somnolence: parseNum($("f_somn").value),
+        fever: $("f_fever").value === "1",
+        dizziness: parseNum($("f_diz").value),
+        blurred_vision: parseNum($("f_blur").value),
+        appetite: parseNum($("f_app").value),
+        other: $("f_other").value || ""
+      },
+      notes: $("f_notes").value || ""
+    };
+
+    if(!entry.date){
+      toast("Falta fecha.");
+      return;
+    }
+
+    const idx = state.data.entries.findIndex(x => x.id === entry.id);
+    if(idx >= 0) state.data.entries[idx] = entry;
+    else state.data.entries.push(entry);
+
+    sortEntries();
+    save(true);
+  };
+
+  const deleteSelected = () => {
+    if(!state.selectedId) return;
+    const idx = state.data.entries.findIndex(x => x.id === state.selectedId);
+    if(idx >= 0){
+      state.data.entries.splice(idx, 1);
+      save(true);
+      clearForm();
+    }
+  };
+
+  // ---- renderers ----
+  const renderList = () => {
+    const root = $("entryList");
+    root.innerHTML = "";
+    if(!state.data.entries.length){
+      root.innerHTML = `<div class="note">Sin entradas. Usa “Nueva” o “Cargar demo”.</div>`;
+      return;
+    }
+    sortEntries();
+    for(const e of [...state.data.entries].reverse()){
+      const a = assess(e);
+      const anc = e.labs?.anc_k;
+      const plt = e.labs?.plt_k;
+      const eos = e.labs?.eos_k;
+
+      const tags = [];
+      if(anc !== null && anc !== undefined) tags.push({cls: a.overall === "bad" ? "bad" : a.overall === "warn" ? "warn" : "ok", txt:`ANC ${anc}`});
+      if(plt !== null && plt !== undefined) tags.push({cls: plt < state.data.thresholds.plt_stop ? "bad" : "info", txt:`PLT ${plt}`});
+      if(eos !== null && eos !== undefined) tags.push({cls: eos > state.data.thresholds.eos_stop ? "warn" : "info", txt:`EOS ${eos}`});
+      if(e.effects?.fever) tags.push({cls:"warn", txt:"Fiebre"});
+
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `
+        <div class="meta">
+          <div>
+            <div style="font-weight:650">${fmtDate(e.date)} ${e.week ? `<span class="small">(Sem ${e.week})</span>` : ""}</div>
+            <div class="date">${e.date || ""}</div>
+          </div>
+          <div class="tags">
+            ${tags.slice(0,4).map(t => `<span class="tag ${t.cls}">${t.txt}</span>`).join("")}
+          </div>
+        </div>
+      `;
+      div.addEventListener("click", () => {
+        fillForm(e);
+        setTab("registro");
+      });
+      root.appendChild(div);
+    }
+  };
+
+  const renderKPIs = () => {
+    $("patientLabel").textContent = state.data.patient.label || "—";
+    const latest = getLatest();
+    $("k_last").textContent = latest ? fmtDate(latest.date) : "—";
+    $("k_anc").textContent = latest?.labs?.anc_k ?? "—";
+    $("k_plt").textContent = latest?.labs?.plt_k ?? "—";
+
+    const next = nextLabDate();
+    $("k_next").textContent = next ? fmtDate(next) : "—";
+  };
+
+  const renderAlerts = () => {
+    const latest = getLatest();
+    const root = $("alerts");
+    root.innerHTML = "";
+    if(!latest){
+      root.innerHTML = `<div class="note">Sin alertas: agrega una entrada.</div>`;
+      return;
+    }
+    const res = assess(latest);
+    const blocks = res.alerts.map(a => {
+      const cls = a.kind === "bad" ? "bad" : a.kind === "warn" ? "warn" : a.kind === "ok" ? "ok" : "info";
+      const title = `<span class="tag ${cls}">${a.tag}</span> <strong style="margin-left:8px">${a.title}</strong>`;
+      const text = `<div class="note" style="margin-top:6px">${a.text}</div>`;
+      return `<div class="item" style="cursor:default">
+        <div>${title}</div>${text}
+      </div>`;
+    }).join("");
+    root.innerHTML = blocks || `<div class="note">Sin señales en la última entrada.</div>`;
+  };
+
+  const renderSettings = () => {
+    $("s_label").value = state.data.patient.label || "";
+    $("s_start").value = state.data.patient.start_date || "";
+    $("s_ben").value = state.data.patient.ben ? "1" : "0";
+
+    const th = state.data.thresholds;
+    $("t_anc_norm").value = th.anc_norm;
+    $("t_anc_int").value = th.anc_interrupt;
+    $("t_anc_sev").value = th.anc_severe;
+    $("t_anc_int_ben").value = th.anc_interrupt_ben;
+    $("t_eos_stop").value = th.eos_stop;
+    $("t_plt_stop").value = th.plt_stop;
+    $("t_mo_2w").value = th.months_to_2w;
+    $("t_mo_4w").value = th.months_to_4w;
+  };
+
+  const renderAll = () => {
+    renderKPIs();
+    renderAlerts();
+    renderList();
+    renderSettings();
+  };
+
+  // ---- chart ----
+  const drawChart = () => {
+    const canvas = $("chart");
+    const ctx = canvas.getContext("2d");
+    const W = canvas.width = canvas.clientWidth * devicePixelRatio;
+    const H = canvas.height = canvas.clientHeight * devicePixelRatio;
+
+    ctx.clearRect(0,0,W,H);
+
+    const seriesKey = $("chartSeries").value;
+    const windowOpt = $("chartWindow").value;
+
+    let entries = [...state.data.entries].filter(e => e.date);
+    entries.sort((a,b) => a.date.localeCompare(b.date));
+    if(windowOpt !== "all"){
+      const n = Number(windowOpt);
+      if(entries.length > n) entries = entries.slice(entries.length - n);
+    }
+
+    const pts = entries
+      .map(e => ({ x: e.date, y: parseNum(e.labs?.[seriesKey]) }))
+      .filter(p => p.y !== null);
+
+    if(pts.length < 2){
+      ctx.font = `${14*devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
+      ctx.fillStyle = "rgba(233,238,247,.75)";
+      ctx.fillText("No hay datos suficientes para graficar.", 16*devicePixelRatio, 32*devicePixelRatio);
+      return;
+    }
+
+    const ys = pts.map(p => p.y);
+    const ymin = Math.min(...ys);
+    const ymax = Math.max(...ys);
+    const pad = (ymax - ymin) * 0.12 || 1;
+    const y0 = ymin - pad, y1 = ymax + pad;
+
+    const left = 54*devicePixelRatio, right = 16*devicePixelRatio, top = 14*devicePixelRatio, bottom = 44*devicePixelRatio;
+    const plotW = W - left - right, plotH = H - top - bottom;
+
+    // grid
+    ctx.strokeStyle = "rgba(255,255,255,.08)";
+    ctx.lineWidth = 1*devicePixelRatio;
+    for(let i=0;i<=4;i++){
+      const y = top + (plotH*i/4);
+      ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(W-right, y); ctx.stroke();
+    }
+
+    // axes labels
+    ctx.fillStyle = "rgba(233,238,247,.70)";
+    ctx.font = `${12*devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
+
+    const yLabel = (v) => (Math.round(v*100)/100).toString();
+    for(let i=0;i<=4;i++){
+      const v = y1 - ( (y1-y0)*i/4 );
+      const y = top + (plotH*i/4);
+      ctx.fillText(yLabel(v), 10*devicePixelRatio, y+4*devicePixelRatio);
+    }
+
+    // line
+    ctx.strokeStyle = "rgba(96,165,250,.95)";
+    ctx.lineWidth = 2.5*devicePixelRatio;
+    ctx.beginPath();
+    pts.forEach((p, i) => {
+      const x = left + (plotW * (i/(pts.length-1)));
+      const y = top + plotH * (1 - ((p.y - y0) / (y1 - y0)));
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+
+    // points
+    ctx.fillStyle = "rgba(52,211,153,.95)";
+    pts.forEach((p, i) => {
+      const x = left + (plotW * (i/(pts.length-1)));
+      const y = top + plotH * (1 - ((p.y - y0) / (y1 - y0)));
+      ctx.beginPath(); ctx.arc(x,y,3.5*devicePixelRatio,0,Math.PI*2); ctx.fill();
+    });
+
+    // x labels (first/last)
+    ctx.fillStyle = "rgba(233,238,247,.60)";
+    const first = pts[0].x, last = pts[pts.length-1].x;
+    ctx.fillText(first, left, H-18*devicePixelRatio);
+    const wLast = ctx.measureText(last).width;
+    ctx.fillText(last, W-right-wLast, H-18*devicePixelRatio);
+
+    // title
+    const map = {anc_k:"ANC", wbc_k:"Leucocitos", plt_k:"Plaquetas", eos_k:"Eosinófilos"};
+    const title = map[seriesKey] || seriesKey;
+    ctx.fillStyle = "rgba(233,238,247,.85)";
+    ctx.fillText(`${title} (x10³/µL)`, left, 18*devicePixelRatio);
+  };
+
+  // ---- Import/Export ----
+  const download = (filename, text, mime="application/octet-stream") => {
+    const blob = new Blob([text], {type: mime});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 800);
+  };
+
+  const exportJson = () => {
+    const stamp = new Date().toISOString().slice(0,10);
+    download(`clz-registro_${stamp}.json`, JSON.stringify(state.data, null, 2), "application/json");
+  };
+
+  const exportCsvLabs = () => {
+    const rows = [["date","week","ben","anc_k","wbc_k","plt_k","eos_k","fever","notes"]];
+    const entries = [...state.data.entries].sort((a,b)=> (a.date||"").localeCompare(b.date||""));
+    for(const e of entries){
+      rows.push([
+        e.date||"", e.week??"", e.ben?1:0,
+        e.labs?.anc_k ?? "", e.labs?.wbc_k ?? "", e.labs?.plt_k ?? "", e.labs?.eos_k ?? "",
+        e.effects?.fever ? 1 : 0,
+        (e.notes||"").replaceAll("\n"," ").replaceAll("\r"," ")
+      ]);
+    }
+    const csv = rows.map(r => r.map(x => {
+      const s = String(x);
+      return /[",\n]/.test(s) ? `"${s.replaceAll('"','""')}"` : s;
+    }).join(",")).join("\n");
+    const stamp = new Date().toISOString().slice(0,10);
+    download(`clz-labs_${stamp}.csv`, csv, "text/csv");
+  };
+
+  const importJsonFile = async (file) => {
+    const text = await file.text();
+    const obj = JSON.parse(text);
+    if(!obj || typeof obj !== "object" || !Array.isArray(obj.entries)) throw new Error("Formato inválido.");
+    state.data = Object.assign({}, structuredClone(DEFAULTS), obj);
+    // normalize
+    state.data.thresholds = Object.assign({}, DEFAULTS.thresholds, state.data.thresholds || {});
+    state.data.patient = Object.assign({}, DEFAULTS.patient, state.data.patient || {});
+    for(const e of state.data.entries){
+      if(!e.id) e.id = uid();
+      if(!e.labs) e.labs = {};
+      if(!e.effects) e.effects = {};
+    }
+    save(true);
+    toast("Importado.");
+  };
+
+  const loadDemo = async () => {
+    const res = await fetch("demo-data.json", {cache:"no-store"});
+    if(!res.ok) throw new Error("No se pudo cargar demo-data.json");
+    const demo = await res.json();
+    state.data = Object.assign({}, structuredClone(DEFAULTS), demo);
+    state.data.thresholds = Object.assign({}, DEFAULTS.thresholds, state.data.thresholds || {});
+    state.data.patient = Object.assign({}, DEFAULTS.patient, state.data.patient || {});
+    for(const e of state.data.entries){
+      if(!e.id) e.id = uid();
+      if(!e.labs) e.labs = {};
+      if(!e.effects) e.effects = {};
+    }
+    save(true);
+    toast("Demo cargada.");
+  };
+
+  // ---- events ----
+  $("btnSave").addEventListener("click", upsertEntryFromForm);
+  $("btnClear").addEventListener("click", clearForm);
+  $("btnNew").addEventListener("click", () => { clearForm(); toast("Nueva entrada."); });
+  $("btnDelete").addEventListener("click", deleteSelected);
+
+  $("btnExportJson").addEventListener("click", exportJson);
+  $("btnExportCsv").addEventListener("click", exportCsvLabs);
+  $("btnWipe").addEventListener("click", () => {
+    state.data = structuredClone(DEFAULTS);
+    save(true);
+    clearForm();
+    toast("Registro borrado (local).");
+  });
+
+  $("importFile").addEventListener("change", async (ev) => {
+    const file = ev.target.files?.[0];
+    if(!file) return;
+    try{
+      await importJsonFile(file);
+      ev.target.value = "";
+    }catch(e){
+      toast("Error al importar: " + e.message);
+    }
+  });
+
+  $("btnQuickDemo").addEventListener("click", async () => {
+    try{ await loadDemo(); }catch(e){ toast(e.message); }
+  });
+
+  $("btnRedraw").addEventListener("click", drawChart);
+  $("chartSeries").addEventListener("change", drawChart);
+  $("chartWindow").addEventListener("change", drawChart);
+
+  // settings
+  const saveSettings = () => {
+    state.data.patient.label = $("s_label").value || "—";
+    state.data.patient.start_date = $("s_start").value || "";
+    state.data.patient.ben = $("s_ben").value === "1";
+
+    const th = state.data.thresholds;
+    th.anc_norm = parseNum($("t_anc_norm").value) ?? DEFAULTS.thresholds.anc_norm;
+    th.anc_interrupt = parseNum($("t_anc_int").value) ?? DEFAULTS.thresholds.anc_interrupt;
+    th.anc_severe = parseNum($("t_anc_sev").value) ?? DEFAULTS.thresholds.anc_severe;
+    th.anc_interrupt_ben = parseNum($("t_anc_int_ben").value) ?? DEFAULTS.thresholds.anc_interrupt_ben;
+    th.eos_stop = parseNum($("t_eos_stop").value) ?? DEFAULTS.thresholds.eos_stop;
+    th.plt_stop = parseNum($("t_plt_stop").value) ?? DEFAULTS.thresholds.plt_stop;
+    th.months_to_2w = parseNum($("t_mo_2w").value) ?? DEFAULTS.thresholds.months_to_2w;
+    th.months_to_4w = parseNum($("t_mo_4w").value) ?? DEFAULTS.thresholds.months_to_4w;
+
+    save(true);
+    toast("Ajustes guardados.");
+  };
+
+  $("btnSaveSettings").addEventListener("click", saveSettings);
+  $("btnResetSettings").addEventListener("click", () => {
+    state.data.thresholds = structuredClone(DEFAULTS.thresholds);
+    renderSettings();
+    save(true);
+    toast("Defaults restaurados.");
+  });
+
+  // install prompt
+  let deferredPrompt = null;
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    $("btnInstall").disabled = false;
+  });
+  $("btnInstall").addEventListener("click", async () => {
+    if(!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    $("btnInstall").disabled = true;
+  });
+
+  // init
+  load();
+  clearForm();
+  renderAll();
+
+  // Service Worker
+  if("serviceWorker" in navigator){
+    navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  }
+})();
+</script>
+</body>
+</html>

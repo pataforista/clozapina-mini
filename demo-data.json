@@ -1,0 +1,110 @@
+{
+  "version": "clz-mini-pwa-v1",
+  "patient": {
+    "label": "DEMO (sin datos identificables)",
+    "ben": false,
+    "start_date": "2022-08-12"
+  },
+  "entries": [
+    {
+      "date": "2022-08-12",
+      "labs": {
+        "anc_k": 100.0,
+        "wbc_k": 100.0,
+        "plt_k": 100.0,
+        "eos_k": 10.0
+      },
+      "effects": {
+        "sialorrhea": 1.0,
+        "constipation": 3.0,
+        "dizziness": 5.0,
+        "blurred_vision": 3.0,
+        "appetite": 5.0,
+        "somnolence": 5.0,
+        "fever": false,
+        "other": "Cefalea"
+      },
+      "notes": ""
+    },
+    {
+      "date": "2022-08-19",
+      "labs": {
+        "anc_k": 2.53,
+        "wbc_k": 7.19,
+        "plt_k": 311.0,
+        "eos_k": 2.9
+      },
+      "effects": {
+        "sialorrhea": 7.19,
+        "constipation": 311.0,
+        "dizziness": 2.9,
+        "blurred_vision": 1.0,
+        "appetite": 3.0,
+        "somnolence": 5.0,
+        "fever": 3.0,
+        "other": 5.0
+      },
+      "notes": ""
+    },
+    {
+      "date": "2022-08-26",
+      "labs": {
+        "anc_k": 2.29,
+        "wbc_k": 6.98,
+        "plt_k": 326.0,
+        "eos_k": 2.6
+      },
+      "effects": {
+        "sialorrhea": 4.0,
+        "constipation": 1.0,
+        "dizziness": 3.0,
+        "blurred_vision": 1.0,
+        "appetite": 5.0,
+        "somnolence": 4.0,
+        "fever": false,
+        "other": null
+      },
+      "notes": ""
+    },
+    {
+      "date": "2022-09-02",
+      "labs": {
+        "anc_k": 1.76,
+        "wbc_k": 6.45,
+        "plt_k": 300.0,
+        "eos_k": 0.19
+      },
+      "effects": {
+        "sialorrhea": 2.0,
+        "constipation": 4.0,
+        "dizziness": 3.0,
+        "blurred_vision": 2.0,
+        "appetite": 1.0,
+        "somnolence": 4.0,
+        "fever": false,
+        "other": null
+      },
+      "notes": ""
+    },
+    {
+      "date": "2022-09-09",
+      "labs": {
+        "anc_k": 9.46,
+        "wbc_k": 12.6,
+        "plt_k": 314.0,
+        "eos_k": 1.4
+      },
+      "effects": {
+        "sialorrhea": 1.0,
+        "constipation": 3.0,
+        "dizziness": 5.0,
+        "blurred_vision": 3.0,
+        "appetite": 5.0,
+        "somnolence": 5.0,
+        "fever": false,
+        "other": "Cefalea"
+      },
+      "notes": ""
+    }
+  ]
+}
