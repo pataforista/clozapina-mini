@@ -17,13 +17,13 @@
     html[data-theme="light"]{
       --bg:#FFF8E7;
       --card:#FFF3DC;
-      --muted:#5E5A66;
+      --muted:#3F3A46;
       --text:#2B2F40;
       --line:#2B2F40;
       --ok:#56D8B6;
       --warn:#FFC857;
       --bad:#FF8E72;
-      --info:#2B2F40;
+      --info:#1F2230;
       --shadow: 0 8px 18px rgba(43,47,64,.16);
       --focus: rgba(86,216,182,.35);
       --accent:#FF8E72;
@@ -32,9 +32,9 @@
     html[data-theme="dark"]{
       --bg:#120C18;
       --card:#1B1424;
-      --muted:#B7A9C8;
+      --muted:#CBBCE0;
       --text:#E4D8EB;
-      --line:rgba(0,255,194,.15);
+      --line:rgba(0,255,194,.28);
       --ok:#00FFC2;
       --warn:#FFA600;
       --bad:#FF3C3C;
@@ -52,38 +52,40 @@
     }
     header{
       position:sticky; top:0; z-index:10;
-      background: rgba(15,17,21,.78); backdrop-filter: blur(10px);
+      background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(10px);
       border-bottom:1px solid var(--line);
     }
-    .wrap{ max-width: 1050px; margin:0 auto; padding: 16px; }
+    .wrap{ max-width: 1050px; margin:0 auto; padding: 10px 16px; }
     .top{
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
-      padding: 8px 0;
+      display:flex; gap:10px; align-items:center; justify-content:space-between;
+      padding: 2px 0;
     }
     .brand{
       display:flex; gap:12px; align-items:center;
     }
     .logo{
-      width:40px; height:40px; border-radius:12px;
+      width:32px; height:32px; border-radius:10px;
       background: linear-gradient(135deg, rgba(255,142,114,.35), rgba(86,216,182,.25));
       border:2px solid var(--line);
       display:grid; place-items:center;
       font-family: var(--mono); font-weight:700;
     }
-    .brand h1{ margin:0; font-size:16px; letter-spacing:.2px; }
-    .brand p{ margin:2px 0 0; color:var(--muted); font-size:12px; }
+    .brand h1{ margin:0; font-size:14px; letter-spacing:.2px; }
+    .brand p{ margin:2px 0 0; color:var(--muted); font-size:11px; }
     nav{
-      display:flex; gap:8px; padding: 10px 0 12px; flex-wrap:wrap;
+      display:flex; gap:6px; padding: 0; flex-wrap:nowrap;
+      align-items:center;
     }
     .tab{
       border:2px solid var(--line);
-      background: rgba(255,255,255,.10);
+      background: rgba(255,255,255,.14);
       color: var(--text);
-      padding:10px 12px;
+      padding:6px 8px;
       border-radius: 999px;
       cursor:pointer;
-      font-size: 13px;
+      font-size: 11px;
       box-shadow: var(--glow);
+      white-space: nowrap;
     }
     .tab[aria-selected="true"]{
       background: color-mix(in srgb, var(--accent) 25%, transparent);
@@ -204,6 +206,11 @@
       display:none;
     }
     .toast.show{ display:block; }
+    #alerts .item{
+      border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+      background: color-mix(in srgb, var(--card) 85%, transparent);
+      box-shadow: var(--glow);
+    }
     .refs code{ font-family: var(--mono); font-size: 12px; }
     .theme-toggle{
       display:flex; gap:8px; align-items:center;
@@ -272,6 +279,13 @@
           <p>Registro local de monitoreo (BH/ANC) + efectos. Sin servidores.</p>
         </div>
       </div>
+      <nav role="tablist" aria-label="Secciones">
+        <button class="tab" role="tab" aria-selected="true" data-tab="registro">Registro</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="graficas">Gráficas</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="import">Importar/Exportar</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="ajustes">Ajustes</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="referencias">Referencias</button>
+      </nav>
       <div class="row" style="max-width:620px">
         <div class="pill" title="Los datos se guardan solo en este navegador (localStorage).">
           <span>Paciente:</span> <strong id="patientLabel">—</strong>
@@ -286,13 +300,6 @@
         <button class="ghost" id="btnInstall" title="Instalar como app (si el navegador lo permite)" disabled>Instalar</button>
       </div>
     </div>
-    <nav role="tablist" aria-label="Secciones">
-      <button class="tab" role="tab" aria-selected="true" data-tab="registro">Registro</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="graficas">Gráficas</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="import">Importar/Exportar</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="ajustes">Ajustes</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="referencias">Referencias</button>
-    </nav>
   </div>
 </header>
 
@@ -1261,6 +1268,22 @@
     }
     save(true);
     toast("Importado.");
+  };
+
+  const loadDemo = async () => {
+    const res = await fetch("demo-data.json", {cache:"no-store"});
+    if(!res.ok) throw new Error("No se pudo cargar demo-data.json");
+    const demo = await res.json();
+    state.data = Object.assign({}, structuredClone(DEFAULTS), demo);
+    state.data.thresholds = Object.assign({}, DEFAULTS.thresholds, state.data.thresholds || {});
+    state.data.patient = Object.assign({}, DEFAULTS.patient, state.data.patient || {});
+    for(const e of state.data.entries){
+      if(!e.id) e.id = uid();
+      if(!e.labs) e.labs = {};
+      if(!e.effects) e.effects = {};
+    }
+    save(true);
+    toast("Demo cargada.");
   };
 
   // ---- events ----
