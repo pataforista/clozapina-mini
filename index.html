@@ -9,16 +9,45 @@
   <link rel="icon" href="icon-192.png" />
   <style>
     :root{
-      --bg:#0f1115; --card:#171a21; --muted:#9aa3b2; --text:#e9eef7;
-      --line:rgba(255,255,255,.10); --ok:#34d399; --warn:#fbbf24; --bad:#fb7185; --info:#60a5fa;
-      --radius:16px; --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:16px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, "Times New Roman", serif;
+    }
+    html[data-theme="light"]{
+      --bg:#FFF8E7;
+      --card:#FFF3DC;
+      --muted:#5E5A66;
+      --text:#2B2F40;
+      --line:#2B2F40;
+      --ok:#56D8B6;
+      --warn:#FFC857;
+      --bad:#FF8E72;
+      --info:#2B2F40;
+      --shadow: 0 8px 18px rgba(43,47,64,.16);
+      --focus: rgba(86,216,182,.35);
+      --accent:#FF8E72;
+      --glow: transparent;
+    }
+    html[data-theme="dark"]{
+      --bg:#120C18;
+      --card:#1B1424;
+      --muted:#B7A9C8;
+      --text:#E4D8EB;
+      --line:rgba(0,255,194,.15);
+      --ok:#00FFC2;
+      --warn:#FFA600;
+      --bad:#FF3C3C;
+      --info:#00FFC2;
+      --shadow: 0 12px 28px rgba(0,0,0,.45);
+      --focus: rgba(0,255,194,.25);
+      --accent:#FF3C3C;
+      --glow: 0 0 12px rgba(0,255,194,.45);
     }
     *{ box-sizing:border-box; }
     body{
-      margin:0; font-family:var(--sans); background: radial-gradient(1200px 600px at 20% 10%, rgba(96,165,250,.16), transparent 55%),
-      radial-gradient(1200px 600px at 80% 20%, rgba(52,211,153,.12), transparent 60%), var(--bg);
+      margin:0; font-family:var(--sans); background: radial-gradient(1200px 600px at 20% 10%, rgba(0,255,194,.08), transparent 55%),
+      radial-gradient(1200px 600px at 80% 20%, rgba(255,166,0,.10), transparent 60%), var(--bg);
       color:var(--text);
     }
     header{
@@ -36,8 +65,8 @@
     }
     .logo{
       width:40px; height:40px; border-radius:12px;
-      background: linear-gradient(135deg, rgba(96,165,250,.35), rgba(52,211,153,.25));
-      border:1px solid var(--line);
+      background: linear-gradient(135deg, rgba(255,142,114,.35), rgba(86,216,182,.25));
+      border:2px solid var(--line);
       display:grid; place-items:center;
       font-family: var(--mono); font-weight:700;
     }
@@ -47,17 +76,18 @@
       display:flex; gap:8px; padding: 10px 0 12px; flex-wrap:wrap;
     }
     .tab{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
+      border:2px solid var(--line);
+      background: rgba(255,255,255,.10);
       color: var(--text);
       padding:10px 12px;
       border-radius: 999px;
       cursor:pointer;
       font-size: 13px;
+      box-shadow: var(--glow);
     }
     .tab[aria-selected="true"]{
-      background: rgba(96,165,250,.18);
-      border-color: rgba(96,165,250,.35);
+      background: color-mix(in srgb, var(--accent) 25%, transparent);
+      border-color: var(--accent);
     }
     main{ padding: 18px 0 40px; }
     .grid{
@@ -67,8 +97,8 @@
     }
     @media (max-width: 940px){ .grid{ grid-template-columns: 1fr; } }
     .card{
-      background: rgba(23,26,33,.92);
-      border:1px solid var(--line);
+      background: color-mix(in srgb, var(--card) 92%, transparent);
+      border:2px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding: 14px;
@@ -84,13 +114,16 @@
     label{ display:block; font-size: 12px; color: var(--muted); margin: 8px 0 6px; }
     input, select, textarea, button{
       width:100%;
-      background: rgba(255,255,255,.03);
-      border: 1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      border: 2px solid var(--line);
       border-radius: 12px;
       padding: 10px 11px;
       color: var(--text);
       outline:none;
       font-size: 14px;
+    }
+    input:focus, select:focus, textarea:focus, button:focus{
+      box-shadow: 0 0 0 3px var(--focus);
     }
     textarea{ min-height: 92px; resize: vertical; }
     button{
@@ -99,19 +132,19 @@
       letter-spacing: .2px;
     }
     button.primary{
-      background: rgba(52,211,153,.16);
-      border-color: rgba(52,211,153,.30);
+      background: color-mix(in srgb, var(--ok) 18%, transparent);
+      border-color: color-mix(in srgb, var(--ok) 60%, transparent);
     }
     button.danger{
-      background: rgba(251,113,133,.12);
-      border-color: rgba(251,113,133,.26);
+      background: color-mix(in srgb, var(--bad) 18%, transparent);
+      border-color: color-mix(in srgb, var(--bad) 55%, transparent);
     }
     button.ghost{
       background: transparent;
     }
     .pill{
       display:inline-flex; gap:8px; align-items:center;
-      border: 1px solid var(--line);
+      border: 2px solid var(--line);
       padding: 6px 10px; border-radius: 999px;
       font-size: 12px; color: var(--muted);
     }
@@ -122,28 +155,28 @@
       max-height: 520px; overflow:auto; padding-right: 6px;
     }
     .item{
-      border: 1px solid var(--line);
+      border: 2px solid var(--line);
       border-radius: 14px;
       padding: 12px;
-      background: rgba(255,255,255,.02);
+      background: rgba(255,255,255,.06);
       cursor:pointer;
     }
     .item:hover{ background: rgba(255,255,255,.03); }
     .item .meta{ display:flex; justify-content:space-between; gap:10px; align-items:center; }
     .item .date{ font-family: var(--mono); font-size: 12px; color: var(--muted); }
     .tags{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
-    .tag{ padding: 4px 8px; border-radius: 999px; font-size: 11px; border:1px solid var(--line); }
-    .tag.ok{ border-color: rgba(52,211,153,.35); color: rgba(52,211,153,.95); }
-    .tag.warn{ border-color: rgba(251,191,36,.35); color: rgba(251,191,36,.98); }
-    .tag.bad{ border-color: rgba(251,113,133,.35); color: rgba(251,113,133,.98); }
-    .tag.info{ border-color: rgba(96,165,250,.35); color: rgba(96,165,250,.98); }
+    .tag{ padding: 4px 8px; border-radius: 999px; font-size: 11px; border:2px solid var(--line); }
+    .tag.ok{ border-color: color-mix(in srgb, var(--ok) 75%, transparent); color: var(--ok); }
+    .tag.warn{ border-color: color-mix(in srgb, var(--warn) 75%, transparent); color: var(--warn); }
+    .tag.bad{ border-color: color-mix(in srgb, var(--bad) 75%, transparent); color: var(--bad); }
+    .tag.info{ border-color: color-mix(in srgb, var(--info) 75%, transparent); color: var(--info); }
 
     .kpi{
       display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;
     }
     @media (max-width: 940px){ .kpi{ grid-template-columns: repeat(2, 1fr); } }
     .kpi .box{
-      border:1px solid var(--line);
+      border:2px solid var(--line);
       border-radius: 14px;
       padding: 10px;
       background: rgba(255,255,255,.02);
@@ -151,7 +184,7 @@
     .kpi .box .lbl{ color: var(--muted); font-size: 11.5px; }
     .kpi .box .val{ font-family: var(--mono); font-size: 16px; margin-top: 6px; }
     .kpi .box .val small{ color: var(--muted); font-size: 11px; font-family: var(--sans); }
-    canvas{ width:100%; height: 280px; background: rgba(255,255,255,.02); border:1px solid var(--line); border-radius: 14px; }
+    canvas{ width:100%; height: 280px; background: rgba(255,255,255,.06); border:2px solid var(--line); border-radius: 14px; }
     .small{ font-size: 11.5px; color: var(--muted); }
     .mono{ font-family: var(--mono); }
     .hidden{ display:none !important; }
@@ -160,8 +193,8 @@
       left: 50%;
       bottom: 16px;
       transform: translateX(-50%);
-      background: rgba(23,26,33,.95);
-      border:1px solid var(--line);
+      background: color-mix(in srgb, var(--card) 92%, transparent);
+      border:2px solid var(--line);
       padding: 10px 12px;
       border-radius: 999px;
       box-shadow: var(--shadow);
@@ -172,6 +205,60 @@
     }
     .toast.show{ display:block; }
     .refs code{ font-family: var(--mono); font-size: 12px; }
+    .theme-toggle{
+      display:flex; gap:8px; align-items:center;
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+    .theme-toggle span{ font-size: 12px; color: var(--muted); }
+    .theme-toggle select{
+      padding: 8px 10px;
+      font-size: 12.5px;
+    }
+    .helper{
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .checkbox-row{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      margin-top: 6px;
+    }
+    .checkbox-row input[type="checkbox"]{
+      width:auto;
+      margin:0;
+      transform: translateY(1px);
+    }
+    .modal-backdrop{
+      position: fixed;
+      inset: 0;
+      background: rgba(18,12,24,.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 50;
+    }
+    .modal{
+      width: min(560px, 92vw);
+      background: var(--card);
+      border-radius: 18px;
+      border:2px solid var(--line);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .modal h3{
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+    .modal ol{
+      margin: 8px 0 0 18px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
@@ -185,9 +272,16 @@
           <p>Registro local de monitoreo (BH/ANC) + efectos. Sin servidores.</p>
         </div>
       </div>
-      <div class="row" style="max-width:520px">
+      <div class="row" style="max-width:620px">
         <div class="pill" title="Los datos se guardan solo en este navegador (localStorage).">
           <span>Paciente:</span> <strong id="patientLabel">—</strong>
+        </div>
+        <div class="theme-toggle pill">
+          <span>Tema</span>
+          <select id="themeSelect" aria-label="Seleccionar tema">
+            <option value="light">Claro</option>
+            <option value="dark">Oscuro</option>
+          </select>
         </div>
         <button class="ghost" id="btnInstall" title="Instalar como app (si el navegador lo permite)" disabled>Instalar</button>
       </div>
@@ -212,16 +306,29 @@
           Esto es un cuaderno digital local. No sustituye el criterio clínico ni los protocolos institucionales.
           Evita capturar datos identificables si no es estrictamente necesario.
         </p>
+        <div class="item" style="cursor:default">
+          <strong>Pasos de captura (orden recomendado)</strong>
+          <ol class="note" style="margin-top:6px">
+            <li>Fecha del laboratorio.</li>
+            <li>Marca BEN si corresponde.</li>
+            <li>Captura ANC y leucocitos.</li>
+            <li>Agrega plaquetas y eosinófilos.</li>
+            <li>Registra síntomas relevantes y notas breves.</li>
+            <li>Guarda y revisa alertas.</li>
+          </ol>
+        </div>
         <div class="divider"></div>
 
         <div class="row">
           <div>
             <label>Fecha</label>
             <input type="date" id="f_date" />
+            <div class="helper">1) Define la fecha del laboratorio.</div>
           </div>
           <div>
             <label>Semana (opcional)</label>
             <input type="number" id="f_week" min="1" max="99" placeholder="p.ej., 6" />
+            <div class="helper">Opcional: semana de tratamiento si aplica.</div>
           </div>
           <div>
             <label>¿BEN?</label>
@@ -229,16 +336,19 @@
               <option value="0">No / General</option>
               <option value="1">Sí (Benign Ethnic Neutropenia)</option>
             </select>
+            <div class="helper">2) Selecciona BEN si corresponde.</div>
           </div>
         </div>
 
         <div class="divider"></div>
 
         <h2>Laboratorios (en x10³/µL)</h2>
+        <p class="note">3) Captura primero ANC y leucocitos; luego plaquetas y eosinófilos.</p>
         <div class="row">
           <div>
             <label>ANC / Neutrófilos</label>
             <input type="number" step="0.01" id="f_anc" placeholder="p.ej., 2.3" />
+            <div class="helper">Entrada clave para alertas.</div>
           </div>
           <div>
             <label>Leucocitos</label>
@@ -257,9 +367,14 @@
         <div class="divider"></div>
 
         <h2>Efectos / síntomas (0–5 o texto)</h2>
+        <p class="note">4) Registra solo lo relevante clínicamente y evita datos identificables.</p>
         <div class="row">
           <div><label>Sialorrea (0–5)</label><input type="number" min="0" max="5" step="1" id="f_sial" /></div>
-          <div><label>Estreñimiento (0–5)</label><input type="number" min="0" max="5" step="1" id="f_const" /></div>
+          <div>
+            <label>Estreñimiento (0–5)</label>
+            <input type="number" min="0" max="5" step="1" id="f_const" />
+            <div class="helper">Red flag: días sin evacuar y dolor/vómito.</div>
+          </div>
           <div><label>Somnolencia (0–5)</label><input type="number" min="0" max="5" step="1" id="f_somn" /></div>
           <div><label>Fiebre</label>
             <select id="f_fever"><option value="0">No</option><option value="1">Sí</option></select>
@@ -271,6 +386,28 @@
           <div><label>Apetito (0–5)</label><input type="number" min="0" max="5" step="1" id="f_app" /></div>
           <div><label>Otros</label><input type="text" id="f_other" placeholder="p.ej., cefalea" /></div>
         </div>
+        <div class="row">
+          <div>
+            <label>Días sin evacuar</label>
+            <input type="number" min="0" max="14" step="1" id="f_const_days" placeholder="p.ej., 3" />
+          </div>
+          <div>
+            <label>Dolor/distensión/vómito</label>
+            <div class="checkbox-row">
+              <input type="checkbox" id="f_const_red" />
+              <span class="small">Sí</span>
+            </div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <h2>Banderas rojas tempranas (sem. 2–8)</h2>
+        <p class="note">Si aparecen, considera evaluación urgente y protocolo de miocarditis/neumonía.</p>
+        <div class="row">
+          <div class="checkbox-row"><input type="checkbox" id="f_chest" /><span class="small">Dolor torácico</span></div>
+          <div class="checkbox-row"><input type="checkbox" id="f_dyspnea" /><span class="small">Disnea</span></div>
+          <div class="checkbox-row"><input type="checkbox" id="f_tachy" /><span class="small">Taquicardia desproporcionada</span></div>
+          <div class="checkbox-row"><input type="checkbox" id="f_unwell" /><span class="small">Mal estado general</span></div>
+        </div>
 
         <label>Notas clínicas (breves)</label>
         <textarea id="f_notes" placeholder="Libre. Evita datos identificables."></textarea>
@@ -279,6 +416,7 @@
 
         <div class="row">
           <button class="primary" id="btnSave">Guardar / Actualizar</button>
+          <button class="ghost" id="btnGuide">Guía rápida</button>
           <button class="ghost" id="btnClear">Limpiar</button>
           <button class="danger" id="btnDelete" disabled>Eliminar</button>
         </div>
@@ -288,7 +426,6 @@
         <h2>Entradas</h2>
         <div class="row">
           <button class="ghost" id="btnNew">Nueva</button>
-          <button class="ghost" id="btnQuickDemo">Cargar demo</button>
         </div>
         <div class="divider"></div>
 
@@ -404,6 +541,7 @@
         </p>
         <div class="row">
           <div><label>ANC normal (general) ≥</label><input type="number" step="0.01" id="t_anc_norm" /></div>
+          <div><label>ANC normal (BEN) ≥</label><input type="number" step="0.01" id="t_anc_norm_ben" /></div>
           <div><label>ANC interrumpir (general) &lt;</label><input type="number" step="0.01" id="t_anc_int" /></div>
           <div><label>ANC grave (def. &lt;)</label><input type="number" step="0.01" id="t_anc_sev" /></div>
           <div><label>ANC interrumpir (BEN) &lt;</label><input type="number" step="0.01" id="t_anc_int_ben" /></div>
@@ -473,16 +611,29 @@
 </main>
 
 <div class="toast" id="toast"></div>
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal">
+    <h3 id="modalTitle">Alerta</h3>
+    <p class="note" id="modalText"></p>
+    <ol id="modalSteps"></ol>
+    <div class="divider"></div>
+    <div class="row">
+      <button class="primary" id="btnModalClose">Entendido</button>
+    </div>
+  </div>
+</div>
 
 <script>
 (() => {
   const STORAGE_KEY = "clz_mini_pwa_v1";
+  const THEME_KEY = "clz_mini_pwa_theme";
   const DEFAULTS = {
     version: "clz-mini-pwa-v1",
     patient: { label: "—", ben: false, start_date: "" },
     thresholds: {
       // unidades x10^3/µL (k/µL)
       anc_norm: 1.5,        // general normal >= 1.5
+      anc_norm_ben: 1.0,    // BEN normal >= 1.0
       anc_interrupt: 1.0,   // general interrupt < 1.0 (FDA US)
       anc_severe: 0.5,      // severe < 0.5
       anc_interrupt_ben: 0.5, // BEN: interrupt <0.5; baseline >=1.0
@@ -501,10 +652,30 @@
     t.classList.add("show");
     setTimeout(() => t.classList.remove("show"), 2200);
   };
+  const modal = {
+    open: ({title, text, steps}) => {
+      $("modalTitle").textContent = title;
+      $("modalText").textContent = text;
+      const list = $("modalSteps");
+      list.innerHTML = "";
+      steps.forEach(step => {
+        const li = document.createElement("li");
+        li.textContent = step;
+        list.appendChild(li);
+      });
+      $("modalBackdrop").style.display = "flex";
+      $("modalBackdrop").setAttribute("aria-hidden", "false");
+    },
+    close: () => {
+      $("modalBackdrop").style.display = "none";
+      $("modalBackdrop").setAttribute("aria-hidden", "true");
+    }
+  };
 
   const state = {
     data: null,
-    selectedId: null
+    selectedId: null,
+    lastAlertKey: null
   };
 
   const uid = () => "e_" + Math.random().toString(16).slice(2) + Date.now().toString(16);
@@ -527,6 +698,17 @@
       if(!e.effects) e.effects = {};
     }
     save(false);
+  };
+
+  const setTheme = (theme) => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem(THEME_KEY, theme);
+    $("themeSelect").value = theme;
+  };
+
+  const initTheme = () => {
+    const saved = localStorage.getItem(THEME_KEY) || "dark";
+    setTheme(saved);
   };
 
   const save = (notify=true) => {
@@ -566,6 +748,15 @@
     const plt = parseNum(entry.labs?.plt_k);
     const eos = parseNum(entry.labs?.eos_k);
     const fever = !!entry.effects?.fever;
+    const constipationScore = parseNum(entry.effects?.constipation);
+    const constipationDays = parseNum(entry.effects?.constipation_days);
+    const constipationRed = !!entry.effects?.constipation_red;
+    const earlyFlags = [
+      entry.effects?.chest_pain,
+      entry.effects?.dyspnea,
+      entry.effects?.tachycardia,
+      entry.effects?.unwell
+    ].some(Boolean);
 
     const alerts = [];
 
@@ -576,8 +767,8 @@
         // BEN: baseline >=1.0 (informativo); interrupt <0.5 (default)
         if(anc < th.anc_interrupt_ben){
           alerts.push({kind:"bad", tag:"ANC", title:"ANC bajo (BEN)", text:`ANC ${anc} (<${th.anc_interrupt_ben}). Considerar interrupción y manejo según protocolo BEN.`});
-        } else if(anc < th.anc_norm){
-          alerts.push({kind:"warn", tag:"ANC", title:"ANC limítrofe (BEN)", text:`ANC ${anc}. Vigilar tendencia y adherirse al algoritmo BEN.`});
+        } else if(anc < th.anc_norm_ben){
+          alerts.push({kind:"warn", tag:"ANC", title:"ANC cercano a umbral BEN", text:`ANC ${anc} (<${th.anc_norm_ben}). Vigilar tendencia y adherirse al algoritmo BEN.`});
         } else {
           alerts.push({kind:"ok", tag:"ANC", title:"ANC en rango", text:`ANC ${anc}.`});
         }
@@ -602,12 +793,20 @@
 
     if(eos !== null){
       if(eos > th.eos_stop){
-        alerts.push({kind:"warn", tag:"EOS", title:"Eosinofilia", text:`EOS ${eos} (>${th.eos_stop}). Considerar suspensión/valoración según guía.`});
+        alerts.push({kind:"bad", tag:"EOS", title:"Eosinofilia de suspensión", text:`EOS ${eos} (>${th.eos_stop}). Considerar suspensión y reinicio cuando <1.0 según guía.`});
       }
     }
 
     if(fever){
       alerts.push({kind:"warn", tag:"FIEBRE", title:"Fiebre reportada", text:"Vigilar signos de infección, síndrome inflamatorio y otras banderas rojas (según protocolo)."});
+    }
+    if(earlyFlags){
+      alerts.push({kind:"bad", tag:"ALERTA", title:"Banderas rojas tempranas", text:"Síntomas de riesgo en semanas 2–8. Considerar evaluación urgente y protocolo de miocarditis/neumonía."});
+    }
+    if(constipationRed || (constipationDays !== null && constipationDays >= 3)){
+      alerts.push({kind:"bad", tag:"GI", title:"Estreñimiento de alarma", text:"Días sin evacuar o síntomas GI severos. Valora íleo/oclusión y manejo urgente."});
+    } else if(constipationScore !== null && constipationScore >= 4){
+      alerts.push({kind:"warn", tag:"GI", title:"Estreñimiento significativo", text:"Revisar hidratación, laxantes y signos de alarma."});
     }
 
     // overall label
@@ -629,7 +828,7 @@
     if(months >= th.months_to_4w) intervalDays = 28;
     else if(months >= th.months_to_2w) intervalDays = 14;
 
-    // If ANC warning/bad, suggest sooner
+    // If ANC warning/bad, suggest sooner but remind protocol can require more frequent checks
     const a = assess(latest);
     if(a.alerts.some(x => x.tag==="ANC" && (x.kind==="warn" || x.kind==="bad"))) intervalDays = Math.min(intervalDays, 7);
 
@@ -666,6 +865,12 @@
     ["anc","wbc","plt","eos","sial","const","somn","diz","blur","app"].forEach(k => $("f_"+k).value = "");
     $("f_fever").value = "0";
     $("f_other").value = "";
+    $("f_const_days").value = "";
+    $("f_const_red").checked = false;
+    $("f_chest").checked = false;
+    $("f_dyspnea").checked = false;
+    $("f_tachy").checked = false;
+    $("f_unwell").checked = false;
     $("f_notes").value = "";
   };
 
@@ -691,11 +896,33 @@
     $("f_blur").value = e.effects?.blurred_vision ?? "";
     $("f_app").value = e.effects?.appetite ?? "";
     $("f_other").value = e.effects?.other ?? "";
+    $("f_const_days").value = e.effects?.constipation_days ?? "";
+    $("f_const_red").checked = !!e.effects?.constipation_red;
+    $("f_chest").checked = !!e.effects?.chest_pain;
+    $("f_dyspnea").checked = !!e.effects?.dyspnea;
+    $("f_tachy").checked = !!e.effects?.tachycardia;
+    $("f_unwell").checked = !!e.effects?.unwell;
 
     $("f_notes").value = e.notes || "";
   };
 
   const upsertEntryFromForm = () => {
+    const plausibility = (label, value, max) => {
+      if(value === null) return true;
+      if(value > max){
+        modal.open({
+          title: "Posible error de unidades",
+          text: `${label} parece fuera de rango para x10³/µL.`,
+          steps: [
+            "Verifica la unidad del laboratorio (x10³/µL vs células/µL).",
+            "Si el valor está en células/µL, divide entre 1000.",
+            "Vuelve a capturar el dato antes de guardar."
+          ]
+        });
+        return false;
+      }
+      return true;
+    };
     const entry = {
       id: state.selectedId || uid(),
       date: $("f_date").value || "",
@@ -715,7 +942,13 @@
         dizziness: parseNum($("f_diz").value),
         blurred_vision: parseNum($("f_blur").value),
         appetite: parseNum($("f_app").value),
-        other: $("f_other").value || ""
+        other: $("f_other").value || "",
+        constipation_days: parseNum($("f_const_days").value),
+        constipation_red: $("f_const_red").checked,
+        chest_pain: $("f_chest").checked,
+        dyspnea: $("f_dyspnea").checked,
+        tachycardia: $("f_tachy").checked,
+        unwell: $("f_unwell").checked
       },
       notes: $("f_notes").value || ""
     };
@@ -724,6 +957,10 @@
       toast("Falta fecha.");
       return;
     }
+    if(!plausibility("ANC", entry.labs.anc_k, 20)) return;
+    if(!plausibility("Leucocitos", entry.labs.wbc_k, 50)) return;
+    if(!plausibility("Plaquetas", entry.labs.plt_k, 1000)) return;
+    if(!plausibility("Eosinófilos", entry.labs.eos_k, 10)) return;
 
     const idx = state.data.entries.findIndex(x => x.id === entry.id);
     if(idx >= 0) state.data.entries[idx] = entry;
@@ -748,7 +985,7 @@
     const root = $("entryList");
     root.innerHTML = "";
     if(!state.data.entries.length){
-      root.innerHTML = `<div class="note">Sin entradas. Usa “Nueva” o “Cargar demo”.</div>`;
+      root.innerHTML = `<div class="note">Sin entradas. Usa “Nueva”.</div>`;
       return;
     }
     sortEntries();
@@ -761,7 +998,7 @@
       const tags = [];
       if(anc !== null && anc !== undefined) tags.push({cls: a.overall === "bad" ? "bad" : a.overall === "warn" ? "warn" : "ok", txt:`ANC ${anc}`});
       if(plt !== null && plt !== undefined) tags.push({cls: plt < state.data.thresholds.plt_stop ? "bad" : "info", txt:`PLT ${plt}`});
-      if(eos !== null && eos !== undefined) tags.push({cls: eos > state.data.thresholds.eos_stop ? "warn" : "info", txt:`EOS ${eos}`});
+      if(eos !== null && eos !== undefined) tags.push({cls: eos > state.data.thresholds.eos_stop ? "bad" : "info", txt:`EOS ${eos}`});
       if(e.effects?.fever) tags.push({cls:"warn", txt:"Fiebre"});
 
       const div = document.createElement("div");
@@ -793,7 +1030,20 @@
     $("k_plt").textContent = latest?.labs?.plt_k ?? "—";
 
     const next = nextLabDate();
-    $("k_next").textContent = next ? fmtDate(next) : "—";
+    if(latest){
+      const res = assess(latest);
+      if(res.alerts.some(a => a.tag === "ANC" && (a.kind === "warn" || a.kind === "bad"))){
+        $("k_next").textContent = "Más frecuente según protocolo";
+        return;
+      }
+    }
+    if(next){
+      $("k_next").textContent = fmtDate(next);
+    } else if(latest){
+      $("k_next").textContent = "Según protocolo";
+    } else {
+      $("k_next").textContent = "—";
+    }
   };
 
   const renderAlerts = () => {
@@ -814,6 +1064,37 @@
       </div>`;
     }).join("");
     root.innerHTML = blocks || `<div class="note">Sin señales en la última entrada.</div>`;
+    const worst = res.alerts.some(a => a.kind === "bad")
+      ? "bad"
+      : res.alerts.some(a => a.kind === "warn")
+        ? "warn"
+        : "ok";
+    const latestKey = `${latest.id || "latest"}-${worst}`;
+    const shouldShowModal = latestKey !== state.lastAlertKey;
+    if(shouldShowModal && worst === "bad"){
+      modal.open({
+        title: "Alerta crítica",
+        text: "La última entrada sugiere un evento de alto riesgo. Revisa de inmediato el protocolo local.",
+        steps: [
+          "Verifica el resultado de laboratorio y confirma unidades.",
+          "Suspende o ajusta clozapina según protocolo institucional.",
+          "Contacta a hematología/psiquiatría o referencia urgente si aplica.",
+          "Documenta decisiones y plan de seguimiento."
+        ]
+      });
+      state.lastAlertKey = latestKey;
+    } else if(shouldShowModal && worst === "warn"){
+      modal.open({
+        title: "Alerta a vigilar",
+        text: "Hay señales que requieren vigilancia estrecha.",
+        steps: [
+          "Revisa tendencia del ANC/plaquetas/eosinófilos.",
+          "Aumenta frecuencia de control según guía local.",
+          "Registra síntomas acompañantes y evolución clínica."
+        ]
+      });
+      state.lastAlertKey = latestKey;
+    }
   };
 
   const renderSettings = () => {
@@ -823,6 +1104,7 @@
 
     const th = state.data.thresholds;
     $("t_anc_norm").value = th.anc_norm;
+    $("t_anc_norm_ben").value = th.anc_norm_ben;
     $("t_anc_int").value = th.anc_interrupt;
     $("t_anc_sev").value = th.anc_severe;
     $("t_anc_int_ben").value = th.anc_interrupt_ben;
@@ -981,24 +1263,22 @@
     toast("Importado.");
   };
 
-  const loadDemo = async () => {
-    const res = await fetch("demo-data.json", {cache:"no-store"});
-    if(!res.ok) throw new Error("No se pudo cargar demo-data.json");
-    const demo = await res.json();
-    state.data = Object.assign({}, structuredClone(DEFAULTS), demo);
-    state.data.thresholds = Object.assign({}, DEFAULTS.thresholds, state.data.thresholds || {});
-    state.data.patient = Object.assign({}, DEFAULTS.patient, state.data.patient || {});
-    for(const e of state.data.entries){
-      if(!e.id) e.id = uid();
-      if(!e.labs) e.labs = {};
-      if(!e.effects) e.effects = {};
-    }
-    save(true);
-    toast("Demo cargada.");
-  };
-
   // ---- events ----
   $("btnSave").addEventListener("click", upsertEntryFromForm);
+  $("btnGuide").addEventListener("click", () => {
+    modal.open({
+      title: "Guía rápida de captura",
+      text: "Sigue este orden para completar la entrada.",
+      steps: [
+        "Selecciona la fecha del laboratorio.",
+        "Define BEN si aplica.",
+        "Captura ANC y leucocitos.",
+        "Agrega plaquetas y eosinófilos.",
+        "Anota síntomas y notas clínicas breves.",
+        "Guarda la entrada y revisa alertas."
+      ]
+    });
+  });
   $("btnClear").addEventListener("click", clearForm);
   $("btnNew").addEventListener("click", () => { clearForm(); toast("Nueva entrada."); });
   $("btnDelete").addEventListener("click", deleteSelected);
@@ -1023,10 +1303,6 @@
     }
   });
 
-  $("btnQuickDemo").addEventListener("click", async () => {
-    try{ await loadDemo(); }catch(e){ toast(e.message); }
-  });
-
   $("btnRedraw").addEventListener("click", drawChart);
   $("chartSeries").addEventListener("change", drawChart);
   $("chartWindow").addEventListener("change", drawChart);
@@ -1039,6 +1315,7 @@
 
     const th = state.data.thresholds;
     th.anc_norm = parseNum($("t_anc_norm").value) ?? DEFAULTS.thresholds.anc_norm;
+    th.anc_norm_ben = parseNum($("t_anc_norm_ben").value) ?? DEFAULTS.thresholds.anc_norm_ben;
     th.anc_interrupt = parseNum($("t_anc_int").value) ?? DEFAULTS.thresholds.anc_interrupt;
     th.anc_severe = parseNum($("t_anc_sev").value) ?? DEFAULTS.thresholds.anc_severe;
     th.anc_interrupt_ben = parseNum($("t_anc_int_ben").value) ?? DEFAULTS.thresholds.anc_interrupt_ben;
@@ -1073,9 +1350,17 @@
     deferredPrompt = null;
     $("btnInstall").disabled = true;
   });
+  $("btnModalClose").addEventListener("click", modal.close);
+  $("modalBackdrop").addEventListener("click", (event) => {
+    if(event.target.id === "modalBackdrop") modal.close();
+  });
+  $("themeSelect").addEventListener("change", (event) => {
+    setTheme(event.target.value);
+  });
 
   // init
   load();
+  initTheme();
   clearForm();
   renderAll();
 
@@ -1087,3 +1372,4 @@
 </script>
 </body>
 </html>
+
