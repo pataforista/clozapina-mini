@@ -1,110 +1,110 @@
 {
-  "version": "clz-mini-pwa-v1",
+  "version": "clz-mini-pwa-v2-delphi",
   "patient": {
-    "label": "DEMO (sin datos identificables)",
+    "label": "DEMO (Pacientes Simulados)",
     "ben": false,
-    "start_date": "2022-08-12"
+    "start_date": "2024-01-01"
   },
   "entries": [
     {
-      "date": "2022-08-12",
+      "date": "2024-01-01",
       "labs": {
-        "anc_k": 100.0,
-        "wbc_k": 100.0,
-        "plt_k": 100.0,
-        "eos_k": 10.0
+        "anc_k": 5.2,
+        "wbc_k": 8.1,
+        "plt_k": 250,
+        "eos_k": 0.2
       },
       "effects": {
-        "sialorrhea": 1.0,
-        "constipation": 3.0,
-        "dizziness": 5.0,
-        "blurred_vision": 3.0,
-        "appetite": 5.0,
-        "somnolence": 5.0,
+        "sialorrhea": 0,
+        "constipation": 0,
+        "dizziness": 0,
+        "blurred_vision": 0,
+        "appetite": 0,
+        "somnolence": 0,
         "fever": false,
-        "other": "Cefalea"
+        "other": "Línea base normal."
       },
-      "notes": ""
+      "notes": "Inicio de tratamiento."
     },
     {
-      "date": "2022-08-19",
+      "date": "2024-01-08",
       "labs": {
-        "anc_k": 2.53,
-        "wbc_k": 7.19,
-        "plt_k": 311.0,
-        "eos_k": 2.9
+        "anc_k": 4.8,
+        "wbc_k": 7.5,
+        "plt_k": 240,
+        "eos_k": 0.3
       },
       "effects": {
-        "sialorrhea": 7.19,
-        "constipation": 311.0,
-        "dizziness": 2.9,
-        "blurred_vision": 1.0,
-        "appetite": 3.0,
-        "somnolence": 5.0,
-        "fever": 3.0,
-        "other": 5.0
+        "sialorrhea": 2,
+        "constipation": 1,
+        "dizziness": 0,
+        "blurred_vision": 0,
+        "appetite": 0,
+        "somnolence": 3,
+        "fever": false,
+        "other": ""
       },
-      "notes": ""
+      "notes": "Semanas 1. Somnolencia leve."
     },
     {
-      "date": "2022-08-26",
+      "date": "2024-01-15",
       "labs": {
-        "anc_k": 2.29,
-        "wbc_k": 6.98,
-        "plt_k": 326.0,
-        "eos_k": 2.6
+        "anc_k": 3.2,
+        "wbc_k": 5.8,
+        "plt_k": 210,
+        "eos_k": 0.5
       },
       "effects": {
-        "sialorrhea": 4.0,
-        "constipation": 1.0,
-        "dizziness": 3.0,
-        "blurred_vision": 1.0,
-        "appetite": 5.0,
-        "somnolence": 4.0,
+        "sialorrhea": 3,
+        "constipation": 2,
+        "dizziness": 1,
+        "blurred_vision": 0,
+        "appetite": 0,
+        "somnolence": 4,
         "fever": false,
-        "other": null
+        "other": ""
       },
-      "notes": ""
+      "notes": "Baja leve de ANC, dentro de rango normal."
     },
     {
-      "date": "2022-09-02",
+      "date": "2024-01-22",
       "labs": {
-        "anc_k": 1.76,
-        "wbc_k": 6.45,
-        "plt_k": 300.0,
-        "eos_k": 0.19
+        "anc_k": 1.4,
+        "wbc_k": 3.2,
+        "plt_k": 190,
+        "eos_k": 0.4
       },
       "effects": {
-        "sialorrhea": 2.0,
-        "constipation": 4.0,
-        "dizziness": 3.0,
-        "blurred_vision": 2.0,
-        "appetite": 1.0,
-        "somnolence": 4.0,
-        "fever": false,
-        "other": null
+        "sialorrhea": 3,
+        "constipation": 4,
+        "dizziness": 2,
+        "blurred_vision": 1,
+        "appetite": 0,
+        "somnolence": 4,
+        "fever": true,
+        "other": "Taquicardia leve"
       },
-      "notes": ""
+      "notes": "Alerta: Verificación clínica requerida (ANC < 1.5)."
     },
     {
-      "date": "2022-09-09",
+      "date": "2024-01-29",
       "labs": {
-        "anc_k": 9.46,
-        "wbc_k": 12.6,
-        "plt_k": 314.0,
-        "eos_k": 1.4
+        "anc_k": 0.8,
+        "wbc_k": 2.1,
+        "plt_k": 180,
+        "eos_k": 0.2
       },
       "effects": {
-        "sialorrhea": 1.0,
-        "constipation": 3.0,
-        "dizziness": 5.0,
-        "blurred_vision": 3.0,
-        "appetite": 5.0,
-        "somnolence": 5.0,
+        "sialorrhea": 1,
+        "constipation": 5,
+        "dizziness": 3,
+        "blurred_vision": 2,
+        "appetite": 0,
+        "somnolence": 4,
         "fever": false,
-        "other": "Cefalea"
+        "other": "Vómito leve"
       },
-      "notes": ""
+      "notes": "CRÍTICO: Neutropenia grave (< 1.0) y riesgo de íleo."
     }
   ]
 }

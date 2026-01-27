@@ -6,10 +6,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0D0C12" />
   <title>CLZ Mini PWA</title>
-  <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap"
+    rel="stylesheet">
   <style>
-    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"><style> :root {
+    :root {
       --radius: 16px;
       --radius-sm: 10px;
       --sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -66,7 +70,9 @@
         radial-gradient(at 90% 10%, color-mix(in srgb, var(--ok) 5%, transparent) 0px, transparent 60%),
         radial-gradient(at 50% 90%, color-mix(in srgb, var(--accent) 3%, transparent) 0px, transparent 80%);
       color: var(--text);
-      line-height: 1.5;
+      line-height: 1.6;
+      font-size: 15px;
+      /* Increased from 14px for better legibility */
       min-height: 100vh;
       overflow-x: hidden;
     }
@@ -82,6 +88,8 @@
       gap: 12px;
       padding: 8px 16px;
       background: var(--card);
+      /* Fallback */
+      background: var(--glass);
       border: 1px solid var(--border);
       border-radius: 50px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
@@ -625,11 +633,33 @@
     }
 
     .disclaimer-banner {
-      background: color-mix(in srgb, var(--bad) 8%, var(--card));
+      background: color-mix(in srgb, var(--bad) 10%, var(--card));
       border-bottom: 2px solid var(--bad);
+      color: var(--text);
       padding: 12px 0;
-      font-size: 13px;
+      font-size: 13.5px;
       line-height: 1.5;
+    }
+
+    .note {
+      font-size: 13.5px;
+      opacity: 0.85;
+      line-height: 1.5;
+    }
+
+    .small {
+      font-size: 12.5px;
+      opacity: 0.7;
+    }
+
+    [role="tab"],
+    .nav-bubble {
+      outline: none;
+    }
+
+    [role="tab"]:focus-visible,
+    .nav-bubble:focus-visible {
+      box-shadow: 0 0 0 2px var(--accent);
     }
 
     .support-box {
@@ -638,6 +668,60 @@
       border-radius: var(--radius-sm);
       padding: 12px;
       margin-bottom: 16px;
+    }
+
+    /* Collapsible Logic */
+    .collapsible {
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .collapsible-trigger {
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.02);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      user-select: none;
+    }
+
+    .collapsible-trigger::after {
+      content: '▾';
+      transition: transform 0.3s var(--ease);
+    }
+
+    .collapsible.open .collapsible-trigger::after {
+      transform: rotate(180deg);
+    }
+
+    .collapsible-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s var(--ease);
+      background: transparent;
+    }
+
+    .collapsible.open .collapsible-content {
+      max-height: 1000px;
+      padding-bottom: 16px;
+    }
+
+    /* Action bar optimization */
+    .action-bar-bottom {
+      background: var(--card);
+      border-top: 1px solid var(--line);
+      padding: 16px;
+      display: flex;
+      gap: 12px;
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+      margin: 0 -14px -12px -14px;
     }
   </style>
 </head>
@@ -775,67 +859,76 @@
 
           <div class="divider"></div>
 
-          <h2>Efectos / síntomas (0–5 o texto)</h2>
-          <p class="note">4) Registra solo lo relevante clínicamente y evita datos identificables.</p>
+          <h2>Triage / Riesgo Inmediato</h2>
           <div class="row">
-            <div><label>Sialorrea (0–5)</label><input type="number" min="0" max="5" step="1" id="f_sial" /></div>
             <div>
               <label>Estreñimiento (0–5)</label>
               <input type="number" min="0" max="5" step="1" id="f_const" />
-              <div class="helper">Red flag: días sin evacuar y dolor/vómito.</div>
+              <div class="helper">Red flag: días sin evacuar y dolor.</div>
             </div>
-            <div><label>Somnolencia (0–5)</label><input type="number" min="0" max="5" step="1" id="f_somn" /></div>
-            <div><label>Fiebre</label>
+            <div>
+              <label>Fiebre</label>
               <select id="f_fever">
                 <option value="0">No</option>
-                <option value="1">Sí</option>
+                <option value="1">Sí / >38°C</option>
               </select>
             </div>
-          </div>
-          <div class="row">
-            <div><label>Mareo (0–5)</label><input type="number" min="0" max="5" step="1" id="f_diz" /></div>
-            <div><label>Visión borrosa (0–5)</label><input type="number" min="0" max="5" step="1" id="f_blur" /></div>
-            <div><label>Apetito (0–5)</label><input type="number" min="0" max="5" step="1" id="f_app" /></div>
-            <div><label>Otros</label><input type="text" id="f_other" placeholder="p.ej., cefalea" /></div>
-          </div>
-          <div class="row">
             <div>
               <label>Días sin evacuar</label>
               <input type="number" min="0" max="14" step="1" id="f_const_days" placeholder="p.ej., 3" />
             </div>
-            <div>
-              <label>Dolor/distensión/vómito</label>
+            <div style="display:flex; align-items:flex-end; padding-bottom:12px">
               <div class="checkbox-row">
                 <input type="checkbox" id="f_const_red" />
-                <span class="small">Sí</span>
+                <span class="small">Dolor/Vómito</span>
               </div>
             </div>
           </div>
-          <div class="divider"></div>
-          <h2>Banderas rojas tempranas (sem. 2–8)</h2>
-          <p class="note">Si aparecen, considera evaluación urgente y protocolo de miocarditis/neumonía.</p>
-          <div class="row">
-            <div class="checkbox-row"><input type="checkbox" id="f_chest" /><span class="small">Dolor torácico</span>
+
+          <div class="support-box"
+            style="background: color-mix(in srgb, var(--bad) 5%, var(--card)); border-color: var(--bad);">
+            <strong>Banderas Rojas (CV/RESP):</strong>
+            <div class="row" style="margin-top:8px">
+              <div class="checkbox-row"><input type="checkbox" id="f_chest" /><span class="small">Dolor torácico</span>
+              </div>
+              <div class="checkbox-row"><input type="checkbox" id="f_dyspnea" /><span class="small">Disnea</span></div>
+              <div class="checkbox-row"><input type="checkbox" id="f_tachy" /><span class="small">Taquicardia</span>
+              </div>
+              <div class="checkbox-row"><input type="checkbox" id="f_unwell" /><span class="small">Mal estado</span>
+              </div>
             </div>
-            <div class="checkbox-row"><input type="checkbox" id="f_dyspnea" /><span class="small">Disnea</span></div>
-            <div class="checkbox-row"><input type="checkbox" id="f_tachy" /><span class="small">Taquicardia
-                desproporcionada</span></div>
-            <div class="checkbox-row"><input type="checkbox" id="f_unwell" /><span class="small">Mal estado
-                general</span></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="collapsible" id="colEffects">
+            <div class="collapsible-trigger" onclick="this.parentElement.classList.toggle('open')">
+              <span>Síntomas Secundarios (0–5)</span>
+            </div>
+            <div class="collapsible-content" style="padding: 0 16px;">
+              <div class="row" style="margin-top:12px">
+                <div><label>Sialorrea</label><input type="number" min="0" max="5" step="1" id="f_sial" /></div>
+                <div><label>Somnolencia</label><input type="number" min="0" max="5" step="1" id="f_somn" /></div>
+                <div><label>Mareo</label><input type="number" min="0" max="5" step="1" id="f_diz" /></div>
+                <div><label>Visión borrosa</label><input type="number" min="0" max="5" step="1" id="f_blur" /></div>
+              </div>
+              <div class="row">
+                <div><label>Apetito</label><input type="number" min="0" max="5" step="1" id="f_app" /></div>
+                <div><label>Otros</label><input type="text" id="f_other" placeholder="p.ej., cefalea" /></div>
+              </div>
+            </div>
           </div>
 
           <label>Notas clínicas (breves)</label>
-          <textarea id="f_notes" placeholder="Libre. Evita datos identificables."></textarea>
+          <textarea id="f_notes" placeholder="Libre. Evita datos identificables." style="min-height:80px"></textarea>
 
-          <div class="divider"></div>
-
-          <div class="row" style="align-items: center;">
-            <button class="star-border-btn" id="btnSave">
+          <div class="action-bar-bottom">
+            <button class="star-border-btn" id="btnSave" style="flex:2">
               <div class="star-border-inner">Guardar / Actualizar</div>
             </button>
-            <button class="ghost" id="btnGuide">Guía rápida</button>
-            <button class="ghost" id="btnClear">Limpiar</button>
-            <button class="danger" id="btnDelete" disabled>Eliminar</button>
+            <button class="ghost" id="btnGuide" title="Guía">ℹ️</button>
+            <button class="ghost" id="btnClear" title="Limpiar">🧹</button>
+            <button class="danger" id="btnDelete" disabled title="Borrar">🗑️</button>
           </div>
         </div>
 
@@ -1030,49 +1123,59 @@
     <!-- Referencias -->
     <section id="tab-referencias" class="hidden">
       <div class="card">
-        <h2>Funcionalidad incluida</h2>
-        <ul class="note">
-          <li>Registro local de laboratorios (ANC, leucocitos, plaquetas, eosinófilos) y síntomas.</li>
-          <li>Alertas informativas según umbrales configurables y condición BEN.</li>
-          <li>Gráficas simples sin librerías externas, con selección de serie y ventana.</li>
-          <li>Importación y exportación de datos (JSON y CSV).</li>
-          <li>Modo offline con Service Worker y almacenamiento local.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h2>Avisos y autoría</h2>
-        <ul class="note">
-          <li>Esta PWA es una herramienta de registro y visualización. No es un dispositivo médico ni sustituye el
-            juicio clínico.</li>
-          <li>El usuario es responsable de validar datos, interpretar resultados y seguir protocolos institucionales
-            vigentes.</li>
-          <li>En caso de urgencias o signos de alarma, priorizar la evaluación clínica y los servicios de emergencia.
-          </li>
-          <li>Evita capturar datos identificables; la información se guarda solo en este navegador.</li>
-        </ul>
-        <p class="note"><strong>Autoría:</strong> Cesar Celada / Mauricio Rosel.</p>
-      </div>
-      <div class="card refs">
-        <h2>Referencias (para los umbrales por defecto)</h2>
-        <p class="note">
-          Estas referencias se incluyen para transparencia de los defaults. Los protocolos locales/institucionales
-          pueden diferir.
-        </p>
-        <div class="divider"></div>
-        <ol class="note">
-          <li><strong>Siskind et al., 2025 (Lancet Psychiatry / Global Delphi Consensus)</strong>. Guía clave que
-            actualiza los umbrales de cese a ANC &lt; 1.0 (General) y &lt; 0.5 (DARC-null). Recomienda cese de monitoreo
-            de ANC tras 2 años de estabilidad.</li>
-          <li><strong>CLOZARIL (clozapina) – Prescribing Information (FDA)</strong>. Baseline ANC ≥1500/µL (general) y
-            ≥1000/µL (BEN); ANC severa definida como &lt;500/µL.</li>
-          <li><strong>Kar et al., 2016 / SmPC (Europa, 2024)</strong>. Alertan sobre eosinofilia &gt;3000/mm³ y
-            plaquetas &lt;50,000/mm³ (3.0 y 50 en x10³/µL).</li>
-          <li><strong>Sultan et al., 2017</strong>. Describe el cambio en la guía FDA que elimina umbrales por
-            leucocitos totales (WBC) del algoritmo de monitoreo.</li>
-        </ol>
-        <p class="small">Esta PWA es una herramienta de registro/visualización. No constituye consejo médico ni un
-          dispositivo médico.</p>
-      </div>
+        <h2>Buscador Clínico / Info</h2>
+        <div style="margin-bottom: 20px;">
+          <input type="text" id="refSearch" placeholder="Busca síntomas o guías (ej. 'fiebre', 'delphi')"
+            style="width:100%" />
+        </div>
+        <div id="refResults">
+          <div class="card">
+            <h2>Funcionalidad incluida</h2>
+            <ul class="note">
+              <li>Registro local de laboratorios (ANC, leucocitos, plaquetas, eosinófilos) y síntomas.</li>
+              <li>Alertas informativas según umbrales configurables y condición BEN.</li>
+              <li>Gráficas simples sin librerías externas, con selección de serie y ventana.</li>
+              <li>Importación y exportación de datos (JSON y CSV).</li>
+              <li>Modo offline con Service Worker y almacenamiento local.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h2>Avisos y autoría</h2>
+            <ul class="note">
+              <li>Esta PWA es una herramienta de registro y visualización. No es un dispositivo médico ni sustituye el
+                juicio clínico.</li>
+              <li>El usuario es responsable de validar datos, interpretar resultados y seguir protocolos institucionales
+                vigentes.</li>
+              <li>En caso de urgencias o signos de alarma, priorizar la evaluación clínica y los servicios de
+                emergencia.
+              </li>
+              <li>Evita capturar datos identificables; la información se guarda solo en este navegador.</li>
+            </ul>
+            <p class="note"><strong>Autoría:</strong> Cesar Celada / Mauricio Rosel.</p>
+          </div>
+          <div class="card refs">
+            <h2>Referencias (para los umbrales por defecto)</h2>
+            <p class="note">
+              Estas referencias se incluyen para transparencia de los defaults. Los protocolos locales/institucionales
+              pueden diferir.
+            </p>
+            <div class="divider"></div>
+            <ol class="note">
+              <li><strong>Siskind et al., 2025 (Lancet Psychiatry / Global Delphi Consensus)</strong>. Guía clave que
+                actualiza los umbrales de cese a ANC &lt; 1.0 (General) y &lt; 0.5 (DARC-null). Recomienda cese de
+                monitoreo
+                de ANC tras 2 años de estabilidad.</li>
+              <li><strong>CLOZARIL (clozapina) – Prescribing Information (FDA)</strong>. Baseline ANC ≥1500/µL (general)
+                y
+                ≥1000/µL (BEN); ANC severa definida como &lt;500/µL.</li>
+              <li><strong>Kar et al., 2016 / SmPC (Europa, 2024)</strong>. Alertan sobre eosinofilia &gt;3000/mm³ y
+                plaquetas &lt;50,000/mm³ (3.0 y 50 en x10³/µL).</li>
+              <li><strong>Sultan et al., 2017</strong>. Describe el cambio en la guía FDA que elimina umbrales por
+                leucocitos totales (WBC) del algoritmo de monitoreo.</li>
+            </ol>
+            <p class="small">Esta PWA es una herramienta de registro/visualización. No constituye consejo médico ni un
+              dispositivo médico.</p>
+          </div>
     </section>
   </main>
 
@@ -1089,9 +1192,11 @@
     <div class="modal">
       <h3 id="modalTitle">Alerta</h3>
       <p class="note" id="modalText"></p>
-      <ol id="modalSteps"></ol>
-      <div class="divider"></div>
-      <div class="row">
+      <ul class="note" id="modalSteps" style="margin-left:20px; margin-top:12px"></ul>
+      <div id="modalFormula" class="note"
+        style="margin-top:16px; padding:10px; background:rgba(0,0,0,0.03); border-radius:8px; display:none; font-family:var(--mono);">
+      </div>
+      <div style="margin-top:24px; text-align:right;">
         <button class="primary" id="btnModalClose">Entendido</button>
       </div>
     </div>
@@ -1099,12 +1204,17 @@
 
   <nav class="floating-nav" id="floatingNav">
     <div class="nav-logo-bubble" id="navToggle">CLZ</div>
-    <div class="nav-items" id="navItems">
-      <div class="nav-bubble active" data-tab="registro">Registro</div>
-      <div class="nav-bubble" data-tab="graficas">Gráficas</div>
-      <div class="nav-bubble" data-tab="import">Importar</div>
-      <div class="nav-bubble" data-tab="ajustes">Ajustes</div>
-      <div class="nav-bubble" data-tab="referencias">Info</div>
+    <div class="nav-items" id="navItems" role="tablist" aria-label="Secciones de la aplicación">
+      <div class="nav-bubble active" role="tab" aria-selected="true" aria-controls="tab-registro" tabindex="0"
+        data-tab="registro">Registro</div>
+      <div class="nav-bubble" role="tab" aria-selected="false" aria-controls="tab-graficas" tabindex="-1"
+        data-tab="graficas">Gráficas</div>
+      <div class="nav-bubble" role="tab" aria-selected="false" aria-controls="tab-import" tabindex="-1"
+        data-tab="import">Importar</div>
+      <div class="nav-bubble" role="tab" aria-selected="false" aria-controls="tab-ajustes" tabindex="-1"
+        data-tab="ajustes">Ajustes</div>
+      <div class="nav-bubble" role="tab" aria-selected="false" aria-controls="tab-referencias" tabindex="-1"
+        data-tab="referencias">Info</div>
     </div>
   </nav>
 
@@ -1127,7 +1237,8 @@
           months_to_2w: 6,
           months_to_4w: 12
         },
-        entries: []
+        entries: [],
+        audit: []
       };
 
       const $ = (id) => document.getElementById(id);
@@ -1138,7 +1249,7 @@
         setTimeout(() => t.classList.remove("show"), 2500);
       };
       const modal = {
-        open: ({ title, text, steps, type = "info" }) => {
+        open: ({ title, text, steps, type = "info", formula = null }) => {
           $("modalTitle").textContent = title;
           $("modalText").textContent = text;
           const list = $("modalSteps");
@@ -1150,6 +1261,15 @@
           });
           const container = document.querySelector(".modal");
           container.classList.toggle("critical", type === "critical");
+
+          const fBox = $("modalFormula");
+          if (formula) {
+            fBox.innerHTML = `<strong>Lógica/Fórmula:</strong><br><code style="font-size:11px">${formula}</code>`;
+            fBox.style.display = "block";
+          } else {
+            fBox.style.display = "none";
+          }
+
           $("modalBackdrop").style.display = "flex";
           $("modalBackdrop").setAttribute("aria-hidden", "false");
         },
@@ -1178,12 +1298,8 @@
         state.data.thresholds = Object.assign({}, DEFAULTS.thresholds, state.data.thresholds || {});
         state.data.patient = Object.assign({}, DEFAULTS.patient, state.data.patient || {});
         state.data.entries = Array.isArray(state.data.entries) ? state.data.entries : [];
-        // ensure ids
-        for (const e of state.data.entries) {
-          if (!e.id) e.id = uid();
-          if (!e.labs) e.labs = {};
-          if (!e.effects) e.effects = {};
-        }
+        // ensure ids and sanitize
+        state.data.entries = state.data.entries.map(e => validateAndSanitizeEntry(e)).filter(Boolean);
         save(false);
       };
 
@@ -1202,6 +1318,17 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
         if (notify) toast("Guardado local.");
         renderAll();
+      };
+
+      const auditLog = (action, details) => {
+        if (!state.data.audit) state.data.audit = [];
+        state.data.audit.push({
+          ts: new Date().toISOString(),
+          action,
+          details
+        });
+        if (state.data.audit.length > 50) state.data.audit.shift();
+        save(false);
       };
 
       const fmtDate = (iso) => {
@@ -1224,6 +1351,67 @@
         if (v === "" || v === null || v === undefined) return null;
         const n = Number(v);
         return Number.isFinite(n) ? n : null;
+      };
+
+      const validateAndSanitizeEntry = (e) => {
+        if (!e) return null;
+        const s = {
+          id: e.id || uid(),
+          date: e.date || new Date().toISOString().slice(0, 10),
+          week: parseNum(e.week),
+          ben: !!(e.ben ?? state.data?.patient?.ben),
+          labs: {
+            anc_k: Math.max(0, Math.min(25, parseNum(e.labs?.anc_k))),
+            wbc_k: Math.max(0, Math.min(100, parseNum(e.labs?.wbc_k))),
+            plt_k: Math.max(0, Math.min(2000, parseNum(e.labs?.plt_k))),
+            eos_k: Math.max(0, Math.min(15, parseNum(e.labs?.eos_k))),
+          },
+          effects: {
+            sialorrhea: Math.max(0, Math.min(5, parseNum(e.effects?.sialorrhea))),
+            constipation: Math.max(0, Math.min(5, parseNum(e.effects?.constipation))),
+            somnolence: Math.max(0, Math.min(5, parseNum(e.effects?.somnolence))),
+            fever: !!e.effects?.fever,
+            dizziness: Math.max(0, Math.min(5, parseNum(e.effects?.dizziness))),
+            blurred_vision: Math.max(0, Math.min(5, parseNum(e.effects?.blurred_vision))),
+            appetite: Math.max(0, Math.min(5, parseNum(e.effects?.appetite))),
+            other: String(e.effects?.other || ""),
+            constipation_days: Math.max(0, Math.min(30, parseNum(e.effects?.constipation_days))),
+            constipation_red: !!e.effects?.constipation_red,
+            chest_pain: !!e.effects?.chest_pain,
+            dyspnea: !!e.effects?.dyspnea,
+            tachycardia: !!e.effects?.tachycardia,
+            unwell: !!e.effects?.unwell
+          },
+          notes: String(e.notes || "")
+        };
+        // If mandatory number values are NaN after parseNum, they become 0 or null via clamp
+        return s;
+      };
+
+      const shareEntry = (e) => {
+        const a = assess(e);
+        const summary = `
+RESUMEN CLÍNICO CLOZAPINA (${e.date})
+Paciente: ${state.data.patient.label}
+---
+LABORATORIOS (x10³/µL):
+ANC: ${e.labs.anc_k || "—"} | WBC: ${e.labs.wbc_k || "—"}
+PLT: ${e.labs.plt_k || "—"} | EOS: ${e.labs.eos_k || "—"}
+
+ALERTAS:
+${a.alerts.map(al => `- [${al.tag}] ${al.title}: ${al.text}`).join("\n") || "Sin alertas activas."}
+
+NOTAS:
+${e.notes || "Sin notas."}
+---
+Generado por CLZ Mini PWA v2026.
+        `.trim();
+
+        if (navigator.share) {
+          navigator.share({ title: `CLZ Summary ${e.date}`, text: summary }).catch(() => { });
+        } else {
+          navigator.clipboard.writeText(summary).then(() => toast("Resumen copiado."));
+        }
       };
 
       // ---- clinical-ish helpers (transparent + editable thresholds) ----
@@ -1278,6 +1466,13 @@
           }
         }
 
+        const wbc = parseNum(entry.labs?.wbc_k);
+        if (wbc !== null) {
+          if (wbc < 3.0) {
+            alerts.push({ kind: "warn", tag: "WBC", title: "Leucopenia leve", text: `WBC ${wbc} (<3.0). Vigilar tendencia si el ANC es normal.` });
+          }
+        }
+
         if (eos !== null) {
           if (eos > th.eos_stop) {
             alerts.push({ kind: "bad", tag: "EOS", title: "Eosinofilia de suspensión", text: `EOS ${eos} (>${th.eos_stop}). Considerar suspensión y reinicio cuando <1.0 según guía.` });
@@ -1309,22 +1504,35 @@
         const start = state.data.patient.start_date;
         const latest = getLatest();
         if (!latest || !latest.date || !start) return null;
-        const th = state.data.thresholds;
 
         const startD = new Date(start + "T00:00:00");
         const lastD = new Date(latest.date + "T00:00:00");
-        const weeks = Math.max(0, (lastD - startD) / (1000 * 60 * 60 * 24 * 7));
-        const months = weeks / 4.345;
+
+        // Calculate weeks precisely from start to last lab
+        const diffDays = Math.floor((lastD - startD) / (1000 * 60 * 60 * 24));
+        const weeks = diffDays / 7;
 
         let intervalDays = 7;
-        // Delphi: Weekly for 18 weeks, then monthly until 2 years
-        if (months >= 24) intervalDays = 28; // Routine can cease, but we keep monthly as support
-        else if (weeks >= 18) intervalDays = 28;
-        else intervalDays = 7;
 
-        // If ANC warning/bad, suggest sooner but remind protocol can require more frequent checks
+        // Protocol logic: Weekly for 1st 18 weeks, then c/2w or monthly
+        // We use weeks for precision in the early phase
+        if (weeks >= 18) {
+          // Check if patient reached a monthly milestone (e.g. 6 months or 1 year)
+          // 4.345 weeks per month average
+          const months = weeks / 4.345;
+          if (months >= (state.data.thresholds.months_to_4w || 12)) intervalDays = 28;
+          else if (months >= (state.data.thresholds.months_to_2w || 6)) intervalDays = 14;
+          else intervalDays = 7;
+        } else {
+          intervalDays = 7;
+        }
+
+        // Clinical overriding: if ANC is warning/bad, protocol often dictates more frequent checks
         const a = assess(latest);
-        if (a.alerts.some(x => x.tag === "ANC" && (x.kind === "warn" || x.kind === "bad"))) intervalDays = Math.min(intervalDays, 3); // More frequent (2-3 times weekly)
+        const ancAlert = a.alerts.find(x => x.tag === "ANC");
+        if (ancAlert && (ancAlert.kind === "warn" || ancAlert.kind === "bad")) {
+          intervalDays = 3; // Suggest 2-3 times per week
+        }
 
         const next = new Date(lastD.getTime() + intervalDays * 24 * 60 * 60 * 1000);
         return next.toISOString().slice(0, 10);
@@ -1332,22 +1540,40 @@
 
       // ---- UI binding ----
       const setTab = (name) => {
-        // Update both old tabs (if any) and new bubbles
         const items = document.querySelectorAll(".tab, .nav-bubble");
         for (const btn of items) {
           const on = btn.dataset.tab === name;
           btn.setAttribute("aria-selected", on ? "true" : "false");
+          btn.setAttribute("tabindex", on ? "0" : "-1");
           btn.classList.toggle("active", on);
         }
         const tabs = ["registro", "graficas", "import", "ajustes", "referencias"];
         for (const t of tabs) {
           const el = $("tab-" + t);
-          if (el) el.classList.toggle("hidden", t !== name);
+          if (el) {
+            el.classList.toggle("hidden", t !== name);
+            el.setAttribute("role", "tabpanel");
+            el.setAttribute("aria-labelledby", `tab-${t}`);
+          }
         }
         if (name === "graficas") drawChart();
-        // Auto-close nav on mobile/tab switch
         $("floatingNav").classList.remove("open");
       };
+
+      // Keyboard navigation for tabs
+      $("navItems").addEventListener("keydown", (e) => {
+        const bubbles = Array.from(document.querySelectorAll(".nav-bubble"));
+        const idx = bubbles.findIndex(b => b.dataset.tab === document.querySelector(".nav-bubble.active").dataset.tab);
+        let next = idx;
+        if (e.key === "ArrowRight") next = (idx + 1) % bubbles.length;
+        if (e.key === "ArrowLeft") next = (idx - 1 + bubbles.length) % bubbles.length;
+        if (e.key === "Enter" || e.key === " ") {
+          setTab(bubbles[idx].dataset.tab);
+        } else if (next !== idx) {
+          bubbles[next].focus();
+          setTab(bubbles[next].dataset.tab);
+        }
+      });
 
       document.querySelectorAll(".tab, .nav-bubble").forEach(btn => {
         btn.addEventListener("click", () => setTab(btn.dataset.tab));
@@ -1499,8 +1725,13 @@
         if (!plausibility("Eosinófilos", entry.labs.eos_k, 10)) return;
 
         const idx = state.data.entries.findIndex(x => x.id === entry.id);
-        if (idx >= 0) state.data.entries[idx] = entry;
-        else state.data.entries.push(entry);
+        if (idx >= 0) {
+          state.data.entries[idx] = entry;
+          auditLog("UPDATE", `Entry ${entry.id} updated`);
+        } else {
+          state.data.entries.push(entry);
+          auditLog("CREATE", `New entry ${entry.id}`);
+        }
 
         save(true);
         clearForm();
@@ -1514,7 +1745,8 @@
             title: "ALERTA CLÍNICA CRÍTICA",
             text: "Se han detectado hallazgos de alto riesgo que requieren acción inmediata.",
             type: "critical",
-            steps: bad.map(a => `<strong>${a.tag}:</strong> ${a.text}`)
+            steps: bad.map(a => `<strong>${a.tag}:</strong> ${a.text}`),
+            formula: "ANC < 1.0 (General) | ANC < 0.5 (BEN) | PLT < 50 | EOS > 3.0 | Banderas Rojas GI/CV"
           });
         }
         const btn = $("btnSave");
@@ -1524,9 +1756,11 @@
 
       const deleteSelected = () => {
         if (!state.selectedId) return;
+        if (!confirm("¿Seguro que deseas eliminar este registro? Esta acción no se puede deshacer.")) return;
         const idx = state.data.entries.findIndex(x => x.id === state.selectedId);
         if (idx >= 0) {
           state.data.entries.splice(idx, 1);
+          auditLog("DELETE", `Entry ${state.selectedId} deleted`);
           save(true);
           clearForm();
         }
@@ -1548,7 +1782,12 @@
           const eos = e.labs?.eos_k;
 
           const tags = [];
-          if (anc !== null && anc !== undefined) tags.push({ cls: a.overall === "bad" ? "bad" : a.overall === "warn" ? "warn" : "ok", txt: `ANC ${anc}` });
+          if (anc !== null && anc !== undefined) {
+            // Decouple ANC tag from overall logic
+            const ancAlert = a.alerts.find(x => x.tag === "ANC");
+            const ancCls = ancAlert ? (ancAlert.kind === "bad" ? "bad" : ancAlert.kind === "warn" ? "warn" : "ok") : "info";
+            tags.push({ cls: ancCls, txt: `ANC ${anc}` });
+          }
           if (plt !== null && plt !== undefined) tags.push({ cls: plt < state.data.thresholds.plt_stop ? "bad" : "info", txt: `PLT ${plt}` });
           if (eos !== null && eos !== undefined) tags.push({ cls: eos > state.data.thresholds.eos_stop ? "bad" : "info", txt: `EOS ${eos}` });
           if (e.effects?.fever) tags.push({ cls: "warn", txt: "Fiebre" });
@@ -1570,6 +1809,31 @@
             fillForm(e);
             setTab("registro");
           });
+
+          const shareBtn = document.createElement("button");
+          shareBtn.className = "ghost";
+          shareBtn.style.padding = "4px 8px";
+          shareBtn.innerHTML = "🔗";
+          shareBtn.title = "Compartir Resumen";
+          shareBtn.onclick = (ev) => {
+            ev.stopPropagation();
+            shareEntry(e);
+          };
+          div.querySelector(".meta").appendChild(shareBtn);
+
+          const delBtn = document.createElement("button");
+          delBtn.className = "ghost";
+          delBtn.style.padding = "4px 8px";
+          delBtn.style.color = "var(--bad)";
+          delBtn.innerHTML = "🗑️";
+          delBtn.title = "Borrar registro";
+          delBtn.onclick = (ev) => {
+            ev.stopPropagation();
+            state.selectedId = e.id;
+            deleteSelected();
+          };
+          div.querySelector(".meta").appendChild(delBtn);
+
           root.appendChild(div);
         }
       };
@@ -1632,7 +1896,8 @@
               "Suspende o ajusta clozapina según protocolo institucional.",
               "Contacta a hematología/psiquiatría o referencia urgente si aplica.",
               "Documenta decisiones y plan de seguimiento."
-            ]
+            ],
+            formula: "Assess(latest).worst === 'bad'"
           });
           state.lastAlertKey = latestKey;
         } else if (shouldShowModal && worst === "warn") {
@@ -1643,7 +1908,8 @@
               "Revisa tendencia del ANC/plaquetas/eosinófilos.",
               "Aumenta frecuencia de control según guía local.",
               "Registra síntomas acompañantes y evolución clínica."
-            ]
+            ],
+            formula: "Assess(latest).worst === 'warn'"
           });
           state.lastAlertKey = latestKey;
         }
@@ -1721,24 +1987,24 @@
         }
 
         // axes labels
-        ctx.fillStyle = "rgba(233,238,247,.70)";
-        ctx.font = `${12 * devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        ctx.fillStyle = isDark ? "rgba(241, 245, 249, 0.7)" : "rgba(26, 26, 30, 0.7)";
+        ctx.font = `${13 * devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
 
         const yLabel = (v) => (Math.round(v * 100) / 100).toString();
         for (let i = 0; i <= 4; i++) {
           const v = y1 - ((y1 - y0) * i / 4);
           const y = top + (plotH * i / 4);
-          ctx.fillText(yLabel(v), 10 * devicePixelRatio, y + 4 * devicePixelRatio);
+          ctx.fillText(yLabel(v), 8 * devicePixelRatio, y + 4 * devicePixelRatio);
         }
 
         // line
         ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || "#8B5CF6";
-        ctx.lineWidth = 3 * devicePixelRatio;
+        ctx.lineWidth = 3.5 * devicePixelRatio;
         ctx.lineJoin = "round";
         ctx.lineCap = "round";
 
         ctx.beginPath();
-        // Using simple bezier for smoothing if > 2 pts
         pts.forEach((p, i) => {
           const x = left + (plotW * (i / (pts.length - 1)));
           const y = top + plotH * (1 - ((p.y - y0) / (y1 - y0)));
@@ -1746,29 +2012,28 @@
           else {
             const prevX = left + (plotW * ((i - 1) / (pts.length - 1)));
             const prevY = top + plotH * (1 - ((pts[i - 1].y - y0) / (y1 - y0)));
-            const cx = (prevX + x) / 2;
-            ctx.quadraticCurveTo(prevX, prevY, cx, (prevY + y) / 2);
-            ctx.lineTo(x, y); // Final touch for the point
+            const midX = (prevX + x) / 2;
+            ctx.bezierCurveTo(midX, prevY, midX, y, x, y);
           }
         });
         ctx.stroke();
 
         // points
         ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--ok').trim() || "#10B981";
-        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || "#FFF";
+        ctx.strokeStyle = isDark ? "#16151D" : "#FFF";
         ctx.lineWidth = 2 * devicePixelRatio;
 
         pts.forEach((p, i) => {
           const x = left + (plotW * (i / (pts.length - 1)));
           const y = top + plotH * (1 - ((p.y - y0) / (y1 - y0)));
           ctx.beginPath();
-          ctx.arc(x, y, 5 * devicePixelRatio, 0, Math.PI * 2);
+          ctx.arc(x, y, 6 * devicePixelRatio, 0, Math.PI * 2);
           ctx.fill();
           ctx.stroke();
         });
 
         // x labels (first/last)
-        ctx.fillStyle = "rgba(233,238,247,.60)";
+        ctx.fillStyle = isDark ? "rgba(241, 245, 249, 0.5)" : "rgba(26, 26, 30, 0.5)";
         const first = pts[0].x, last = pts[pts.length - 1].x;
         ctx.fillText(first, left, H - 18 * devicePixelRatio);
         const wLast = ctx.measureText(last).width;
@@ -1777,7 +2042,7 @@
         // title
         const map = { anc_k: "ANC", wbc_k: "Leucocitos", plt_k: "Plaquetas", eos_k: "Eosinófilos" };
         const title = map[seriesKey] || seriesKey;
-        ctx.fillStyle = "rgba(233,238,247,.85)";
+        ctx.fillStyle = isDark ? "rgba(241, 245, 249, 0.9)" : "rgba(26, 26, 30, 0.9)";
         ctx.fillText(`${title} (x10³/µL)`, left, 18 * devicePixelRatio);
       };
 
@@ -1823,11 +2088,7 @@
         // normalize
         state.data.thresholds = Object.assign({}, DEFAULTS.thresholds, state.data.thresholds || {});
         state.data.patient = Object.assign({}, DEFAULTS.patient, state.data.patient || {});
-        for (const e of state.data.entries) {
-          if (!e.id) e.id = uid();
-          if (!e.labs) e.labs = {};
-          if (!e.effects) e.effects = {};
-        }
+        state.data.entries = state.data.entries.map(e => validateAndSanitizeEntry(e)).filter(Boolean);
         save(true);
         toast("Importado.");
       };
@@ -1839,11 +2100,7 @@
         state.data = Object.assign({}, structuredClone(DEFAULTS), demo);
         state.data.thresholds = Object.assign({}, DEFAULTS.thresholds, state.data.thresholds || {});
         state.data.patient = Object.assign({}, DEFAULTS.patient, state.data.patient || {});
-        for (const e of state.data.entries) {
-          if (!e.id) e.id = uid();
-          if (!e.labs) e.labs = {};
-          if (!e.effects) e.effects = {};
-        }
+        state.data.entries = state.data.entries.map(e => validateAndSanitizeEntry(e)).filter(Boolean);
         save(true);
         toast("Demo cargada.");
       };
@@ -1871,6 +2128,7 @@
       $("btnExportJson").addEventListener("click", exportJson);
       $("btnExportCsv").addEventListener("click", exportCsvLabs);
       $("btnWipe").addEventListener("click", () => {
+        if (!confirm("¿Seguro que deseas BORRAR TODO? Esta acción eliminará permanentemente todos tus registros locales.")) return;
         state.data = structuredClone(DEFAULTS);
         save(true);
         clearForm();
@@ -1889,8 +2147,41 @@
       });
 
       $("btnRedraw").addEventListener("click", drawChart);
-      $("chartSeries").addEventListener("change", drawChart);
       $("chartWindow").addEventListener("change", drawChart);
+
+      // ---- Smart Search & Reference filtering ----
+      const SYNONYMS = {
+        "fiebre": ["infección", "sepsis", "inflamación", "fever"],
+        "corazón": ["taquicardia", "disnea", "miocarditis", "cv/resp", "chest", "chest_pain"],
+        "estreñimiento": ["gi", "íleo", "obstrucción", "constipation"],
+        "sangre": ["bh", "anc", "wbc", "neutropenia", "leucocitos", "plaquetas"],
+        "delphi": ["consenso", "2022", "2025", "siskind"],
+        "rems": ["fda", "clozaril", "protocolo"]
+      };
+
+      const filterRefs = () => {
+        const q = $("refSearch").value.toLowerCase().trim();
+        const cards = document.querySelectorAll("#tab-referencias .card");
+        if (!q) {
+          cards.forEach(c => c.style.display = "block");
+          return;
+        }
+
+        // Expanded query with synonyms
+        const expanded = [q];
+        for (const k in SYNONYMS) {
+          if (k.includes(q) || q.includes(k)) expanded.push(...SYNONYMS[k]);
+        }
+
+        cards.forEach(c => {
+          if (c.id === "refSearchCard") return; // keep search box visible
+          const text = c.textContent.toLowerCase();
+          const match = expanded.some(term => text.includes(term));
+          c.style.display = match ? "block" : "none";
+        });
+      };
+
+      $("refSearch").addEventListener("input", filterRefs);
 
       // settings
       const saveSettings = () => {
@@ -1949,9 +2240,20 @@
       clearForm();
       renderAll();
 
-      // Service Worker
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("./sw.js").catch(() => { });
+      // PWA features check
+      if (location.protocol !== "file:") {
+        // Dynamic manifest injection to avoid CORS noise on file://
+        const link = document.createElement("link");
+        link.rel = "manifest";
+        link.href = "manifest.json";
+        document.head.appendChild(link);
+
+        // Service Worker
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("./sw.js").catch(() => { });
+        }
+      } else {
+        console.log("PWA features disabled on local file system (CORS). Use a local server to enable installation.");
       }
     })();
   </script>
