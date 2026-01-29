@@ -13,6 +13,28 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap"
     rel="stylesheet">
   <style>
+    /* Privacy Overlay */
+    #privacyOverlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 2000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    #privacyOverlay.active {
+      display: flex;
+    }
+
+    .privacy-lock-icon {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
+
     :root {
       --radius: 14px;
       --radius-sm: 8px;
@@ -79,12 +101,9 @@
       margin: 0;
       font-family: var(--sans);
       background-color: var(--bg);
-      background-image:
-        radial-gradient(at 10% 10%, color-mix(in srgb, var(--accent) 5%, transparent) 0px, transparent 60%),
-        radial-gradient(at 90% 10%, color-mix(in srgb, var(--ok) 3%, transparent) 0px, transparent 60%),
-        radial-gradient(at 50% 90%, color-mix(in srgb, var(--accent) 2%, transparent) 0px, transparent 80%);
-      background-size: 200% 200%;
-      animation: galaxy-float 30s ease-in-out infinite;
+      background-color: var(--bg);
+      /* background-image removed for WebGL Galaxy */
+      color: var(--text);
       color: var(--text);
       line-height: 1.6;
       font-size: 15px;
@@ -777,6 +796,21 @@
       content: "⚠️";
     }
 
+    .modal.hard-stop {
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.95);
+      /* Super focus */
+      z-index: 3000;
+      /* Above everything */
+    }
+
+    .modal-backdrop.hard-stop-bg {
+      z-index: 2999;
+      pointer-events: all;
+      /* Block clicks */
+      background: rgba(0, 0, 0, 0.9);
+    }
+
     footer {
       text-align: center;
       padding: 40px 20px 120px;
@@ -868,6 +902,118 @@
       padding-bottom: 16px;
     }
 
+    /* Input Groups & Units */
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper input {
+      padding-right: 60px;
+      /* Space for suffix */
+    }
+
+    .unit-suffix {
+      position: absolute;
+      right: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      pointer-events: none;
+      font-weight: 500;
+    }
+
+    /* Likert Scale / Rating Buttons */
+    .rating-group {
+      display: flex;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.02);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+    }
+
+    .rating-opt {
+      flex: 1;
+      padding: 8px 0;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 4px;
+      color: var(--muted);
+      transition: all 0.2s var(--ease);
+      user-select: none;
+    }
+
+    .rating-opt:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--text);
+    }
+
+    .rating-opt.active {
+      background: var(--card);
+      color: var(--accent);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      font-weight: 700;
+    }
+
+    .rating-opt[data-val="0"].active {
+      color: var(--muted);
+    }
+
+    .rating-opt[data-val="1"].active {
+      color: var(--ok);
+    }
+
+    .rating-opt[data-val="2"].active {
+      color: var(--ok);
+    }
+
+    .rating-opt[data-val="3"].active {
+      color: var(--warn);
+    }
+
+    .rating-opt[data-val="4"].active {
+      color: var(--bad);
+    }
+
+    .rating-opt[data-val="5"].active {
+      color: var(--bad);
+    }
+
+    /* Live Validation Feedback */
+    input.live-bad {
+      border-color: var(--bad);
+      background: color-mix(in srgb, var(--bad) 5%, transparent);
+    }
+
+    input.live-warn {
+      border-color: var(--warn);
+      background: color-mix(in srgb, var(--warn) 5%, transparent);
+    }
+
+    input.live-ok {
+      border-color: var(--ok);
+    }
+
+    .feedback-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 8px;
+      opacity: 0;
+      transform: translateX(-5px);
+      transition: all 0.3s var(--ease);
+    }
+
+    .feedback-badge.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
     /* Action bar optimization */
     .action-bar-bottom {
       background: var(--card);
@@ -884,6 +1030,13 @@
 </head>
 
 <body>
+  <div id="privacyOverlay">
+    <div class="privacy-lock-icon">🔒</div>
+    <h2>Sesión Bloqueada</h2>
+    <p class="note">Toque para desbloquear</p>
+    <button class="primary" onclick="unlockApp()">Desbloquear</button>
+  </div>
+
   <div class="disclaimer-banner" id="disclaimerBanner">
     <div class="wrap">
       <div style="display:flex; gap:12px; align-items:flex-start;">
@@ -929,6 +1082,16 @@
       <div class="grid">
         <div class="card">
           <h2>Entrada</h2>
+          <!-- Patient Context Banner inside Card for Context -->
+          <div id="patientContextBanner"
+            style="background: color-mix(in srgb, var(--accent) 10%, var(--card)); border-left: 4px solid var(--accent); padding: 10px 14px; border-radius: 4px; display: none; margin-bottom: 16px;">
+            <div
+              style="font-size:11px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:0.05em;">
+              Paciente Activo:</div>
+            <div style="font-size:15px; font-weight:600;" id="ctx_label">—</div>
+            <div style="font-size:12px; opacity:0.7; margin-top:2px;" id="ctx_details">—</div>
+          </div>
+
           <div class="support-box">
             <strong>Soporte de Decisión (Criterios Delphi Global)</strong>
             <p class="note" style="margin-top:4px; font-size:11.5px;">
@@ -974,6 +1137,19 @@
             </div>
           </div>
 
+          <div class="row" style="margin-top:16px;">
+            <div>
+              <label>Dosis Actual</label>
+              <div class="input-wrapper">
+                <input type="number" id="f_dose" placeholder="p.ej., 300" step="12.5" />
+                <span class="unit-suffix">mg/día</span>
+              </div>
+              <div class="helper">Dosis total diaria (mg).</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
           <div class="divider"></div>
 
           <h2>Laboratorios (en x10³/µL)</h2>
@@ -989,28 +1165,40 @@
           <div class="row">
             <div>
               <label style="display:flex; justify-content:space-between; align-items:center;">
-                ANC / Neutrófilos
+                ANC / Neutrófilos <span id="badge_anc" class="feedback-badge"></span>
                 <span class="info-icon" style="cursor:help; font-size:14px;"
                   title="Verifica la unidad del laboratorio (x10³/µL vs células/µL). Si el dato está en células/µL, divide entre 1000.">ℹ️</span>
               </label>
-              <input type="number" step="0.01" id="f_anc" placeholder="p.ej., 2.3" />
+              <div class="input-wrapper">
+                <input type="number" step="0.01" id="f_anc" placeholder="p.ej., 2.3" />
+                <span class="unit-suffix">x10³/µL</span>
+              </div>
               <div class="helper">Ficha: x10³/µL (k/µL).</div>
             </div>
             <div>
               <label style="display:flex; justify-content:space-between; align-items:center;">
-                Leucocitos
+                Leucocitos <span id="badge_wbc" class="feedback-badge"></span>
                 <span class="info-icon" style="cursor:help; font-size:14px;"
                   title="Verifica la unidad: si el valor es >100, probablemente falte dividir entre 1000.">ℹ️</span>
               </label>
-              <input type="number" step="0.01" id="f_wbc" placeholder="p.ej., 6.5" />
+              <div class="input-wrapper">
+                <input type="number" step="0.01" id="f_wbc" placeholder="p.ej., 6.5" />
+                <span class="unit-suffix">x10³/µL</span>
+              </div>
             </div>
             <div>
-              <label>Plaquetas</label>
-              <input type="number" step="1" id="f_plt" placeholder="p.ej., 250" />
+              <label>Plaquetas <span id="badge_plt" class="feedback-badge"></span></label>
+              <div class="input-wrapper">
+                <input type="number" step="1" id="f_plt" placeholder="p.ej., 250" />
+                <span class="unit-suffix">x10³/µL</span>
+              </div>
             </div>
             <div>
-              <label>Eosinófilos</label>
-              <input type="number" step="0.01" id="f_eos" placeholder="p.ej., 0.3" />
+              <label>Eosinófilos <span id="badge_eos" class="feedback-badge"></span></label>
+              <div class="input-wrapper">
+                <input type="number" step="0.01" id="f_eos" placeholder="p.ej., 0.3" />
+                <span class="unit-suffix">x10³/µL</span>
+              </div>
             </div>
           </div>
 
@@ -1020,7 +1208,15 @@
           <div class="row">
             <div>
               <label>Estreñimiento (0–5)</label>
-              <input type="number" min="0" max="5" step="1" id="f_const" />
+              <div class="rating-group" data-input="f_const">
+                <div class="rating-opt" data-val="0">0</div>
+                <div class="rating-opt" data-val="1">1</div>
+                <div class="rating-opt" data-val="2">2</div>
+                <div class="rating-opt" data-val="3">3</div>
+                <div class="rating-opt" data-val="4">4</div>
+                <div class="rating-opt" data-val="5">5</div>
+              </div>
+              <input type="hidden" id="f_const" value="0">
               <div class="helper">Red flag: días sin evacuar y dolor.</div>
             </div>
             <div>
@@ -1064,13 +1260,68 @@
             </div>
             <div class="collapsible-content" style="padding: 0 16px;">
               <div class="row" style="margin-top:12px">
-                <div><label>Sialorrea</label><input type="number" min="0" max="5" step="1" id="f_sial" /></div>
-                <div><label>Somnolencia</label><input type="number" min="0" max="5" step="1" id="f_somn" /></div>
-                <div><label>Mareo</label><input type="number" min="0" max="5" step="1" id="f_diz" /></div>
-                <div><label>Visión borrosa</label><input type="number" min="0" max="5" step="1" id="f_blur" /></div>
+                <div>
+                  <label>Sialorrea</label>
+                  <div class="rating-group" data-input="f_sial">
+                    <div class="rating-opt" data-val="0">0</div>
+                    <div class="rating-opt" data-val="1">1</div>
+                    <div class="rating-opt" data-val="2">2</div>
+                    <div class="rating-opt" data-val="3">3</div>
+                    <div class="rating-opt" data-val="4">4</div>
+                    <div class="rating-opt" data-val="5">5</div>
+                  </div>
+                  <input type="hidden" id="f_sial" value="0">
+                </div>
+                <div>
+                  <label>Somnolencia</label>
+                  <div class="rating-group" data-input="f_somn">
+                    <div class="rating-opt" data-val="0">0</div>
+                    <div class="rating-opt" data-val="1">1</div>
+                    <div class="rating-opt" data-val="2">2</div>
+                    <div class="rating-opt" data-val="3">3</div>
+                    <div class="rating-opt" data-val="4">4</div>
+                    <div class="rating-opt" data-val="5">5</div>
+                  </div>
+                  <input type="hidden" id="f_somn" value="0">
+                </div>
+                <div>
+                  <label>Mareo</label>
+                  <div class="rating-group" data-input="f_diz">
+                    <div class="rating-opt" data-val="0">0</div>
+                    <div class="rating-opt" data-val="1">1</div>
+                    <div class="rating-opt" data-val="2">2</div>
+                    <div class="rating-opt" data-val="3">3</div>
+                    <div class="rating-opt" data-val="4">4</div>
+                    <div class="rating-opt" data-val="5">5</div>
+                  </div>
+                  <input type="hidden" id="f_diz" value="0">
+                </div>
+                <div>
+                  <label>Visión borrosa</label>
+                  <div class="rating-group" data-input="f_blur">
+                    <div class="rating-opt" data-val="0">0</div>
+                    <div class="rating-opt" data-val="1">1</div>
+                    <div class="rating-opt" data-val="2">2</div>
+                    <div class="rating-opt" data-val="3">3</div>
+                    <div class="rating-opt" data-val="4">4</div>
+                    <div class="rating-opt" data-val="5">5</div>
+                  </div>
+                  <input type="hidden" id="f_blur" value="0">
+                </div>
               </div>
               <div class="row">
-                <div><label>Apetito</label><input type="number" min="0" max="5" step="1" id="f_app" /></div>
+                <div>
+                  <label>Apetito</label>
+                  <div class="rating-group" data-input="f_app">
+                    <div class="rating-opt" data-val="0">0</div>
+                    <div class="rating-opt" data-val="1">1</div>
+                    <div class="rating-opt" data-val="2">2</div>
+                    <div class="rating-opt" data-val="3">3</div>
+                    <div class="rating-opt" data-val="4">4</div>
+                    <div class="rating-opt" data-val="5">5</div>
+                  </div>
+                  <input type="hidden" id="f_app" value="0">
+                </div>
                 <div><label>Otros</label><input type="text" id="f_other" placeholder="p.ej., cefalea" /></div>
               </div>
             </div>
@@ -1083,6 +1334,7 @@
             <button class="electric-border" id="btnSave" style="flex:2">
               <span class="electric-inner">Guardar / Actualizar</span>
             </button>
+            <button class="ghost" id="btnCopyClip" title="Copiar Nota Clínica">📋</button>
             <button class="ghost" id="btnGuide" title="Guía">ℹ️</button>
             <button class="ghost" id="btnClear" title="Limpiar">🧹</button>
             <button class="danger" id="btnDelete" disabled title="Borrar">🗑️</button>
@@ -1355,6 +1607,7 @@
       </div>
       <div style="margin-top:24px; text-align:right;">
         <button class="primary" id="btnModalClose">Entendido</button>
+        <button class="primary hidden" id="btnModalAction">Confirmar</button>
       </div>
     </div>
   </div>
@@ -1375,7 +1628,21 @@
     </div>
   </nav>
 
-  <script>
+  <script type="module">
+    import { initGalaxy } from './galaxy.js';
+
+    // Initialize Galaxy Background
+    document.addEventListener('DOMContentLoaded', () => {
+      initGalaxy(document.body, {
+        hueShift: 260, // Deep purple 
+        starSpeed: 0.05, // Slower
+        density: 0.4,    // Fewer stars
+        transparent: true,
+        glowIntensity: 0.2, // Softer glow
+        speed: 0.5       // Overall slower drift
+      });
+    });
+
     (() => {
       const STORAGE_KEY = "clz_mini_pwa_v1";
       const THEME_KEY = "clz_mini_pwa_theme";
@@ -1397,6 +1664,28 @@
         entries: [],
         audit: []
       };
+
+      // Inactivity Timer
+      let inactivityTimeout;
+      const INACTIVITY_LIMIT = 5 * 60 * 1000; // 5 mins
+
+      const resetTimer = () => {
+        clearTimeout(inactivityTimeout);
+        if ($("privacyOverlay").classList.contains("active")) return;
+        inactivityTimeout = setTimeout(() => {
+          $("privacyOverlay").classList.add("active");
+        }, INACTIVITY_LIMIT);
+      };
+
+      window.unlockApp = () => {
+        $("privacyOverlay").classList.remove("active");
+        resetTimer();
+      };
+
+      window.addEventListener("mousemove", resetTimer);
+      window.addEventListener("keydown", resetTimer);
+      window.addEventListener("click", resetTimer);
+      window.addEventListener("touchstart", resetTimer);
 
       const $ = (id) => document.getElementById(id);
       const toast = (msg, type = "success") => {
@@ -1452,7 +1741,91 @@
         close: () => {
           $("modalBackdrop").style.display = "none";
           $("modalBackdrop").setAttribute("aria-hidden", "true");
+          $("modalBackdrop").classList.remove("hard-stop-bg");
+          document.querySelector(".modal").classList.remove("hard-stop");
+          $("btnModalClose").style.display = "inline-flex";
+          $("btnModalAction").classList.add("hidden");
         }
+      };
+
+      // Ensure hard stop context
+      const checkPatientContext = () => {
+        const p = state.data.patient;
+        if (!p.label || p.label === "—" || p.label.trim() === "") {
+          forcePatientSetup();
+        } else {
+          updateContextBanner();
+        }
+      };
+
+      const updateContextBanner = () => {
+        const p = state.data.patient;
+        const banner = $("patientContextBanner");
+        if (banner) {
+          if (!p.label || p.label === "—") {
+            banner.style.display = "none";
+          } else {
+            $("ctx_label").textContent = p.label;
+            $("ctx_details").textContent = `Inicio: ${p.start_date || "No definido"} | ${p.ben ? "BEN" : "General"}`;
+            banner.style.display = "block";
+          }
+        }
+      };
+
+      const forcePatientSetup = () => {
+        modal.open({
+          title: "Configuración de Paciente Requerida",
+          text: "Para garantizar la seguridad clínica, debes definir un identificador para este registro (Asignar un ID o Alias).",
+          steps: [
+            "Ingresa un ID seguro (No usar nombres reales).",
+            "Define fecha de inicio y estatus BEN.",
+            "Esta información persistirá en este dispositivo."
+          ],
+          type: "hard-stop" // Custom type we added css for
+        });
+
+        // Inject form into modal notes or handle via special logic? 
+        // Simplest: Redirect to settings tab and lock modal? 
+        // Better: We'll hijack the modal steps to show inputs OR just force them to Settings tab with an overlay?
+        // Let's make a custom 'content' for the modal in open() if needed, but for now let's just use the existing modal structure 
+        // and add a button that goes to settings and doesn't close until valid.
+
+        // Actually, let's inject a mini-form into the modal text area for immediate action to reduce friction.
+        const modalText = $("modalText");
+        modalText.innerHTML = `
+          <p>Para garantizar la seguridad, asigna un ID:</p>
+          <input id="quick_pt_label" placeholder="ID / Alias del Paciente" style="margin-top:8px; width:100%; box-sizing:border-box;">
+          <div style="margin-top:8px; display:flex; gap:8px;">
+            <select id="quick_pt_ben" style="flex:1"><option value="0">General</option><option value="1">BEN</option></select>
+            <input type="date" id="quick_pt_start" style="flex:1">
+          </div>
+        `;
+
+        const btn = $("btnModalClose");
+        btn.textContent = "Guardar y Continuar";
+
+        // Remove old listeners to avoid duplicates if called multiple times (though shouldn't happen often)
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+
+        newBtn.addEventListener("click", () => {
+          const label = $("quick_pt_label").value;
+          if (!label || label.trim().length < 2) {
+            alert("Por favor ingresa un ID válido (min 2 caracteres).");
+            return;
+          }
+          state.data.patient.label = label;
+          state.data.patient.ben = $("quick_pt_ben").value === "1";
+          state.data.patient.start_date = $("quick_pt_start").value;
+          save(true);
+          modal.close();
+          updateContextBanner();
+          renderAll(); // refresh UI
+        });
+
+        // Visually lock
+        $("modalBackdrop").classList.add("hard-stop-bg");
+        document.querySelector(".modal").classList.add("hard-stop");
       };
 
       const state = {
@@ -1476,6 +1849,7 @@
         state.data.entries = Array.isArray(state.data.entries) ? state.data.entries : [];
         // ensure ids and sanitize
         state.data.entries = state.data.entries.map(e => validateAndSanitizeEntry(e)).filter(Boolean);
+        checkPatientContext(); // Check on load
         save(false);
       };
 
@@ -1542,6 +1916,7 @@
             plt_k: Math.max(0, Math.min(2000, parseNum(e.labs?.plt_k))),
             eos_k: Math.max(0, Math.min(15, parseNum(e.labs?.eos_k))),
           },
+          dose_mg: Math.max(0, Math.min(2000, parseNum(e.dose_mg))), /* New Field */
           effects: {
             sialorrhea: Math.max(0, Math.min(5, parseNum(e.effects?.sialorrhea))),
             constipation: Math.max(0, Math.min(5, parseNum(e.effects?.constipation))),
@@ -1560,7 +1935,8 @@
           },
           notes: String(e.notes || "")
         };
-        // If mandatory number values are NaN after parseNum, they become 0 or null via clamp
+        // Normalize Dose if missing
+        if (s.dose_mg === null) s.dose_mg = 0;
         return s;
       };
 
@@ -1573,6 +1949,7 @@ Paciente: ${state.data.patient.label}
 LABORATORIOS (x10³/µL):
 ANC: ${e.labs.anc_k || "—"} | WBC: ${e.labs.wbc_k || "—"}
 PLT: ${e.labs.plt_k || "—"} | EOS: ${e.labs.eos_k || "—"}
+Dosis: ${e.dose_mg ? e.dose_mg + " mg" : "—"}
 
 ALERTAS:
 ${a.alerts.map(al => `- [${al.tag}] ${al.title}: ${al.text}`).join("\n") || "Sin alertas activas."}
@@ -1781,7 +2158,20 @@ Generado por CLZ Mini PWA v2026.
         $("f_week").value = "";
         $("f_ben").value = (state.data.patient.ben ? "1" : "0");
 
-        ["anc", "wbc", "plt", "eos", "sial", "const", "somn", "diz", "blur", "app"].forEach(k => $("f_" + k).value = "");
+        ["anc", "wbc", "plt", "eos", "sial", "const", "somn", "diz", "blur", "app"].forEach(k => {
+          const el = $("f_" + k);
+          if (el) {
+            el.value = "";
+            el.className = ""; // clear live validation
+          }
+        });
+
+        // Reset badges
+        document.querySelectorAll(".feedback-badge").forEach(b => {
+          b.textContent = "";
+          b.classList.remove("visible");
+        });
+
         $("f_fever").value = "0";
         $("f_other").value = "";
         $("f_const_days").value = "";
@@ -1791,11 +2181,15 @@ Generado por CLZ Mini PWA v2026.
         $("f_tachy").checked = false;
         $("f_unwell").checked = false;
         $("f_notes").value = "";
+
+        updateLikertVisuals();
       };
 
       const fillForm = (e) => {
         state.selectedId = e.id;
         $("btnDelete").disabled = false;
+
+        $("f_dose").value = e.dose_mg || ""; /* Fill new field */
 
         $("f_date").value = e.date || "";
         $("f_week").value = e.week || "";
@@ -1823,6 +2217,16 @@ Generado por CLZ Mini PWA v2026.
         $("f_unwell").checked = !!e.effects?.unwell;
 
         $("f_notes").value = e.notes || "";
+
+        updateLikertVisuals();
+
+        // Trigger validation visuals
+        setTimeout(() => {
+          ["f_anc", "f_wbc", "f_plt", "f_eos"].forEach(id => {
+            const el = $(id);
+            if (el) el.dispatchEvent(new Event("input"));
+          });
+        }, 50);
       };
 
       const upsertEntryFromForm = () => {
@@ -1843,11 +2247,20 @@ Generado por CLZ Mini PWA v2026.
           }
           return true;
         };
+
+        const guardDose = (val) => {
+          if (val && val > 900) {
+            return confirm(`⚠️ ADVERTENCIA DE DOSIS ALTA\n\nLa dosis ingresada es ${val} mg.\n¿Es correcta? (Posible confusión mg vs mcg/gramos)`);
+          }
+          return true;
+        };
+
         const entry = {
           id: state.selectedId || uid(),
           date: $("f_date").value || "",
           week: parseNum($("f_week").value),
           ben: $("f_ben").value === "1",
+          dose_mg: parseNum($("f_dose").value),
           labs: {
             anc_k: parseNum($("f_anc").value),
             wbc_k: parseNum($("f_wbc").value),
@@ -1899,6 +2312,8 @@ Generado por CLZ Mini PWA v2026.
         if (!plausibility("Leucocitos", entry.labs.wbc_k, 50)) return;
         if (!plausibility("Plaquetas", entry.labs.plt_k, 1000)) return;
         if (!plausibility("Eosinófilos", entry.labs.eos_k, 10)) return;
+
+        if (!guardDose(entry.dose_mg)) return;
 
         const idx = state.data.entries.findIndex(x => x.id === entry.id);
         if (idx >= 0) {
@@ -1967,6 +2382,7 @@ Generado por CLZ Mini PWA v2026.
           if (plt !== null && plt !== undefined) tags.push({ cls: plt < state.data.thresholds.plt_stop ? "bad" : "info", txt: `PLT ${plt}` });
           if (eos !== null && eos !== undefined) tags.push({ cls: eos > state.data.thresholds.eos_stop ? "bad" : "info", txt: `EOS ${eos}` });
           if (e.effects?.fever) tags.push({ cls: "warn", txt: "Fiebre" });
+          if (e.dose_mg) tags.push({ cls: "info", txt: `${e.dose_mg}mg` });
 
           const div = document.createElement("div");
           div.className = "item";
@@ -2290,8 +2706,174 @@ Generado por CLZ Mini PWA v2026.
         toast("Demo cargada.");
       };
 
+      // ---- Visual UX Helpers ----
+      const updateLikertVisuals = () => {
+        document.querySelectorAll(".rating-group").forEach(group => {
+          const inputId = group.dataset.input;
+          const el = $(inputId);
+          if (!el) return;
+          const val = el.value;
+          group.querySelectorAll(".rating-opt").forEach(opt => {
+            if (opt.dataset.val === val) opt.classList.add("active");
+            else opt.classList.remove("active");
+          });
+        });
+      };
+
+      const initLikert = () => {
+        document.querySelectorAll(".rating-opt").forEach(opt => {
+          opt.addEventListener("click", (e) => {
+            const group = e.target.closest(".rating-group");
+            const inputId = group.dataset.input;
+            const val = e.target.dataset.val;
+            $(inputId).value = val;
+            updateLikertVisuals();
+          });
+        });
+      };
+
+      const evaluateRealTime = () => {
+        const th = state.data.thresholds;
+
+        const check = (id, badgeId, min, severe, warnLimit) => {
+          const el = $(id);
+          const badge = $(badgeId);
+          if (!el || !badge) return;
+
+          const valStr = el.value;
+          if (valStr === "") {
+            el.className = "";
+            badge.className = "feedback-badge";
+            badge.textContent = "";
+            badge.classList.remove("visible");
+            return;
+          }
+          const val = Number(valStr);
+
+          el.className = "";
+          badge.className = "feedback-badge";
+          badge.textContent = "";
+
+          // Logic for ANC
+          if (id === "f_anc") {
+            const ben = $("f_ben").value === "1"; // check form state
+            const limitInt = ben ? th.anc_interrupt_ben : th.anc_interrupt;
+            const limitNorm = ben ? th.anc_norm_ben : th.anc_norm;
+
+            if (val < limitInt) {
+              el.classList.add("live-bad");
+              badge.textContent = "BAJO";
+              badge.style.color = "var(--bad)";
+              badge.classList.add("visible");
+            } else if (val < limitNorm) {
+              el.classList.add("live-warn");
+              badge.textContent = "WARN";
+              badge.style.color = "var(--warn)";
+              badge.classList.add("visible");
+            } else {
+              el.classList.add("live-ok");
+              badge.textContent = "OK";
+              badge.style.color = "var(--ok)";
+              badge.classList.add("visible");
+            }
+            return;
+          }
+
+          // Logic for others
+          if (id === "f_eos") {
+            if (val > th.eos_stop) {
+              el.classList.add("live-bad");
+              badge.textContent = "ALTO";
+              badge.style.color = "var(--bad)";
+              badge.classList.add("visible");
+            }
+            return;
+          }
+
+          if (val < severe) {
+            el.classList.add("live-bad");
+            badge.textContent = "BAJO";
+            badge.style.color = "var(--bad)";
+            badge.classList.add("visible");
+          } else if (val < warnLimit) {
+            el.classList.add("live-warn");
+            badge.textContent = "WARN";
+            badge.style.color = "var(--warn)";
+            badge.classList.add("visible");
+          } else {
+            el.classList.add("live-ok");
+            // badge.textContent = "OK"; 
+            // badge.classList.add("visible");
+          }
+        };
+
+        const runChecks = () => {
+          const ben = $("f_ben").value === "1";
+          const ancLimit = ben ? th.anc_interrupt_ben : th.anc_interrupt;
+          const ancNorm = ben ? th.anc_norm_ben : th.anc_norm;
+
+          check("f_anc", "badge_anc", 0, ancLimit, ancNorm);
+          check("f_wbc", "badge_wbc", 0, 3.0, 4.0);
+          check("f_plt", "badge_plt", 0, th.plt_stop, th.plt_stop + 50);
+          check("f_eos", "badge_eos", 0, -1, -1); // handled custom
+        };
+
+        // Attach listeners
+        ["f_anc", "f_wbc", "f_plt", "f_eos"].forEach(id => {
+          const el = $(id);
+          if (el) el.addEventListener("input", runChecks);
+        });
+
+        // Also re-check when BEN changes
+        $("f_ben").addEventListener("change", runChecks);
+      };
+
+      const copyClinicalNote = () => {
+        const d = $("f_date").value || "Sin fecha";
+        const anc = $("f_anc").value || "-";
+        const wbc = $("f_wbc").value || "-";
+        const plt = $("f_plt").value || "-";
+        const eos = $("f_eos").value || "-";
+        const ben = $("f_ben").value === "1" ? "(BEN)" : "";
+        const dose = $("f_dose").value ? $("f_dose").value + "mg" : "";
+
+        const symptoms = [];
+        if ($("f_fever").value === "1") symptoms.push("Fiebre");
+
+        // Helper to get Likert text
+        const getLik = (id, label) => {
+          const v = Number($(id).value);
+          if (v >= 3) symptoms.push(`${label} (${v}/5)`);
+        };
+        getLik("f_sial", "Sialorrea");
+        getLik("f_const", "Estreñimiento");
+        getLik("f_somn", "Somnolencia");
+
+        if ($("f_const_red").checked) symptoms.push("Estreñimiento: Banderas Rojas");
+        if ($("f_chest").checked) symptoms.push("Dolor torácico");
+        if ($("f_dyspnea").checked) symptoms.push("Disnea");
+        if ($("f_tachy").checked) symptoms.push("Taquicardia");
+
+        const analysis = assess({
+          labs: { anc_k: anc, wbc_k: wbc, plt_k: plt, eos_k: eos },
+          effects: { fever: $("f_fever").value === "1" },
+          ben: $("f_ben").value === "1"
+        });
+        const risk = analysis.overall === "bad" ? "ALTO RIESGO" : analysis.overall === "warn" ? "RIESGO MODERADO" : "Rango seguro";
+
+        const text = `CLOZAPINA - SEGUIMIENTO
+Fecha: ${d} ${ben}
+Labs: ANC ${anc} | WBC ${wbc} | PLT ${plt} | EOS ${eos} ${dose ? `| Dosis: ${dose}` : ""}
+Síntomas: ${symptoms.join(", ") || "Niega datos de alarma."}
+Evaluación: ${risk}
+Notas: ${$("f_notes").value}
+`.trim();
+        navigator.clipboard.writeText(text).then(() => toast("Nota copiada al portapapeles."));
+      };
+
       // ---- events ----
       $("btnSave").addEventListener("click", upsertEntryFromForm);
+      $("btnCopyClip").addEventListener("click", copyClinicalNote);
       $("btnGuide").addEventListener("click", () => {
         modal.open({
           title: "Guía rápida de captura",
@@ -2374,6 +2956,8 @@ Generado por CLZ Mini PWA v2026.
         state.data.patient.start_date = $("s_start").value || "";
         state.data.patient.ben = $("s_ben").value === "1";
 
+        updateContextBanner(); /* Refresh banner on save settings */
+
         const th = state.data.thresholds;
         th.anc_norm = parseNum($("t_anc_norm").value) ?? DEFAULTS.thresholds.anc_norm;
         th.anc_norm_ben = parseNum($("t_anc_norm_ben").value) ?? DEFAULTS.thresholds.anc_norm_ben;
@@ -2422,6 +3006,8 @@ Generado por CLZ Mini PWA v2026.
       // init
       load();
       initTheme();
+      initLikert();
+      evaluateRealTime();
       clearForm();
       renderAll();
 
