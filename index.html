@@ -14,14 +14,14 @@
     rel="stylesheet">
   <style>
     :root {
-      --radius: 16px;
-      --radius-sm: 10px;
+      --radius: 14px;
+      --radius-sm: 8px;
       --sans: 'Inter', system-ui, -apple-system, sans-serif;
       --mono: 'JetBrains Mono', monospace;
 
       /* Transitons */
       --ease: cubic-bezier(0.4, 0, 0.2, 1);
-      --transition: all 0.25s var(--ease);
+      --transition: all 0.3s var(--ease);
     }
 
     html[data-theme="light"] {
@@ -61,20 +61,42 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    @keyframes galaxy-float {
+      0% {
+        background-position: 0% 0%;
+      }
+
+      50% {
+        background-position: 100% 100%;
+      }
+
+      100% {
+        background-position: 0% 0%;
+      }
+    }
+
     body {
       margin: 0;
       font-family: var(--sans);
       background-color: var(--bg);
       background-image:
-        radial-gradient(at 10% 10%, color-mix(in srgb, var(--accent) 8%, transparent) 0px, transparent 60%),
-        radial-gradient(at 90% 10%, color-mix(in srgb, var(--ok) 5%, transparent) 0px, transparent 60%),
-        radial-gradient(at 50% 90%, color-mix(in srgb, var(--accent) 3%, transparent) 0px, transparent 80%);
+        radial-gradient(at 10% 10%, color-mix(in srgb, var(--accent) 5%, transparent) 0px, transparent 60%),
+        radial-gradient(at 90% 10%, color-mix(in srgb, var(--ok) 3%, transparent) 0px, transparent 60%),
+        radial-gradient(at 50% 90%, color-mix(in srgb, var(--accent) 2%, transparent) 0px, transparent 80%);
+      background-size: 200% 200%;
+      animation: galaxy-float 30s ease-in-out infinite;
       color: var(--text);
       line-height: 1.6;
       font-size: 15px;
-      /* Increased from 14px for better legibility */
       min-height: 100vh;
       overflow-x: hidden;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 16px;
+      width: 100%;
     }
 
     /* Floating Nav Revamp */
@@ -91,6 +113,7 @@
       /* Fallback */
       background: var(--glass);
       border: 1px solid var(--border);
+      border: 1px solid var(--line);
       border-radius: 50px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
       z-index: 1000;
@@ -117,6 +140,13 @@
 
     .nav-logo-bubble:hover {
       transform: scale(1.1);
+    }
+
+    .nav-logo-bubble:focus-visible,
+    .nav-bubble:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
     }
 
     .nav-items {
@@ -159,8 +189,8 @@
       border-color: rgba(255, 255, 255, 0.2);
     }
 
-    /* Star Border Effect */
-    @keyframes star-rotate {
+    /* Electric Border Effect */
+    @keyframes electric-rotate {
       from {
         transform: rotate(0deg);
       }
@@ -170,9 +200,9 @@
       }
     }
 
-    .star-border-btn {
+    .electric-border {
       position: relative;
-      padding: 2px;
+      padding: 1.5px;
       border-radius: var(--radius-sm);
       overflow: hidden;
       background: transparent;
@@ -183,24 +213,25 @@
       cursor: pointer;
     }
 
-    .star-border-btn::before {
+    .electric-border::before {
       content: "";
       position: absolute;
-      top: -100%;
-      left: -100%;
-      width: 300%;
-      height: 300%;
+      top: -150%;
+      left: -150%;
+      width: 400%;
+      height: 400%;
       background: conic-gradient(from 0deg,
           transparent 0deg,
-          transparent 150deg,
+          transparent 140deg,
           var(--accent) 180deg,
-          transparent 210deg,
+          color-mix(in srgb, var(--info) 50%, var(--accent)) 200deg,
+          transparent 240deg,
           transparent 360deg);
-      animation: star-rotate 6s linear infinite;
+      animation: electric-rotate 4s linear infinite;
       z-index: 1;
     }
 
-    .star-border-inner {
+    .electric-inner {
       position: relative;
       background: var(--card);
       padding: 10px 22px;
@@ -217,8 +248,8 @@
       font-size: 14px;
     }
 
-    .star-border-btn:hover .star-border-inner {
-      background: color-mix(in srgb, var(--accent) 5%, var(--card));
+    .electric-border:hover .electric-inner {
+      background: color-mix(in srgb, var(--accent) 8%, var(--card));
     }
 
     main {
@@ -234,7 +265,8 @@
 
     @media (min-width: 940px) {
       .grid {
-        grid-template-columns: 1.2fr 0.8fr;
+        grid-template-columns: 3fr 2fr;
+        align-items: start;
       }
     }
 
@@ -242,16 +274,20 @@
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 24px;
+      box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 10px 30px -5px rgba(0, 0, 0, 0.3);
+      padding: 20px;
       transition: var(--transition);
       position: relative;
       overflow: hidden;
     }
 
     .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+      transform: translateY(-2px);
+      box-shadow:
+        0 10px 15px -3px rgba(0, 0, 0, 0.2),
+        0 20px 40px -10px rgba(0, 0, 0, 0.4);
     }
 
     .card h2 {
@@ -400,16 +436,125 @@
     .item {
       padding: 16px;
       background: rgba(0, 0, 0, 0.02);
+      background: linear-gradient(135deg,
+          color-mix(in srgb, var(--card) 96%, transparent),
+          color-mix(in srgb, var(--accent) 4%, transparent));
       border: 1px solid var(--line);
       border-radius: var(--radius-sm);
       cursor: pointer;
       transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--accent), transparent);
+      opacity: 0.35;
     }
 
     .item:hover {
       background: var(--card);
       border-color: var(--accent);
       transform: translateX(4px);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .item.selected {
+      border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .item.animate {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+    }
+
+    .item.animate.is-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .meta {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    @media (min-width: 520px) {
+      .meta {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+      }
+    }
+
+    .meta-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .meta .date {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: var(--mono);
+      letter-spacing: 0.02em;
+    }
+
+    .meta-actions {
+      display: inline-flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--card) 85%, transparent);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      padding: 0;
+    }
+
+    .icon-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 12%, var(--card));
+    }
+
+    .icon-btn.danger {
+      color: var(--bad);
+    }
+
+    .icon-btn.danger:hover {
+      border-color: var(--bad);
+      color: white;
+      background: var(--bad);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .item,
+      .nav-logo-bubble,
+      .nav-bubble,
+      button {
+        transition: none;
+      }
     }
 
     .tags {
@@ -465,20 +610,32 @@
       background: rgba(0, 0, 0, 0.02);
       border: 1px solid var(--line);
       border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 80px;
+      transition: var(--transition);
+    }
+
+    .box:hover {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 2%, transparent);
     }
 
     .box .lbl {
-      font-size: 11px;
-      font-weight: 600;
+      font-size: 10px;
+      font-weight: 700;
       color: var(--muted);
       text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .box .val {
       font-family: var(--mono);
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 600;
       margin-top: 4px;
+      color: var(--text);
     }
 
     canvas {
@@ -923,8 +1080,8 @@
           <textarea id="f_notes" placeholder="Libre. Evita datos identificables." style="min-height:80px"></textarea>
 
           <div class="action-bar-bottom">
-            <button class="star-border-btn" id="btnSave" style="flex:2">
-              <div class="star-border-inner">Guardar / Actualizar</div>
+            <button class="electric-border" id="btnSave" style="flex:2">
+              <span class="electric-inner">Guardar / Actualizar</span>
             </button>
             <button class="ghost" id="btnGuide" title="Guía">ℹ️</button>
             <button class="ghost" id="btnClear" title="Limpiar">🧹</button>
@@ -941,20 +1098,20 @@
 
           <div class="kpi">
             <div class="box">
-              <div class="lbl">Última fecha</div>
+              <div class="lbl">📅 Última fecha</div>
               <div class="val" id="k_last">—</div>
             </div>
             <div class="box">
-              <div class="lbl">ANC (x10³/µL)</div>
+              <div class="lbl">🔬 ANC (k/µL)</div>
               <div class="val" id="k_anc">—</div>
             </div>
             <div class="box">
-              <div class="lbl">Plaquetas (x10³/µL)</div>
+              <div class="lbl">🩸 PLT (k/µL)</div>
               <div class="val" id="k_plt">—</div>
             </div>
             <div class="box">
-              <div class="lbl">Siguiente lab sugerido</div>
-              <div class="val" id="k_next"><small>Configura fecha de inicio</small></div>
+              <div class="lbl">🗓️ Próximo Lab</div>
+              <div class="val" id="k_next"><small style="font-size:10px">Configura inicio</small></div>
             </div>
           </div>
 
@@ -1247,6 +1404,25 @@
         t.textContent = msg;
         t.className = `toast show ${type}`;
         setTimeout(() => t.classList.remove("show"), 2500);
+      };
+      const listObserver = "IntersectionObserver" in window
+        ? new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.5 })
+        : null;
+      const registerAnimatedItem = (el) => {
+        if (!el) return;
+        el.classList.add("animate");
+        if (listObserver) {
+          listObserver.observe(el);
+        } else {
+          el.classList.add("is-visible");
+        }
       };
       const modal = {
         open: ({ title, text, steps, type = "info", formula = null }) => {
@@ -1796,16 +1972,22 @@ Generado por CLZ Mini PWA v2026.
           div.className = "item";
           div.innerHTML = `
         <div class="meta">
-          <div>
+          <div class="meta-main">
             <div style="font-weight:650">${fmtDate(e.date)} ${e.week ? `<span class="small">(Sem ${e.week})</span>` : ""}</div>
             <div class="date">${e.date || ""}</div>
           </div>
           <div class="tags">
             ${tags.slice(0, 4).map(t => `<span class="tag ${t.cls}">${t.txt}</span>`).join("")}
           </div>
+          <div class="meta-actions" aria-label="Acciones rápidas"></div>
         </div>
       `;
+          if (e.id === state.selectedId) {
+            div.classList.add("selected");
+          }
           div.addEventListener("click", () => {
+            root.querySelectorAll(".item.selected").forEach(item => item.classList.remove("selected"));
+            div.classList.add("selected");
             fillForm(e);
             setTab("registro");
           });
@@ -1813,18 +1995,20 @@ Generado por CLZ Mini PWA v2026.
           const shareBtn = document.createElement("button");
           shareBtn.className = "ghost";
           shareBtn.style.padding = "4px 8px";
+          shareBtn.className = "icon-btn";
           shareBtn.innerHTML = "🔗";
           shareBtn.title = "Compartir Resumen";
           shareBtn.onclick = (ev) => {
             ev.stopPropagation();
             shareEntry(e);
           };
-          div.querySelector(".meta").appendChild(shareBtn);
+          div.querySelector(".meta-actions").appendChild(shareBtn);
 
           const delBtn = document.createElement("button");
           delBtn.className = "ghost";
           delBtn.style.padding = "4px 8px";
           delBtn.style.color = "var(--bad)";
+          delBtn.className = "icon-btn danger";
           delBtn.innerHTML = "🗑️";
           delBtn.title = "Borrar registro";
           delBtn.onclick = (ev) => {
@@ -1832,9 +2016,10 @@ Generado por CLZ Mini PWA v2026.
             state.selectedId = e.id;
             deleteSelected();
           };
-          div.querySelector(".meta").appendChild(delBtn);
+          div.querySelector(".meta-actions").appendChild(delBtn);
 
           root.appendChild(div);
+          registerAnimatedItem(div);
         }
       };
 
