@@ -9,6 +9,7 @@
   <link rel="icon" href="icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://esm.sh" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap"
     rel="stylesheet">
@@ -1629,19 +1630,40 @@
   </nav>
 
   <script type="module">
-    import { initGalaxy } from './galaxy.js';
+    // Defer Galaxy loading to ensure main UI is interactive first
+    const loadGalaxy = async () => {
+      try {
+        const { initGalaxy } = await import('./galaxy.js');
+        const container = document.body;
+        // visual fade-in
+        const cleanup = initGalaxy(container, {
+          hueShift: 260,
+          starSpeed: 0.05,
+          density: 0.4,
+          transparent: true,
+          glowIntensity: 0.2,
+          speed: 0.5
+        });
 
-    // Initialize Galaxy Background
-    document.addEventListener('DOMContentLoaded', () => {
-      initGalaxy(document.body, {
-        hueShift: 260, // Deep purple 
-        starSpeed: 0.05, // Slower
-        density: 0.4,    // Fewer stars
-        transparent: true,
-        glowIntensity: 0.2, // Softer glow
-        speed: 0.5       // Overall slower drift
+        // Find the canvas and animate opacity for smooth entry
+        const canvas = container.querySelector('canvas:last-child');
+        if (canvas) {
+          canvas.style.opacity = '0';
+          canvas.style.transition = 'opacity 1.5s ease';
+          requestAnimationFrame(() => canvas.style.opacity = '1');
+        }
+      } catch (e) {
+        console.warn("Galaxy BG failed to load", e);
+      }
+    };
+
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        setTimeout(loadGalaxy, 200); // Slight extra buffer
       });
-    });
+    } else {
+      setTimeout(loadGalaxy, 1500); // Fallback
+    }
 
     (() => {
       const STORAGE_KEY = "clz_mini_pwa_v1";
