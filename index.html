@@ -1474,6 +1474,17 @@
             <div><label>Meses para pasar a c/2 sem</label><input type="number" step="1" id="t_mo_2w" /></div>
             <div><label>Meses para pasar a mensual</label><input type="number" step="1" id="t_mo_4w" /></div>
           </div>
+
+          <div
+            style="margin-top: 16px; background: rgba(0,0,0,0.02); padding: 12px; border-radius: 8px; border: 1px solid var(--line);">
+            <div class="checkbox-row" style="display: flex; align-items: center; gap: 12px;">
+              <input type="checkbox" id="s_low_power" style="width: auto; margin: 0;">
+              <label for="s_low_power" style="margin: 0; font-weight: 500; cursor: pointer;">Modo Ahorro (Desactivar
+                fondo animado)</label>
+            </div>
+            <p class="small" style="margin: 4px 0 0 24px; opacity: 0.7;">Actívalo si sientes lentitud en la aplicación.
+            </p>
+          </div>
           <div class="divider"></div>
           <div class="row">
             <button class="primary" id="btnSaveSettings">Guardar ajustes</button>
@@ -1587,6 +1598,54 @@
               dispositivo médico.</p>
           </div>
     </section>
+
+    <!-- Documentos -->
+    <section id="tab-docs" class="hidden">
+      <div class="card">
+        <h2>Documentos y Recursos</h2>
+        <p class="note" style="margin-bottom: 20px;">
+          Descarga guías y formatos oficiales para tu práctica clínica.
+        </p>
+
+        <div class="list">
+          <div class="item" onclick="window.open('docs/Infografia.pdf', '_blank')">
+            <div class="meta">
+              <div class="meta-main">
+                <strong>Infografía de Seguridad</strong>
+                <div class="date">PDF • 425 KB</div>
+              </div>
+              <div class="meta-actions">
+                <button class="icon-btn primary" title="Descargar">⬇</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="item" onclick="window.open('docs/consentimieto_informado_cloza_2026.pdf', '_blank')">
+            <div class="meta">
+              <div class="meta-main">
+                <strong>Consentimiento Informado 2026</strong>
+                <div class="date">PDF • 1.0 MB</div>
+              </div>
+              <div class="meta-actions">
+                <button class="icon-btn primary" title="Descargar">⬇</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="item" onclick="window.open('docs/escala_efectos_secundarios_clozapina.pdf', '_blank')">
+            <div class="meta">
+              <div class="meta-main">
+                <strong>Escala de Efectos Secundarios</strong>
+                <div class="date">PDF • 546 KB</div>
+              </div>
+              <div class="meta-actions">
+                <button class="icon-btn primary" title="Descargar">⬇</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -1626,17 +1685,26 @@
         data-tab="ajustes">Ajustes</div>
       <div class="nav-bubble" role="tab" aria-selected="false" aria-controls="tab-referencias" tabindex="-1"
         data-tab="referencias">Info</div>
+      <div class="nav-bubble" role="tab" aria-selected="false" aria-controls="tab-docs" tabindex="-1" data-tab="docs">
+        Docs</div>
     </div>
   </nav>
 
   <script type="module">
     // Defer Galaxy loading to ensure main UI is interactive first
+    // Defer Galaxy loading to ensure main UI is interactive first
+    let galaxyCleanup = null;
+
     const loadGalaxy = async () => {
+      // Check Low Power Mode
+      const isLowPower = localStorage.getItem("clz_mini_pwa_low_power") === "true";
+      if (isLowPower) return;
+
       try {
         const { initGalaxy } = await import('./galaxy.js');
         const container = document.body;
         // visual fade-in
-        const cleanup = initGalaxy(container, {
+        galaxyCleanup = initGalaxy(container, {
           hueShift: 260,
           starSpeed: 0.05,
           density: 0.4,
@@ -2122,7 +2190,7 @@ Generado por CLZ Mini PWA v2026.
           btn.setAttribute("tabindex", on ? "0" : "-1");
           btn.classList.toggle("active", on);
         }
-        const tabs = ["registro", "graficas", "import", "ajustes", "referencias"];
+        const tabs = ["registro", "graficas", "import", "ajustes", "referencias", "docs"];
         for (const t of tabs) {
           const el = $("tab-" + t);
           if (el) {
@@ -2553,7 +2621,28 @@ Generado por CLZ Mini PWA v2026.
         $("t_plt_stop").value = th.plt_stop;
         $("t_mo_2w").value = th.months_to_2w;
         $("t_mo_4w").value = th.months_to_4w;
+
+        // Low Power Mode
+        const isLowPower = localStorage.getItem("clz_mini_pwa_low_power") === "true";
+        $("s_low_power").checked = isLowPower;
       };
+
+      // Low Power Toggle Handler
+      $("s_low_power").addEventListener("change", (e) => {
+        const isLowPower = e.target.checked;
+        localStorage.setItem("clz_mini_pwa_low_power", isLowPower);
+
+        if (isLowPower) {
+          if (galaxyCleanup) {
+            galaxyCleanup();
+            galaxyCleanup = null;
+          }
+          toast("Modo Ahorro activado.");
+        } else {
+          loadGalaxy();
+          toast("Animación activada.");
+        }
+      });
 
       const renderAll = () => {
         renderKPIs();

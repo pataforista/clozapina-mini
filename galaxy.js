@@ -37,7 +37,7 @@ uniform bool uTransparent;
 
 varying vec2 vUv;
 
-#define NUM_LAYER 4.0
+#define NUM_LAYER 2.0
 #define STAR_COLOR_CUTOFF 0.2
 #define MAT45 mat2(0.7071, -0.7071, 0.7071, 0.7071)
 #define PERIOD 3.0
@@ -175,7 +175,7 @@ export function initGalaxy(container, options = {}) {
     focal: [0.5, 0.5],
     rotation: [1.0, 0.0],
     starSpeed: 0.5,
-    density: 1.5,
+    density: 1.0,
     hueShift: 240, // Cool purple/blue default
     disableAnimation: false,
     speed: 1.0,
@@ -196,7 +196,7 @@ export function initGalaxy(container, options = {}) {
     premultipliedAlpha: false,
     dpr: window.devicePixelRatio || 1
   });
-  
+
   const gl = renderer.gl;
   container.appendChild(gl.canvas);
   gl.canvas.style.position = 'fixed';
@@ -216,7 +216,7 @@ export function initGalaxy(container, options = {}) {
   }
 
   const geometry = new Triangle(gl);
-  
+
   const mousePos = { x: 0.5, y: 0.5 };
   const smoothMousePos = { x: 0.5, y: 0.5 };
   let targetMouseActive = 0.0;
@@ -265,7 +265,7 @@ export function initGalaxy(container, options = {}) {
 
   function update(t) {
     animationId = requestAnimationFrame(update);
-    
+
     if (!config.disableAnimation) {
       program.uniforms.uTime.value = t * 0.001;
       program.uniforms.uStarSpeed.value = (t * 0.001 * config.starSpeed) / 10.0;
