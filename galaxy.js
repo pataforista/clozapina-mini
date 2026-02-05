@@ -174,8 +174,8 @@ export function initGalaxy(container, options = {}) {
   const config = {
     focal: [0.5, 0.5],
     rotation: [1.0, 0.0],
-    starSpeed: 0.5,
-    density: 1.0,
+    starSpeed: 0.2, // Reduced speed
+    density: 0.5,   // Reduced density
     hueShift: 240, // Cool purple/blue default
     disableAnimation: false,
     speed: 1.0,
@@ -185,7 +185,7 @@ export function initGalaxy(container, options = {}) {
     mouseRepulsion: true,
     repulsionStrength: 1.0,
     twinkleIntensity: 0.5,
-    rotationSpeed: 0.05,
+    rotationSpeed: 0.02, // Reduced rotation
     autoCenterRepulsion: 0,
     transparent: true,
     ...options
@@ -194,7 +194,7 @@ export function initGalaxy(container, options = {}) {
   const renderer = new Renderer({
     alpha: config.transparent,
     premultipliedAlpha: false,
-    dpr: window.devicePixelRatio || 1
+    dpr: Math.min(window.devicePixelRatio || 1, 1) // Cap at 1.0 for performance
   });
 
   const gl = renderer.gl;

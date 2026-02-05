@@ -184,6 +184,26 @@
       padding-left: 8px;
     }
 
+    @media (max-width: 600px) {
+      .floating-nav.open {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 12px;
+        border-radius: 24px;
+        width: 90%;
+        max-width: 360px;
+      }
+
+      .floating-nav.open .nav-items {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding-left: 0;
+        margin-top: 8px;
+        gap: 8px;
+        max-width: 100%;
+      }
+    }
+
     .nav-bubble {
       padding: 8px 18px;
       background: rgba(255, 255, 255, 0.03);
