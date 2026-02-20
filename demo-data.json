@@ -24,6 +24,12 @@
         "fever": false,
         "other": "Línea base normal."
       },
+      "habits": {
+        "smoke": true,
+        "quit": false,
+        "fluvox": false,
+        "caffeine": 0
+      },
       "notes": "Inicio de tratamiento."
     },
     {
@@ -104,7 +110,13 @@
         "fever": false,
         "other": "Vómito leve"
       },
-      "notes": "CRÍTICO: Neutropenia grave (< 1.0) y riesgo de íleo."
+      "habits": {
+        "smoke": false,
+        "quit": true,
+        "fluvox": false,
+        "caffeine": 4
+      },
+      "notes": "CRÍTICO: Neutropenia grave (< 1.0) y riesgo de íleo. NOTA: Cesó tabaquismo."
     }
   ]
 }

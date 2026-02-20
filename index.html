@@ -13,6 +13,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap"
     rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
   <style>
     /* Privacy Overlay */
     #privacyOverlay {
@@ -76,7 +77,8 @@
       --accent: #8B5CF6;
       --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       --focus: rgba(139, 92, 246, 0.25);
-      --glass: rgba(22, 21, 29, 0.8);
+      --glass: rgba(22, 21, 29, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.12);
     }
 
     * {
@@ -137,8 +139,8 @@
       border-radius: 50px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
       z-index: 1000;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       transition: all 0.5s var(--ease);
     }
 
@@ -317,10 +319,20 @@
       box-shadow:
         0 4px 6px -1px rgba(0, 0, 0, 0.1),
         0 10px 30px -5px rgba(0, 0, 0, 0.3);
-      padding: 20px;
+      padding: 24px;
       transition: var(--transition);
       position: relative;
       overflow: hidden;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+      pointer-events: none;
     }
 
     .card:hover {
@@ -573,8 +585,9 @@
 
     .icon-btn:hover {
       border-color: var(--accent);
-      color: var(--accent);
-      background: color-mix(in srgb, var(--accent) 12%, var(--card));
+      color: white;
+      background: var(--accent);
+      box-shadow: 0 4px 12px color-mix(in srgb, var(--accent) 30%, transparent);
     }
 
     .icon-btn.danger {
@@ -659,7 +672,9 @@
 
     .box:hover {
       border-color: var(--accent);
-      background: color-mix(in srgb, var(--accent) 2%, transparent);
+      background: color-mix(in srgb, var(--accent) 5%, var(--card));
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
 
     .box .lbl {
@@ -672,10 +687,13 @@
 
     .box .val {
       font-family: var(--mono);
-      font-size: 19px;
-      font-weight: 600;
-      margin-top: 4px;
+      font-size: 24px;
+      font-weight: 700;
+      margin-top: 8px;
       color: var(--text);
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
     }
 
     canvas {
@@ -1167,6 +1185,34 @@
               </div>
               <div class="helper">Dosis total diaria (mg).</div>
             </div>
+            <div>
+              <label>¿Interacciones (CYP1A2)?</label>
+              <div class="checkbox-group" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+                <div class="checkbox-row">
+                  <input type="checkbox" id="f_habit_smoke" />
+                  <span class="small">Fumador activo</span>
+                </div>
+                <div class="checkbox-row">
+                  <input type="checkbox" id="f_habit_quit" />
+                  <span class="small">Dejó de fumar (últimos 14 días)</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label>Otros Factores</label>
+              <div class="checkbox-group" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+                <div class="checkbox-row">
+                  <input type="checkbox" id="f_habit_fluvox" />
+                  <span class="small">+ Fluvoxamina</span>
+                </div>
+                <div class="checkbox-row">
+                  <select id="f_habit_caffeine" style="padding:4px; font-size:11px;">
+                    <option value="0">Cafeína: Normal/Baja</option>
+                    <option value="4">Cafeína: >3 tazas/día</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="divider"></div>
@@ -1441,15 +1487,19 @@
             <button class="primary" id="btnExportJson">Exportar JSON</button>
             <button class="ghost" id="btnExportCsv">Exportar CSV (labs)</button>
           </div>
-        </div>
-        <div class="card">
-          <h2>Importar</h2>
-          <p class="note">Importa un archivo <span class="mono">.json</span> exportado previamente. Esto reemplaza el
-            registro actual.</p>
-          <input type="file" id="importFile" accept="application/json" />
           <div class="divider"></div>
-          <button class="danger" id="btnWipe">Borrar todo (local)</button>
+          <h2>Atajos</h2>
+          <button class="ghost" id="btnLoadDemoManual">Cargar Datos de Prueba (Demo)</button>
         </div>
+      </div>
+      <div class="card">
+        <h2>Importar</h2>
+        <p class="note">Importa un archivo <span class="mono">.json</span> exportado previamente. Esto reemplaza el
+          registro actual.</p>
+        <input type="file" id="importFile" accept="application/json" />
+        <div class="divider"></div>
+        <button class="danger" id="btnWipe">Borrar todo (local)</button>
+      </div>
       </div>
     </section>
 
@@ -1565,7 +1615,7 @@
     <section id="tab-referencias" class="hidden">
       <div class="card">
         <h2>Buscador Clínico / Info</h2>
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 20px;" id="refSearchCard">
           <input type="text" id="refSearch" placeholder="Busca síntomas o guías (ej. 'fiebre', 'delphi')"
             style="width:100%" />
         </div>
@@ -1711,7 +1761,8 @@
   </nav>
 
   <script type="module">
-    // Defer Galaxy loading to ensure main UI is interactive first
+    import { analyzeANC, auditSideEffects, checkInteractions } from './engine.js';
+
     // Defer Galaxy loading to ensure main UI is interactive first
     let galaxyCleanup = null;
 
@@ -2043,6 +2094,12 @@
             tachycardia: !!e.effects?.tachycardia,
             unwell: !!e.effects?.unwell
           },
+          habits: {
+            smoke: !!e.habits?.smoke,
+            quit: !!e.habits?.quit,
+            fluvox: !!e.habits?.fluvox,
+            caffeine: parseNum(e.habits?.caffeine || 0)
+          },
           notes: String(e.notes || "")
         };
         // Normalize Dose if missing
@@ -2099,25 +2156,16 @@ Generado por CLZ Mini PWA v2026.
         const alerts = [];
 
         if (anc !== null) {
-          if (anc < th.anc_severe) {
-            alerts.push({ kind: "bad", tag: "ANC", title: "Neutropenia grave", text: `ANC ${anc} (<${th.anc_severe}). Interrumpir y evaluar urgente según protocolo.` });
-          } else if (ben) {
-            // BEN: baseline >=1.0 (informativo); interrupt <0.5 (default)
-            if (anc < th.anc_interrupt_ben) {
-              alerts.push({ kind: "bad", tag: "ANC", title: "ANC bajo (BEN)", text: `ANC ${anc} (<${th.anc_interrupt_ben}). Considerar interrupción y manejo según protocolo BEN.` });
-            } else if (anc < th.anc_norm_ben) {
-              alerts.push({ kind: "warn", tag: "ANC", title: "ANC cercano a umbral BEN", text: `ANC ${anc} (<${th.anc_norm_ben}). Vigilar tendencia y adherirse al algoritmo BEN.` });
-            } else {
-              alerts.push({ kind: "ok", tag: "ANC", title: "ANC en rango", text: `ANC ${anc}.` });
-            }
+          const res = analyzeANC(anc, ben);
+          if (res.status !== 'OK') {
+            alerts.push({
+              kind: res.status === 'CRITICAL' ? 'bad' : 'warn',
+              tag: 'ANC',
+              title: res.status === 'CRITICAL' ? 'ALERTA CRÍTICA ANC' : 'Aviso ANC',
+              text: `${res.message} ACCIÓN: ${res.action}`
+            });
           } else {
-            if (anc < th.anc_interrupt) {
-              alerts.push({ kind: "bad", tag: "ANC", title: "ANC bajo", text: `ANC ${anc} (<${th.anc_interrupt}). Interrumpir y manejar según algoritmo.` });
-            } else if (anc < th.anc_norm) {
-              alerts.push({ kind: "warn", tag: "ANC", title: "Neutropenia leve", text: `ANC ${anc} (<${th.anc_norm}). Aumentar frecuencia de vigilancia según protocolo.` });
-            } else {
-              alerts.push({ kind: "ok", tag: "ANC", title: "ANC en rango", text: `ANC ${anc}.` });
-            }
+            alerts.push({ kind: "ok", tag: "ANC", title: "ANC en rango", text: res.message });
           }
         }
 
@@ -2157,6 +2205,37 @@ Generado por CLZ Mini PWA v2026.
             alerts.push({ kind: "bad", tag: "CRÍTICO", title: "Riesgo Combinado", text: "Fiebre + signos cardiopulmonares. Descartar miocarditis o serositis de clozapina con urgencia." });
           }
         }
+
+        // --- NEW ENGINE INTEGRATION ---
+        const engineAlerts = auditSideEffects({
+          constipation: constipationScore,
+          fever: fever,
+          sialorrhea: parseNum(entry.effects?.sialorrhea)
+        });
+
+        engineAlerts.forEach(ea => {
+          alerts.push({
+            kind: ea.severity === 'CRITICAL' || ea.severity === 'HIGH' ? 'bad' : 'warn',
+            tag: ea.type,
+            title: ea.title,
+            text: `${ea.message} ${ea.advice}`
+          });
+        });
+
+        const interactFindings = checkInteractions({
+          smokingCessation: entry.habits?.quit,
+          caffeineIntake: entry.habits?.caffeine,
+          fluvox: entry.habits?.fluvox
+        });
+
+        interactFindings.forEach(f => {
+          alerts.push({
+            kind: 'warn',
+            tag: 'INTERACCIÓN',
+            title: f.risk,
+            text: `${f.message} ${f.justification} ACCIÓN: ${f.action}`
+          });
+        });
 
         // overall label
         const worst = alerts.some(a => a.kind === "bad") ? "bad" : alerts.some(a => a.kind === "warn") ? "warn" : alerts.some(a => a.kind === "ok") ? "ok" : "info";
@@ -2290,6 +2369,12 @@ Generado por CLZ Mini PWA v2026.
         $("f_dyspnea").checked = false;
         $("f_tachy").checked = false;
         $("f_unwell").checked = false;
+
+        $("f_habit_smoke").checked = false;
+        $("f_habit_quit").checked = false;
+        $("f_habit_fluvox").checked = false;
+        $("f_habit_caffeine").value = "0";
+
         $("f_notes").value = "";
 
         updateLikertVisuals();
@@ -2325,6 +2410,11 @@ Generado por CLZ Mini PWA v2026.
         $("f_dyspnea").checked = !!e.effects?.dyspnea;
         $("f_tachy").checked = !!e.effects?.tachycardia;
         $("f_unwell").checked = !!e.effects?.unwell;
+
+        $("f_habit_smoke").checked = !!e.habits?.smoke;
+        $("f_habit_quit").checked = !!e.habits?.quit;
+        $("f_habit_fluvox").checked = !!e.habits?.fluvox;
+        $("f_habit_caffeine").value = String(e.habits?.caffeine || "0");
 
         $("f_notes").value = e.notes || "";
 
@@ -2392,6 +2482,12 @@ Generado por CLZ Mini PWA v2026.
             dyspnea: $("f_dyspnea").checked,
             tachycardia: $("f_tachy").checked,
             unwell: $("f_unwell").checked
+          },
+          habits: {
+            smoke: $("f_habit_smoke").checked,
+            quit: $("f_habit_quit").checked,
+            fluvox: $("f_habit_fluvox").checked,
+            caffeine: parseNum($("f_habit_caffeine").value)
           },
           notes: $("f_notes").value || ""
         };
@@ -3046,6 +3142,16 @@ Notas: ${$("f_notes").value}
 
       $("btnRedraw").addEventListener("click", drawChart);
       $("chartWindow").addEventListener("change", drawChart);
+
+      const btnDemo = $("btnLoadDemoManual");
+      if (btnDemo) {
+        btnDemo.addEventListener("click", async () => {
+          if (confirm("¿Cargar datos de prueba? Esto reemplazará tu registro actual.")) {
+            await loadDemo();
+            setTab("registro");
+          }
+        });
+      }
 
       // ---- Smart Search & Reference filtering ----
       const SYNONYMS = {
