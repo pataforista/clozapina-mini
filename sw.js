@@ -1,5 +1,5 @@
 /* sw.js — CLZ Mini PWA (offline-first) */
-const SW_VERSION = "1.3.0";
+const SW_VERSION = "1.4.0";
 const CACHE_NAME = "clz-mini-pwa-v" + SW_VERSION;
 const ASSETS = [
   "./",
@@ -16,8 +16,9 @@ self.addEventListener("install", (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     await cache.addAll(ASSETS);
-    // NOTE: no skipWaiting() here. The new worker waits until the user
-    // confirms via the in-app "Actualizar" prompt (controlled force update).
+    // Force update: el nuevo worker toma el control de inmediato, sin esperar
+    // confirmación del usuario. La página se recargará sola (controllerchange).
+    await self.skipWaiting();
   })());
 });
 
