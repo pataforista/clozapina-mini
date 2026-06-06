@@ -1930,8 +1930,8 @@
             Versión instalada: <strong id="appVersion">—</strong>
           </p>
           <p class="note">
-            La app funciona sin conexión. Cuando haya una nueva versión te avisaremos automáticamente;
-            también puedes comprobarlo manualmente.
+            La app funciona sin conexión. Las nuevas versiones se instalan y aplican de forma
+            automática; también puedes comprobarlo manualmente.
           </p>
           <div class="divider"></div>
           <div class="upd-check-row">
@@ -2082,23 +2082,7 @@
   <div class="toast" id="toast"></div>
 
   <!-- PWA: banner "nueva versión disponible" -->
-  <div class="update-banner" id="updateBanner" role="alert" aria-live="polite">
-    <div class="update-banner__icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
-        stroke-linejoin="round">
-        <path d="M21 12a9 9 0 1 1-2.64-6.36" />
-        <polyline points="21 3 21 9 15 9" />
-      </svg>
-    </div>
-    <div class="update-banner__body">
-      <div class="update-banner__title">Nueva versión disponible</div>
-      <div class="update-banner__sub">Actualiza para obtener las últimas mejoras</div>
-    </div>
-    <button class="update-banner__btn" id="btnUpdateApply" type="button">Actualizar</button>
-    <button class="update-banner__close" id="btnUpdateDismiss" type="button" aria-label="Descartar">✕</button>
-  </div>
-
-  <!-- PWA: overlay "aplicando actualización" -->
+  <!-- PWA: overlay "aplicando actualización" (force update automático) -->
   <div class="update-overlay" id="updateOverlay" aria-hidden="true">
     <div class="update-overlay__card" role="status" aria-live="assertive">
       <div class="update-overlay__spinner" aria-hidden="true"></div>
@@ -3655,44 +3639,34 @@ Notas: ${$("f_notes").value}
         }
       };
 
-      // ── PWA: detección y aplicación de actualizaciones ──────────
+      // ── PWA: actualización totalmente automática (force update) ──
       const setupServiceWorkerUpdates = () => {
-        const banner = $("updateBanner");
         const overlay = $("updateOverlay");
-        const btnApply = $("btnUpdateApply");
-        const btnDismiss = $("btnUpdateDismiss");
-        let waitingWorker = null;
+        // Si ya hay un SW controlando la página, cualquier cambio de control
+        // posterior significa que se activó una versión nueva → recarga.
+        // En la primera instalación (sin controller previo) NO recargamos.
+        const hadController = !!navigator.serviceWorker.controller;
         let refreshing = false;
-        let dismissed = false;
 
-        const showBanner = (worker) => {
-          if (!worker) return;
-          waitingWorker = worker;
-          if (dismissed) return;
-          banner.classList.remove("hiding");
-          banner.classList.add("show");
-        };
-        const hideBanner = () => {
-          banner.classList.add("hiding");
-          setTimeout(() => banner.classList.remove("show", "hiding"), 360);
-        };
-        const applyUpdate = () => {
-          if (!waitingWorker) { location.reload(); return; }
+        const showUpdatingOverlay = () => {
+          if (!overlay) return;
           overlay.classList.add("show");
           overlay.setAttribute("aria-hidden", "false");
-          waitingWorker.postMessage({ type: "SKIP_WAITING" });
-          // Salvaguarda: recarga aunque no llegue controllerchange
-          setTimeout(() => { if (!refreshing) { refreshing = true; location.reload(); } }, 3500);
         };
 
-        btnApply.addEventListener("click", applyUpdate);
-        btnDismiss.addEventListener("click", () => { dismissed = true; hideBanner(); });
-
-        // Recarga única cuando el nuevo SW toma el control
-        navigator.serviceWorker.addEventListener("controllerchange", () => {
+        const applyNow = () => {
           if (refreshing) return;
           refreshing = true;
-          location.reload();
+          showUpdatingOverlay();
+          // pequeño respiro para que se vea el overlay antes de recargar
+          setTimeout(() => location.reload(), 400);
+        };
+
+        // El nuevo SW hace skipWaiting + clients.claim solo; al tomar el control
+        // se dispara controllerchange y recargamos una sola vez.
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          if (!hadController) return; // primera instalación: no recargar
+          applyNow();
         });
 
         // Versión activa (para Ajustes)
@@ -3711,17 +3685,20 @@ Notas: ${$("f_notes").value}
         navigator.serviceWorker.register("./sw.js").then((reg) => {
           requestVersion();
 
-          // Ya hay un worker esperando (p.ej. al reabrir la app)
-          if (reg.waiting && navigator.serviceWorker.controller) {
-            showBanner(reg.waiting);
+          // Si al abrir ya hay una versión instalada esperando, fuérzala.
+          if (reg.waiting && hadController) {
+            reg.waiting.postMessage({ type: "SKIP_WAITING" });
+            showUpdatingOverlay();
           }
 
           reg.addEventListener("updatefound", () => {
             const installing = reg.installing;
             if (!installing) return;
             installing.addEventListener("statechange", () => {
-              if (installing.state === "installed" && navigator.serviceWorker.controller) {
-                showBanner(reg.waiting || installing);
+              // Nueva versión lista mientras la app está abierta: muestra el
+              // overlay; el SW se activará solo y controllerchange recargará.
+              if (installing.state === "installed" && hadController) {
+                showUpdatingOverlay();
               }
             });
           });
@@ -3736,9 +3713,9 @@ Notas: ${$("f_notes").value}
               btnCheck.disabled = true;
               try {
                 await reg.update();
-                if (reg.waiting && navigator.serviceWorker.controller) {
-                  showBanner(reg.waiting);
-                  setStatus("¡Actualización disponible!");
+                if (reg.installing || reg.waiting) {
+                  setStatus("Actualizando a la última versión…");
+                  showUpdatingOverlay();
                 } else {
                   setStatus("Ya tienes la última versión.");
                 }
