@@ -43,42 +43,56 @@
       --sans: 'Inter', system-ui, -apple-system, sans-serif;
       --mono: 'JetBrains Mono', monospace;
 
-      /* Transitons */
+      /* Transitions */
       --ease: cubic-bezier(0.4, 0, 0.2, 1);
       --transition: all 0.3s var(--ease);
     }
 
+    /* ── Light: washi paper + ai-iro indigo (ukiyo-e) ── */
     html[data-theme="light"] {
-      --bg: #F8F9FA;
-      --card: #FFFFFF;
-      --text: #1A1A1E;
-      --muted: #64748B;
-      --line: rgba(226, 232, 240, 0.8);
-      --ok: #10B981;
-      --warn: #F59E0B;
-      --bad: #EF4444;
-      --info: #3B82F6;
-      --accent: #6366F1;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.08);
-      --focus: rgba(99, 102, 241, 0.2);
-      --glass: rgba(255, 255, 255, 0.7);
+      --bg: #F5F3EE;
+      --card: #FDFBF8;
+      --text: #1A1820;
+      --muted: #6B6878;
+      --line: rgba(200, 196, 210, 0.65);
+      --ok: #1A7A58;
+      --warn: #9A5718;
+      --bad: #B8263A;
+      --info: #2558A8;
+      --accent: #3D35A8;
+      --shadow: 0 2px 4px rgba(30,28,50,0.06), 0 8px 24px rgba(30,28,50,0.10);
+      --focus: rgba(61, 53, 168, 0.15);
+      --glass: rgba(252, 250, 246, 0.85);
+      /* Nav */
+      --nav-bg: rgba(252, 250, 246, 0.90);
+      --nav-border: rgba(30, 28, 50, 0.08);
+      --nav-indicator: rgba(61, 53, 168, 0.11);
+      --nav-active-color: #3D35A8;
+      --nav-muted: #7A7790;
     }
 
+    /* ── Dark: deep ink + muted indigo (ukiyo-e night) ── */
     html[data-theme="dark"] {
-      --bg: #0D0C12;
-      --card: #16151D;
-      --text: #F1F5F9;
-      --muted: #94A3B8;
+      --bg: #0E0D15;
+      --card: #17161F;
+      --text: #E8E4F4;
+      --muted: #9892AC;
       --line: rgba(255, 255, 255, 0.08);
-      --ok: #00F5FF;
-      --warn: #FFB800;
-      --bad: #FF4D4D;
-      --info: #3B82F6;
-      --accent: #8B5CF6;
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      --focus: rgba(139, 92, 246, 0.25);
-      --glass: rgba(22, 21, 29, 0.75);
-      --glass-border: rgba(255, 255, 255, 0.12);
+      --ok: #00C9A7;
+      --warn: #E09A5A;
+      --bad: #FF6060;
+      --info: #6EB0FF;
+      --accent: #9B8FFF;
+      --shadow: 0 8px 24px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3);
+      --focus: rgba(155, 143, 255, 0.22);
+      --glass: rgba(23, 22, 31, 0.85);
+      --glass-border: rgba(255, 255, 255, 0.10);
+      /* Nav */
+      --nav-bg: rgba(20, 19, 28, 0.90);
+      --nav-border: rgba(255, 255, 255, 0.09);
+      --nav-indicator: rgba(155, 143, 255, 0.16);
+      --nav-active-color: #B4ACFF;
+      --nav-muted: #9892AC;
     }
 
     * {
@@ -121,132 +135,127 @@
       width: 100%;
     }
 
-    /* Floating Nav Revamp */
+    /* ── M3 Floating Navigation (always visible, ukiyo-e palette) ── */
     .floating-nav {
       position: fixed;
-      bottom: 24px;
+      bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 8px 16px;
-      background: var(--card);
-      /* Fallback */
-      background: var(--glass);
-      border: 1px solid var(--border);
-      border: 1px solid var(--line);
-      border-radius: 50px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      gap: 2px;
+      padding: 6px;
+      background: var(--nav-bg);
+      border: 1px solid var(--nav-border);
+      border-radius: 32px;
+      box-shadow:
+        0 1px 3px rgba(0,0,0,0.10),
+        0 4px 16px rgba(0,0,0,0.12),
+        0 14px 44px rgba(0,0,0,0.10);
       z-index: 1000;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      transition: all 0.5s var(--ease);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      max-width: calc(100vw - 32px);
     }
 
-    .nav-logo-bubble {
-      width: 48px;
-      height: 48px;
+    .nav-brand {
+      width: 44px;
+      height: 44px;
       background: var(--accent);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.04em;
       color: white;
-      cursor: pointer;
-      box-shadow: 0 4px 15px color-mix(in srgb, var(--accent) 40%, transparent);
       flex-shrink: 0;
-      transition: transform 0.3s var(--ease);
+      margin-right: 4px;
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 35%, transparent);
+      user-select: none;
+      cursor: default;
     }
 
-    .nav-logo-bubble:hover {
-      transform: scale(1.1);
+    .nav-items {
+      display: flex;
+      align-items: center;
+      gap: 0;
     }
 
-    .nav-logo-bubble:focus-visible,
-    .nav-bubble:focus-visible,
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 7px 13px;
+      border-radius: 26px;
+      cursor: pointer;
+      color: var(--nav-muted);
+      transition: color 0.18s var(--ease), background 0.18s var(--ease);
+      min-width: 62px;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-item:hover {
+      background: color-mix(in srgb, var(--accent) 7%, transparent);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      background: var(--nav-indicator);
+      color: var(--nav-active-color);
+    }
+
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+      flex-shrink: 0;
+      transition: transform 0.18s var(--ease);
+    }
+
+    .nav-item.active .nav-icon {
+      transform: scale(1.08);
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .nav-item:focus-visible,
     button:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
     }
 
-    .nav-items {
-      display: flex;
-      gap: 8px;
-      overflow: hidden;
-      max-width: 0;
-      opacity: 0;
-      transition: all 0.5s var(--ease);
+    @media (max-width: 620px) {
+      .nav-item {
+        min-width: 44px;
+        padding: 9px 10px;
+        gap: 0;
+      }
+      .nav-label { display: none; }
+      .nav-icon { width: 22px; height: 22px; }
+      .nav-brand { width: 38px; height: 38px; font-size: 10px; }
     }
 
-    .floating-nav.open .nav-items {
-      max-width: 800px;
-      opacity: 1;
-      padding-left: 8px;
-    }
-
-    /* Safety net: the open menu must never exceed the viewport on any width */
-    .floating-nav.open {
-      max-width: calc(100vw - 24px);
-      box-sizing: border-box;
+    @media (max-width: 380px) {
+      .floating-nav { padding: 4px; gap: 0; }
+      .nav-item { min-width: 38px; padding: 8px 7px; }
+      .nav-brand { width: 34px; height: 34px; font-size: 9px; margin-right: 2px; }
     }
 
     @media (max-width: 768px) {
       .floating-nav {
         bottom: max(16px, env(safe-area-inset-bottom));
       }
-
-      .floating-nav.open {
-        flex-wrap: wrap;
-        justify-content: center;
-        padding: 12px;
-        border-radius: 24px;
-        width: calc(100vw - 24px);
-        max-width: 420px;
-        max-height: calc(100vh - 32px);
-        overflow-y: auto;
-      }
-
-      .floating-nav.open .nav-items {
-        flex-wrap: wrap;
-        justify-content: center;
-        padding-left: 0;
-        margin-top: 8px;
-        gap: 8px;
-        max-width: 100%;
-      }
-
-      .nav-bubble {
-        min-height: 42px;
-        display: inline-flex;
-        align-items: center;
-      }
-    }
-
-    .nav-bubble {
-      padding: 8px 18px;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: all 0.3s var(--ease);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      color: var(--muted);
-    }
-
-    .nav-bubble:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text);
-      transform: translateY(-2px);
-    }
-
-    .nav-bubble.active {
-      background: var(--accent);
-      color: white;
-      border-color: rgba(255, 255, 255, 0.2);
     }
 
     /* Electric Border Effect */
@@ -313,7 +322,7 @@
     }
 
     main {
-      padding: 24px 0 60px;
+      padding: 24px 0 90px;
     }
 
     /* Grids & Cards */
@@ -673,11 +682,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-
-      .item,
-      .nav-logo-bubble,
-      .nav-bubble,
-      button {
+      .item, .nav-item, .nav-brand, .nav-icon, button {
         transition: none;
       }
     }
@@ -954,13 +959,11 @@
       opacity: 0.7;
     }
 
-    [role="tab"],
-    .nav-bubble {
+    [role="tab"], .nav-item {
       outline: none;
     }
 
-    [role="tab"]:focus-visible,
-    .nav-bubble:focus-visible {
+    [role="tab"]:focus-visible, .nav-item:focus-visible {
       box-shadow: 0 0 0 2px var(--accent);
     }
 
@@ -1839,20 +1842,51 @@
   </div>
 
   <nav class="floating-nav" id="floatingNav">
-    <div class="nav-logo-bubble" id="navToggle">CLZ</div>
-    <div class="nav-items" id="navItems" role="tablist" aria-label="Secciones de la aplicación">
-      <div class="nav-bubble active" role="tab" aria-selected="true" aria-controls="tab-registro" tabindex="0"
-        data-tab="registro">Registro</div>
-      <div class="nav-bubble" role="tab" aria-selected="false" aria-controls="tab-graficas" tabindex="-1"
-        data-tab="graficas">Gráficas</div>
-      <div class="nav-bubble" role="tab" aria-selected="false" aria-controls="tab-import" tabindex="-1"
-        data-tab="import">Importar</div>
-      <div class="nav-bubble" role="tab" aria-selected="false" aria-controls="tab-ajustes" tabindex="-1"
-        data-tab="ajustes">Ajustes</div>
-      <div class="nav-bubble" role="tab" aria-selected="false" aria-controls="tab-referencias" tabindex="-1"
-        data-tab="referencias">Info</div>
-      <div class="nav-bubble" role="tab" aria-selected="false" aria-controls="tab-docs" tabindex="-1" data-tab="docs">
-        Docs</div>
+    <div class="nav-brand" aria-hidden="true">CLZ</div>
+    <div class="nav-items" id="navItems" role="tablist" aria-label="Secciones">
+
+      <div class="nav-item active" role="tab" aria-selected="true" aria-controls="tab-registro" tabindex="0" data-tab="registro">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+        </svg>
+        <span class="nav-label">Registro</span>
+      </div>
+
+      <div class="nav-item" role="tab" aria-selected="false" aria-controls="tab-graficas" tabindex="-1" data-tab="graficas">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 9.2h3V19H5V9.2zm5.6-4.2h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/>
+        </svg>
+        <span class="nav-label">Gráficas</span>
+      </div>
+
+      <div class="nav-item" role="tab" aria-selected="false" aria-controls="tab-import" tabindex="-1" data-tab="import">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7 7-7z"/>
+        </svg>
+        <span class="nav-label">Importar</span>
+      </div>
+
+      <div class="nav-item" role="tab" aria-selected="false" aria-controls="tab-ajustes" tabindex="-1" data-tab="ajustes">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.68.07-1.08s-.03-.74-.07-1.08l2.32-1.81a.55.55 0 0 0 .13-.7l-2.2-3.8a.55.55 0 0 0-.67-.23l-2.74 1.1c-.57-.44-1.18-.8-1.86-1.06l-.42-2.91A.56.56 0 0 0 14 3h-4a.56.56 0 0 0-.55.47l-.42 2.91c-.68.26-1.3.62-1.86 1.06L4.43 6.34a.55.55 0 0 0-.67.23L1.56 10.37a.54.54 0 0 0 .13.7l2.32 1.81c-.04.34-.07.69-.07 1.12s.03.75.07 1.08L1.69 16.9a.54.54 0 0 0-.13.7l2.2 3.8a.55.55 0 0 0 .67.23l2.74-1.1c.57.44 1.18.8 1.86 1.06l.42 2.91c.04.27.27.47.55.47h4c.28 0 .51-.2.55-.47l.42-2.91c.68-.26 1.3-.62 1.86-1.06l2.74 1.1a.55.55 0 0 0 .67-.23l2.2-3.8a.54.54 0 0 0-.13-.7l-2.32-1.82z"/>
+        </svg>
+        <span class="nav-label">Ajustes</span>
+      </div>
+
+      <div class="nav-item" role="tab" aria-selected="false" aria-controls="tab-referencias" tabindex="-1" data-tab="referencias">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+        </svg>
+        <span class="nav-label">Info</span>
+      </div>
+
+      <div class="nav-item" role="tab" aria-selected="false" aria-controls="tab-docs" tabindex="-1" data-tab="docs">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
+        </svg>
+        <span class="nav-label">Docs</span>
+      </div>
+
     </div>
   </nav>
 
@@ -2005,10 +2039,13 @@
         }
       };
 
+      // Shared predicate — single source of truth for "no patient configured"
+      const isPatientEmpty = (p) => !p.label || p.label === "—" || p.label.trim() === "";
+
       // Ensure hard stop context
       const checkPatientContext = () => {
         const p = state.data.patient;
-        if (!p.label || p.label === "—" || p.label.trim() === "") {
+        if (isPatientEmpty(p)) {
           forcePatientSetup();
         } else {
           updateContextBanner();
@@ -2019,7 +2056,7 @@
         const p = state.data.patient;
         const banner = $("patientContextBanner");
         if (banner) {
-          if (!p.label || p.label === "—") {
+          if (isPatientEmpty(p)) {
             banner.style.display = "none";
           } else {
             $("ctx_label").textContent = p.label;
@@ -2106,7 +2143,7 @@
         state.data.entries = Array.isArray(state.data.entries) ? state.data.entries : [];
         // ensure ids and sanitize
         state.data.entries = state.data.entries.map(e => validateAndSanitizeEntry(e)).filter(Boolean);
-        checkPatientContext(); // Check on load
+        updateContextBanner();
         save(false);
       };
 
@@ -2378,7 +2415,7 @@ Generado por CLZ Mini PWA v2026.
 
       // ---- UI binding ----
       const setTab = (name) => {
-        const items = document.querySelectorAll(".tab, .nav-bubble");
+        const items = document.querySelectorAll(".tab, .nav-item");
         for (const btn of items) {
           const on = btn.dataset.tab === name;
           btn.setAttribute("aria-selected", on ? "true" : "false");
@@ -2395,43 +2432,27 @@ Generado por CLZ Mini PWA v2026.
           }
         }
         if (name === "graficas") drawChart();
-        $("floatingNav").classList.remove("open");
       };
 
       // Keyboard navigation for tabs
       $("navItems").addEventListener("keydown", (e) => {
-        const bubbles = Array.from(document.querySelectorAll(".nav-bubble"));
-        const idx = bubbles.findIndex(b => b.dataset.tab === document.querySelector(".nav-bubble.active").dataset.tab);
+        const items = Array.from(document.querySelectorAll(".nav-item"));
+        const active = document.querySelector(".nav-item.active");
+        const idx = items.findIndex(b => b === active);
+        if (idx < 0) return; // no active tab — bail to avoid items[-1] deref
         let next = idx;
-        if (e.key === "ArrowRight") next = (idx + 1) % bubbles.length;
-        if (e.key === "ArrowLeft") next = (idx - 1 + bubbles.length) % bubbles.length;
+        if (e.key === "ArrowRight") next = (idx + 1) % items.length;
+        if (e.key === "ArrowLeft") next = (idx - 1 + items.length) % items.length;
         if (e.key === "Enter" || e.key === " ") {
-          setTab(bubbles[idx].dataset.tab);
+          setTab(items[idx].dataset.tab);
         } else if (next !== idx) {
-          bubbles[next].focus();
-          setTab(bubbles[next].dataset.tab);
+          items[next].focus();
+          setTab(items[next].dataset.tab);
         }
       });
 
-      document.querySelectorAll(".tab, .nav-bubble").forEach(btn => {
+      document.querySelectorAll(".tab, .nav-item").forEach(btn => {
         btn.addEventListener("click", () => setTab(btn.dataset.tab));
-      });
-
-      // Floating Nav Toggle
-      $("navToggle").addEventListener("click", () => {
-        const nav = $("floatingNav");
-        const isOpen = nav.classList.toggle("open");
-
-        if (isOpen) {
-          const items = document.querySelectorAll(".nav-bubble");
-          items.forEach((item, i) => {
-            item.style.transitionDelay = `${i * 0.05}s`;
-            item.style.transform = "scale(0)";
-            setTimeout(() => {
-              item.style.transform = "scale(1)";
-            }, 10);
-          });
-        }
       });
 
       const clearForm = () => {
@@ -2526,6 +2547,11 @@ Generado por CLZ Mini PWA v2026.
       };
 
       const upsertEntryFromForm = () => {
+        if (isPatientEmpty(state.data.patient)) {
+          forcePatientSetup();
+          return;
+        }
+
         const plausibility = (label, value, max) => {
           if (value === null) return true;
           if (value > max) {
@@ -3223,6 +3249,7 @@ Notas: ${$("f_notes").value}
         save(true);
         clearForm();
         toast("Registro borrado (local).");
+        redirectIfNoPatient();
       });
 
       $("importFile").addEventListener("change", async (ev) => {
@@ -3231,6 +3258,7 @@ Notas: ${$("f_notes").value}
         try {
           await importJsonFile(file);
           ev.target.value = "";
+          redirectIfNoPatient();
         } catch (e) {
           toast("Error al importar: " + e.message);
         }
@@ -3244,7 +3272,8 @@ Notas: ${$("f_notes").value}
         btnDemo.addEventListener("click", async () => {
           if (confirm("¿Cargar datos de prueba? Esto reemplazará tu registro actual.")) {
             await loadDemo();
-            setTab("registro");
+            redirectIfNoPatient();
+            if (!isPatientEmpty(state.data.patient)) setTab("registro");
           }
         });
       }
@@ -3336,6 +3365,15 @@ Notas: ${$("f_notes").value}
         setTheme(event.target.value);
       });
 
+      // Redirige a Docs cuando no hay paciente y la pestaña activa es clínica
+      const redirectIfNoPatient = () => {
+        if (!isPatientEmpty(state.data.patient)) return;
+        const current = document.querySelector(".nav-item.active")?.dataset.tab;
+        if (!current || ["registro", "graficas"].includes(current)) {
+          setTab("docs");
+        }
+      };
+
       // init
       load();
       initTheme();
@@ -3343,6 +3381,7 @@ Notas: ${$("f_notes").value}
       evaluateRealTime();
       clearForm();
       renderAll();
+      redirectIfNoPatient();
 
       // PWA features check
       if (location.protocol !== "file:") {

@@ -30,16 +30,20 @@ export const CLINICAL_RULES = {
  * built-in Delphi/FDA defaults when none are provided.
  */
 export function analyzeANC(anc, isBEN = false, thresholds = null) {
+    // Only accept a threshold value when it is a finite positive number;
+    // reject 0 and negatives so a misconfigured field can't silence alerts.
+    const validTh = (v, fallback) => (typeof v === 'number' && isFinite(v) && v > 0) ? v : fallback;
+
     let limits;
     if (thresholds) {
         limits = isBEN
             ? {
-                WARN: thresholds.anc_norm_ben ?? CLINICAL_RULES.ANC.BEN.WARN,
-                CRITICAL: thresholds.anc_interrupt_ben ?? CLINICAL_RULES.ANC.BEN.CRITICAL
+                WARN:     validTh(thresholds.anc_norm_ben,     CLINICAL_RULES.ANC.BEN.WARN),
+                CRITICAL: validTh(thresholds.anc_interrupt_ben, CLINICAL_RULES.ANC.BEN.CRITICAL)
             }
             : {
-                WARN: thresholds.anc_norm ?? CLINICAL_RULES.ANC.NORMAL.WARN,
-                CRITICAL: thresholds.anc_interrupt ?? CLINICAL_RULES.ANC.NORMAL.CRITICAL
+                WARN:     validTh(thresholds.anc_norm,     CLINICAL_RULES.ANC.NORMAL.WARN),
+                CRITICAL: validTh(thresholds.anc_interrupt, CLINICAL_RULES.ANC.NORMAL.CRITICAL)
             };
     } else {
         limits = isBEN ? CLINICAL_RULES.ANC.BEN : CLINICAL_RULES.ANC.NORMAL;
@@ -59,7 +63,7 @@ export function analyzeANC(anc, isBEN = false, thresholds = null) {
             status: 'WARNING',
             color: 'var(--warn)',
             message: 'Neutropenia leve detectada.',
-            action: 'Monitoreo diario requerido hasta recuperación > 1.5.'
+            action: `Monitoreo diario requerido hasta recuperación > ${limits.WARN}.`
         };
     }
 
