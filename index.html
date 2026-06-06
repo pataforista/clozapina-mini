@@ -939,6 +939,230 @@
       animation: pulse 0.6s var(--ease);
     }
 
+    /* ── PWA: actualización forzada (force update) ─────────────── */
+    @keyframes upd-banner-in {
+      from { opacity: 0; transform: translate(-50%, 28px) scale(0.96); }
+      to   { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    }
+
+    @keyframes upd-banner-out {
+      from { opacity: 1; transform: translate(-50%, 0) scale(1); }
+      to   { opacity: 0; transform: translate(-50%, 28px) scale(0.96); }
+    }
+
+    @keyframes upd-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes upd-pulse-ring {
+      0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
+      70%  { box-shadow: 0 0 0 12px transparent; }
+      100% { box-shadow: 0 0 0 0 transparent; }
+    }
+
+    @keyframes upd-shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .update-banner {
+      position: fixed;
+      left: 50%;
+      bottom: 96px;
+      transform: translateX(-50%);
+      z-index: 1200;
+      display: none;
+      align-items: center;
+      gap: 14px;
+      width: min(440px, calc(100vw - 32px));
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: var(--glass);
+      border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+      box-shadow: var(--shadow), 0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+    }
+
+    .update-banner.show {
+      display: flex;
+      animation: upd-banner-in 0.45s var(--ease);
+    }
+
+    .update-banner.hiding {
+      animation: upd-banner-out 0.35s var(--ease) forwards;
+    }
+
+    .update-banner__icon {
+      flex: 0 0 auto;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--info) 60%, var(--accent)));
+      animation: upd-pulse-ring 2.2s var(--ease) infinite;
+    }
+
+    .update-banner__icon svg {
+      width: 22px;
+      height: 22px;
+      animation: upd-spin 3.5s linear infinite;
+    }
+
+    .update-banner__body {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .update-banner__title {
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .update-banner__sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    .update-banner__btn {
+      flex: 0 0 auto;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      color: #fff;
+      padding: 9px 16px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--info) 55%, var(--accent)));
+      box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
+      transition: var(--transition);
+    }
+
+    .update-banner__btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 45%, transparent);
+    }
+
+    .update-banner__btn:active { transform: translateY(0); }
+
+    .update-banner__close {
+      flex: 0 0 auto;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      transition: var(--transition);
+    }
+
+    .update-banner__close:hover {
+      background: color-mix(in srgb, var(--text) 8%, transparent);
+      color: var(--text);
+    }
+
+    /* Pantalla completa: aplicando actualización */
+    .update-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 4000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in srgb, var(--bg) 65%, rgba(0, 0, 0, 0.55));
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .update-overlay.show {
+      display: flex;
+      animation: fadeIn 0.25s var(--ease);
+    }
+
+    .update-overlay__card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      padding: 34px 44px;
+      border-radius: 22px;
+      background: var(--glass);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      animation: scaleIn 0.3s var(--ease);
+    }
+
+    .update-overlay__spinner {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent, var(--accent));
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+              mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+      animation: upd-spin 0.9s linear infinite;
+    }
+
+    .update-overlay__title {
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .update-overlay__sub {
+      font-size: 12.5px;
+      font-weight: 600;
+      background: linear-gradient(90deg, var(--muted) 0%, var(--accent) 50%, var(--muted) 100%);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: upd-shimmer 1.6s linear infinite;
+    }
+
+    /* Buscar actualizaciones (Ajustes) */
+    .upd-check-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .upd-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    .upd-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 20%, transparent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .update-banner.show,
+      .update-banner.hiding,
+      .update-overlay.show,
+      .update-overlay__card,
+      .update-banner__icon,
+      .update-banner__icon svg,
+      .update-overlay__spinner,
+      .update-overlay__sub { animation: none !important; }
+    }
+
     .disclaimer-banner {
       background: color-mix(in srgb, var(--bad) 10%, var(--card));
       border-bottom: 2px solid var(--bad);
@@ -1687,6 +1911,24 @@
             <li>No capturar: nombre, CURP, NSS, teléfono, dirección, etc.</li>
           </ul>
         </div>
+
+        <div class="card">
+          <h2>App / Actualizaciones</h2>
+          <p class="note">
+            Versión instalada: <strong id="appVersion">—</strong>
+          </p>
+          <p class="note">
+            La app funciona sin conexión. Cuando haya una nueva versión te avisaremos automáticamente;
+            también puedes comprobarlo manualmente.
+          </p>
+          <div class="divider"></div>
+          <div class="upd-check-row">
+            <button class="primary" id="btnCheckUpdate" type="button">Buscar actualizaciones</button>
+            <span class="upd-status" id="updCheckStatus">
+              <span class="upd-status-dot" aria-hidden="true"></span> Listo
+            </span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1826,6 +2068,33 @@
   </footer>
 
   <div class="toast" id="toast"></div>
+
+  <!-- PWA: banner "nueva versión disponible" -->
+  <div class="update-banner" id="updateBanner" role="alert" aria-live="polite">
+    <div class="update-banner__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+        <polyline points="21 3 21 9 15 9" />
+      </svg>
+    </div>
+    <div class="update-banner__body">
+      <div class="update-banner__title">Nueva versión disponible</div>
+      <div class="update-banner__sub">Actualiza para obtener las últimas mejoras</div>
+    </div>
+    <button class="update-banner__btn" id="btnUpdateApply" type="button">Actualizar</button>
+    <button class="update-banner__close" id="btnUpdateDismiss" type="button" aria-label="Descartar">✕</button>
+  </div>
+
+  <!-- PWA: overlay "aplicando actualización" -->
+  <div class="update-overlay" id="updateOverlay" aria-hidden="true">
+    <div class="update-overlay__card" role="status" aria-live="assertive">
+      <div class="update-overlay__spinner" aria-hidden="true"></div>
+      <div class="update-overlay__title">Actualizando…</div>
+      <div class="update-overlay__sub">Instalando la nueva versión</div>
+    </div>
+  </div>
+
   <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal">
       <h3 id="modalTitle">Alerta</h3>
@@ -3374,6 +3643,106 @@ Notas: ${$("f_notes").value}
         }
       };
 
+      // ── PWA: detección y aplicación de actualizaciones ──────────
+      const setupServiceWorkerUpdates = () => {
+        const banner = $("updateBanner");
+        const overlay = $("updateOverlay");
+        const btnApply = $("btnUpdateApply");
+        const btnDismiss = $("btnUpdateDismiss");
+        let waitingWorker = null;
+        let refreshing = false;
+        let dismissed = false;
+
+        const showBanner = (worker) => {
+          if (!worker) return;
+          waitingWorker = worker;
+          if (dismissed) return;
+          banner.classList.remove("hiding");
+          banner.classList.add("show");
+        };
+        const hideBanner = () => {
+          banner.classList.add("hiding");
+          setTimeout(() => banner.classList.remove("show", "hiding"), 360);
+        };
+        const applyUpdate = () => {
+          if (!waitingWorker) { location.reload(); return; }
+          overlay.classList.add("show");
+          overlay.setAttribute("aria-hidden", "false");
+          waitingWorker.postMessage({ type: "SKIP_WAITING" });
+          // Salvaguarda: recarga aunque no llegue controllerchange
+          setTimeout(() => { if (!refreshing) { refreshing = true; location.reload(); } }, 3500);
+        };
+
+        btnApply.addEventListener("click", applyUpdate);
+        btnDismiss.addEventListener("click", () => { dismissed = true; hideBanner(); });
+
+        // Recarga única cuando el nuevo SW toma el control
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          if (refreshing) return;
+          refreshing = true;
+          location.reload();
+        });
+
+        // Versión activa (para Ajustes)
+        navigator.serviceWorker.addEventListener("message", (event) => {
+          if (event.data && event.data.type === "VERSION") {
+            const el = $("appVersion");
+            if (el) el.textContent = "v" + event.data.version;
+          }
+        });
+        const requestVersion = () => {
+          if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({ type: "GET_VERSION" });
+          }
+        };
+
+        navigator.serviceWorker.register("./sw.js").then((reg) => {
+          requestVersion();
+
+          // Ya hay un worker esperando (p.ej. al reabrir la app)
+          if (reg.waiting && navigator.serviceWorker.controller) {
+            showBanner(reg.waiting);
+          }
+
+          reg.addEventListener("updatefound", () => {
+            const installing = reg.installing;
+            if (!installing) return;
+            installing.addEventListener("statechange", () => {
+              if (installing.state === "installed" && navigator.serviceWorker.controller) {
+                showBanner(reg.waiting || installing);
+              }
+            });
+          });
+
+          // Botón "Buscar actualizaciones" (Ajustes)
+          const btnCheck = $("btnCheckUpdate");
+          const status = $("updCheckStatus");
+          const setStatus = (txt) => { if (status) status.innerHTML = '<span class="upd-status-dot" aria-hidden="true"></span> ' + txt; };
+          if (btnCheck) {
+            btnCheck.addEventListener("click", async () => {
+              setStatus("Buscando…");
+              btnCheck.disabled = true;
+              try {
+                await reg.update();
+                if (reg.waiting && navigator.serviceWorker.controller) {
+                  showBanner(reg.waiting);
+                  setStatus("¡Actualización disponible!");
+                } else {
+                  setStatus("Ya tienes la última versión.");
+                }
+              } catch (e) {
+                setStatus("Sin conexión para comprobar.");
+              } finally {
+                btnCheck.disabled = false;
+              }
+            });
+          }
+
+          // Comprobación periódica en segundo plano (cada 30 min)
+          setInterval(() => reg.update().catch(() => { }), 30 * 60 * 1000);
+        }).catch(() => { });
+      };
+
       // init
       load();
       initTheme();
@@ -3391,9 +3760,9 @@ Notas: ${$("f_notes").value}
         link.href = "manifest.json";
         document.head.appendChild(link);
 
-        // Service Worker
+        // Service Worker + actualización controlada (force update)
         if ("serviceWorker" in navigator) {
-          navigator.serviceWorker.register("./sw.js").catch(() => { });
+          setupServiceWorkerUpdates();
         }
       } else {
         console.log("PWA features disabled on local file system (CORS). Use a local server to enable installation.");

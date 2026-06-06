@@ -1,5 +1,6 @@
 /* sw.js — CLZ Mini PWA (offline-first) */
-const CACHE_NAME = "clz-mini-pwa-v1.2.1";
+const SW_VERSION = "1.3.0";
+const CACHE_NAME = "clz-mini-pwa-v" + SW_VERSION;
 const ASSETS = [
   "./",
   "./index.html",
@@ -15,7 +16,8 @@ self.addEventListener("install", (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
     await cache.addAll(ASSETS);
-    self.skipWaiting();
+    // NOTE: no skipWaiting() here. The new worker waits until the user
+    // confirms via the in-app "Actualizar" prompt (controlled force update).
   })());
 });
 
@@ -23,8 +25,21 @@ self.addEventListener("activate", (event) => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
     await Promise.all(keys.map(k => (k !== CACHE_NAME) ? caches.delete(k) : Promise.resolve()));
-    self.clients.claim();
+    await self.clients.claim();
   })());
+});
+
+// Allow the page to trigger the waiting worker to take over immediately,
+// and to query the active version.
+self.addEventListener("message", (event) => {
+  const data = event.data || {};
+  if (data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  } else if (data.type === "GET_VERSION") {
+    if (event.source && event.source.postMessage) {
+      event.source.postMessage({ type: "VERSION", version: SW_VERSION });
+    }
+  }
 });
 
 self.addEventListener("fetch", (event) => {
