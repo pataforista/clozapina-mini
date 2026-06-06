@@ -2039,10 +2039,13 @@
         }
       };
 
+      // Shared predicate — single source of truth for "no patient configured"
+      const isPatientEmpty = (p) => !p.label || p.label === "—" || p.label.trim() === "";
+
       // Ensure hard stop context
       const checkPatientContext = () => {
         const p = state.data.patient;
-        if (!p.label || p.label === "—" || p.label.trim() === "") {
+        if (isPatientEmpty(p)) {
           forcePatientSetup();
         } else {
           updateContextBanner();
@@ -2053,7 +2056,7 @@
         const p = state.data.patient;
         const banner = $("patientContextBanner");
         if (banner) {
-          if (!p.label || p.label === "—") {
+          if (isPatientEmpty(p)) {
             banner.style.display = "none";
           } else {
             $("ctx_label").textContent = p.label;
@@ -2436,6 +2439,7 @@ Generado por CLZ Mini PWA v2026.
         const items = Array.from(document.querySelectorAll(".nav-item"));
         const active = document.querySelector(".nav-item.active");
         const idx = items.findIndex(b => b === active);
+        if (idx < 0) return; // no active tab — bail to avoid items[-1] deref
         let next = idx;
         if (e.key === "ArrowRight") next = (idx + 1) % items.length;
         if (e.key === "ArrowLeft") next = (idx - 1 + items.length) % items.length;
@@ -2543,6 +2547,11 @@ Generado por CLZ Mini PWA v2026.
       };
 
       const upsertEntryFromForm = () => {
+        if (isPatientEmpty(state.data.patient)) {
+          forcePatientSetup();
+          return;
+        }
+
         const plausibility = (label, value, max) => {
           if (value === null) return true;
           if (value > max) {
@@ -3240,6 +3249,7 @@ Notas: ${$("f_notes").value}
         save(true);
         clearForm();
         toast("Registro borrado (local).");
+        redirectIfNoPatient();
       });
 
       $("importFile").addEventListener("change", async (ev) => {
@@ -3248,6 +3258,7 @@ Notas: ${$("f_notes").value}
         try {
           await importJsonFile(file);
           ev.target.value = "";
+          redirectIfNoPatient();
         } catch (e) {
           toast("Error al importar: " + e.message);
         }
@@ -3261,7 +3272,8 @@ Notas: ${$("f_notes").value}
         btnDemo.addEventListener("click", async () => {
           if (confirm("¿Cargar datos de prueba? Esto reemplazará tu registro actual.")) {
             await loadDemo();
-            setTab("registro");
+            redirectIfNoPatient();
+            if (!isPatientEmpty(state.data.patient)) setTab("registro");
           }
         });
       }
@@ -3353,6 +3365,15 @@ Notas: ${$("f_notes").value}
         setTheme(event.target.value);
       });
 
+      // Redirige a Docs cuando no hay paciente y la pestaña activa es clínica
+      const redirectIfNoPatient = () => {
+        if (!isPatientEmpty(state.data.patient)) return;
+        const current = document.querySelector(".nav-item.active")?.dataset.tab;
+        if (!current || ["registro", "graficas"].includes(current)) {
+          setTab("docs");
+        }
+      };
+
       // init
       load();
       initTheme();
@@ -3360,14 +3381,7 @@ Notas: ${$("f_notes").value}
       evaluateRealTime();
       clearForm();
       renderAll();
-
-      // Si no hay paciente registrado, comenzar en Docs para que puedan descargar sin bloqueo
-      {
-        const p = state.data.patient;
-        if (!p.label || p.label === "—" || p.label.trim() === "") {
-          setTab("docs");
-        }
-      }
+      redirectIfNoPatient();
 
       // PWA features check
       if (location.protocol !== "file:") {
