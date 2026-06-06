@@ -18,16 +18,32 @@ export const CLINICAL_RULES = {
     // CYP1A2 Interaction Factors
     INTERACTIONS: {
         SMOKING_FACTOR: 2.0, // Smokers need ~double dose
-        CAFFEINE_LIMIT: 3,    // Trow warning if > 3 cups/day
+        CAFFEINE_LIMIT: 3,    // Throw warning if > 3 cups/day
         FLUVOXAMINE_REDUCTION: 0.25 // Reduce dose to 25% (reduction of 75%)
     }
 };
 
 /**
- * Analyzes ANC levels and returns a status object
+ * Analyzes ANC levels and returns a status object.
+ * Accepts optional user-configured thresholds (from the app's settings)
+ * so the editable umbrales actually drive the analysis. Falls back to the
+ * built-in Delphi/FDA defaults when none are provided.
  */
-export function analyzeANC(anc, isBEN = false) {
-    const limits = isBEN ? CLINICAL_RULES.ANC.BEN : CLINICAL_RULES.ANC.NORMAL;
+export function analyzeANC(anc, isBEN = false, thresholds = null) {
+    let limits;
+    if (thresholds) {
+        limits = isBEN
+            ? {
+                WARN: thresholds.anc_norm_ben ?? CLINICAL_RULES.ANC.BEN.WARN,
+                CRITICAL: thresholds.anc_interrupt_ben ?? CLINICAL_RULES.ANC.BEN.CRITICAL
+            }
+            : {
+                WARN: thresholds.anc_norm ?? CLINICAL_RULES.ANC.NORMAL.WARN,
+                CRITICAL: thresholds.anc_interrupt ?? CLINICAL_RULES.ANC.NORMAL.CRITICAL
+            };
+    } else {
+        limits = isBEN ? CLINICAL_RULES.ANC.BEN : CLINICAL_RULES.ANC.NORMAL;
+    }
 
     if (anc < limits.CRITICAL) {
         return {

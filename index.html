@@ -1491,9 +1491,8 @@
           <h2>Atajos</h2>
           <button class="ghost" id="btnLoadDemoManual">Cargar Datos de Prueba (Demo)</button>
         </div>
-      </div>
-      <div class="card">
-        <h2>Importar</h2>
+        <div class="card">
+          <h2>Importar</h2>
         <p class="note">Importa un archivo <span class="mono">.json</span> exportado previamente. Esto reemplaza el
           registro actual.</p>
         <input type="file" id="importFile" accept="application/json" />
@@ -1587,10 +1586,15 @@
               </tr>
               <tr>
                 <td>Frecuencia ANC</td>
-                <td>Indefinida</td>
+                <td>Según ficha técnica</td>
                 <td><strong>Hasta 2 años</strong></td>
               </tr>
             </table>
+            <p class="note" style="margin-top:8px;">
+              🆕 <strong>Actualización FDA (2025):</strong> El programa REMS de clozapina fue eliminado (vigente desde el
+              13 de junio de 2025). Ya no es obligatorio reportar el ANC para dispensar, pero el <strong>monitoreo de ANC
+                sigue recomendado</strong> según la información de prescripción.
+            </p>
             <p class="note" style="margin-top:8px;">
               ⚠️ <strong>Metabolismo y Tabaco:</strong> Los hidrocarburos del humo inducen la enzima CYP1A2. Iniciar o
               suspender el hábito tabáquico puede alterar drásticamente los niveles de clozapina, requiriendo ajuste de
@@ -1652,6 +1656,11 @@
             </p>
             <div class="divider"></div>
             <ol class="note">
+              <li><strong>FDA – Eliminación del REMS de clozapina (2025)</strong>. Desde el 24 de febrero de 2025 la FDA
+                dejó de exigir la participación en el programa REMS, y lo retiró formalmente el 13 de junio de 2025. Las
+                farmacias ya <strong>no</strong> requieren el reporte del ANC antes de dispensar. El <strong>monitoreo de
+                  ANC sigue recomendado</strong> según la información de prescripción, y las advertencias sobre
+                neutropenia grave se mantienen (Boxed Warning).</li>
               <li><strong>Siskind et al., 2025 (Lancet Psychiatry / Global Delphi Consensus)</strong>. Guía clave que
                 actualiza los umbrales de cese a ANC &lt; 1.0 (General) y &lt; 0.5 (DARC-null). Recomienda cese de
                 monitoreo
@@ -1667,6 +1676,8 @@
             <p class="small">Esta PWA es una herramienta de registro/visualización. No constituye consejo médico ni un
               dispositivo médico.</p>
           </div>
+        </div>
+      </div>
     </section>
 
     <!-- Documentos -->
@@ -1678,7 +1689,7 @@
         </p>
 
         <div class="list">
-          <div class="item" onclick="window.open('docs/Infografia.pdf', '_blank')">
+          <div class="item" onclick="window.open('docs/Infografia_clozapina.pdf', '_blank')">
             <div class="meta">
               <div class="meta-main">
                 <strong>Infografía de Seguridad</strong>
@@ -2156,7 +2167,7 @@ Generado por CLZ Mini PWA v2026.
         const alerts = [];
 
         if (anc !== null) {
-          const res = analyzeANC(anc, ben);
+          const res = analyzeANC(anc, ben, th);
           if (res.status !== 'OK') {
             alerts.push({
               kind: res.status === 'CRITICAL' ? 'bad' : 'warn',
@@ -2194,7 +2205,7 @@ Generado por CLZ Mini PWA v2026.
           alerts.push({ kind: "warn", tag: "FIEBRE", title: "Fiebre reportada", text: "Vigilar signos de infección, síndrome inflamatorio y otras banderas rojas (según protocolo)." });
         }
         if (constipationRed || (constipationDays !== null && constipationDays >= 4)) {
-          alerts.push({ kind: "bad", tag: "GI", title: "Riesgo de Íleo / Obstrucción", text: `Datos de alarma detectedos (${constipationDays || 0} días sin evacuar). Requiere evaluación quirúrgica/clínica urgente.` });
+          alerts.push({ kind: "bad", tag: "GI", title: "Riesgo de Íleo / Obstrucción", text: `Datos de alarma detectados (${constipationDays || 0} días sin evacuar). Requiere evaluación quirúrgica/clínica urgente.` });
         } else if (constipationScore !== null && constipationScore >= 3 || (constipationDays !== null && constipationDays >= 3)) {
           alerts.push({ kind: "warn", tag: "GI", title: "Estreñimiento severo", text: "Iniciar protocolo laxante agresivo. Vigilancia estrecha de motilidad intestinal." });
         }
