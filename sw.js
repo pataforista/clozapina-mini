@@ -1,5 +1,5 @@
 /* sw.js — CLZ Mini PWA (offline-first) */
-const CACHE_NAME = "clz-mini-pwa-v1.2.0";
+const CACHE_NAME = "clz-mini-pwa-v1.2.1";
 const ASSETS = [
   "./",
   "./index.html",

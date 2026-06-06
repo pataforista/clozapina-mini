@@ -186,14 +186,26 @@
       padding-left: 8px;
     }
 
-    @media (max-width: 600px) {
+    /* Safety net: the open menu must never exceed the viewport on any width */
+    .floating-nav.open {
+      max-width: calc(100vw - 24px);
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 768px) {
+      .floating-nav {
+        bottom: max(16px, env(safe-area-inset-bottom));
+      }
+
       .floating-nav.open {
         flex-wrap: wrap;
         justify-content: center;
         padding: 12px;
         border-radius: 24px;
-        width: 90%;
-        max-width: 360px;
+        width: calc(100vw - 24px);
+        max-width: 420px;
+        max-height: calc(100vh - 32px);
+        overflow-y: auto;
       }
 
       .floating-nav.open .nav-items {
@@ -203,6 +215,12 @@
         margin-top: 8px;
         gap: 8px;
         max-width: 100%;
+      }
+
+      .nav-bubble {
+        min-height: 42px;
+        display: inline-flex;
+        align-items: center;
       }
     }
 
@@ -598,6 +616,60 @@
       border-color: var(--bad);
       color: white;
       background: var(--bad);
+    }
+
+    /* Document actions (Ver / Descargar) */
+    .doc-item {
+      cursor: default;
+    }
+
+    .doc-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .btn-doc {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      min-height: 42px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--card) 85%, transparent);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn-doc:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .btn-doc.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .btn-doc.primary:hover {
+      box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+
+    @media (max-width: 519px) {
+      .doc-item .meta-actions {
+        justify-content: stretch;
+      }
+
+      .doc-item .btn-doc {
+        flex: 1;
+        justify-content: center;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1685,42 +1757,55 @@
       <div class="card">
         <h2>Documentos y Recursos</h2>
         <p class="note" style="margin-bottom: 20px;">
-          Descarga guías y formatos oficiales para tu práctica clínica.
+          Guías y formatos oficiales para tu práctica clínica. Usa <strong>Ver</strong> para abrir el PDF o
+          <strong>Descargar</strong> para guardarlo en tu dispositivo (también funciona sin conexión una vez abierto).
         </p>
 
         <div class="list">
-          <div class="item" onclick="window.open('docs/Infografia_clozapina.pdf', '_blank')">
+          <div class="item doc-item">
             <div class="meta">
               <div class="meta-main">
-                <strong>Infografía de Seguridad</strong>
+                <strong><span class="doc-icon">📊</span> Infografía de Seguridad</strong>
+                <div class="note">Resumen visual de umbrales de ANC y banderas rojas de la clozapina.</div>
                 <div class="date">PDF • 425 KB</div>
               </div>
               <div class="meta-actions">
-                <button class="icon-btn primary" title="Descargar">⬇</button>
+                <a class="btn-doc" href="docs/Infografia_clozapina.pdf" target="_blank"
+                  rel="noopener">👁️ Ver</a>
+                <a class="btn-doc primary" href="docs/Infografia_clozapina.pdf"
+                  download="Infografia_clozapina.pdf">⬇ Descargar</a>
               </div>
             </div>
           </div>
 
-          <div class="item" onclick="window.open('docs/consentimieto_informado_cloza_2026.pdf', '_blank')">
+          <div class="item doc-item">
             <div class="meta">
               <div class="meta-main">
-                <strong>Consentimiento Informado 2026</strong>
+                <strong><span class="doc-icon">📝</span> Consentimiento Informado 2026</strong>
+                <div class="note">Formato para la firma del paciente antes de iniciar el tratamiento.</div>
                 <div class="date">PDF • 1.0 MB</div>
               </div>
               <div class="meta-actions">
-                <button class="icon-btn primary" title="Descargar">⬇</button>
+                <a class="btn-doc" href="docs/consentimieto_informado_cloza_2026.pdf" target="_blank"
+                  rel="noopener">👁️ Ver</a>
+                <a class="btn-doc primary" href="docs/consentimieto_informado_cloza_2026.pdf"
+                  download="Consentimiento_informado_clozapina_2026.pdf">⬇ Descargar</a>
               </div>
             </div>
           </div>
 
-          <div class="item" onclick="window.open('docs/escala_efectos_secundarios_clozapina.pdf', '_blank')">
+          <div class="item doc-item">
             <div class="meta">
               <div class="meta-main">
-                <strong>Escala de Efectos Secundarios</strong>
+                <strong><span class="doc-icon">📋</span> Escala de Efectos Secundarios</strong>
+                <div class="note">Instrumento para evaluar y registrar los efectos adversos del paciente.</div>
                 <div class="date">PDF • 546 KB</div>
               </div>
               <div class="meta-actions">
-                <button class="icon-btn primary" title="Descargar">⬇</button>
+                <a class="btn-doc" href="docs/escala_efectos_secundarios_clozapina.pdf" target="_blank"
+                  rel="noopener">👁️ Ver</a>
+                <a class="btn-doc primary" href="docs/escala_efectos_secundarios_clozapina.pdf"
+                  download="Escala_efectos_secundarios_clozapina.pdf">⬇ Descargar</a>
               </div>
             </div>
           </div>
