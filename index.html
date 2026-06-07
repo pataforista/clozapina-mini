@@ -46,6 +46,9 @@
       /* Transitions */
       --ease: cubic-bezier(0.4, 0, 0.2, 1);
       --transition: all 0.3s var(--ease);
+
+      /* Color scheme for native controls */
+      color-scheme: light dark;
     }
 
     /* ── Light: washi paper + ai-iro indigo (ukiyo-e) ── */
@@ -63,12 +66,15 @@
       --shadow: 0 2px 4px rgba(30,28,50,0.06), 0 8px 24px rgba(30,28,50,0.10);
       --focus: rgba(61, 53, 168, 0.15);
       --glass: rgba(252, 250, 246, 0.85);
+      --glass-border: rgba(30, 28, 50, 0.08);
+      --input-bg: rgba(26, 24, 32, 0.04);
       /* Nav */
       --nav-bg: rgba(252, 250, 246, 0.90);
       --nav-border: rgba(30, 28, 50, 0.08);
       --nav-indicator: rgba(61, 53, 168, 0.11);
       --nav-active-color: #3D35A8;
       --nav-muted: #7A7790;
+      color-scheme: light;
     }
 
     /* ── Dark: deep ink + muted indigo (ukiyo-e night) ── */
@@ -87,12 +93,14 @@
       --focus: rgba(155, 143, 255, 0.22);
       --glass: rgba(23, 22, 31, 0.85);
       --glass-border: rgba(255, 255, 255, 0.10);
+      --input-bg: rgba(255, 255, 255, 0.05);
       /* Nav */
       --nav-bg: rgba(20, 19, 28, 0.90);
       --nav-border: rgba(255, 255, 255, 0.09);
       --nav-indicator: rgba(155, 143, 255, 0.16);
       --nav-active-color: #B4ACFF;
       --nav-muted: #9892AC;
+      color-scheme: dark;
     }
 
     * {
@@ -130,9 +138,6 @@
       margin: 0;
       font-family: var(--sans);
       background-color: var(--bg);
-      background-color: var(--bg);
-      /* background-image removed for WebGL Galaxy */
-      color: var(--text);
       color: var(--text);
       line-height: 1.6;
       font-size: 15px;
@@ -394,6 +399,7 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.6;
+      opacity: 0.9;
     }
 
     /* Form Elements */
@@ -419,7 +425,7 @@
     select,
     textarea {
       width: 100%;
-      background: rgba(0, 0, 0, 0.02);
+      background: var(--input-bg, rgba(0, 0, 0, 0.04));
       border: 1px solid var(--line);
       border-radius: var(--radius-sm);
       padding: 12px 14px;
@@ -428,6 +434,11 @@
       font-size: 14px;
       transition: var(--transition);
       outline: none;
+    }
+
+    select {
+      appearance: none;
+      -webkit-appearance: none;
     }
 
     input:focus,
@@ -555,7 +566,6 @@
     .item:hover {
       background: var(--card);
       border-color: var(--accent);
-      transform: translateX(4px);
       transform: translateY(-2px);
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
     }
@@ -852,7 +862,7 @@
       padding: 12px 24px;
       border-radius: 999px;
       box-shadow: var(--shadow);
-      z-index: 1000;
+      z-index: 1100;
       animation: slideUp 0.3s var(--ease);
       display: none;
       font-weight: 500;
@@ -1184,12 +1194,6 @@
       line-height: 1.5;
     }
 
-    .note {
-      font-size: 13.5px;
-      opacity: 0.85;
-      line-height: 1.5;
-    }
-
     .small {
       font-size: 12.5px;
       opacity: 0.7;
@@ -1368,14 +1372,211 @@
     .action-bar-bottom {
       background: var(--card);
       border-top: 1px solid var(--line);
-      padding: 16px;
+      padding: 16px 24px;
       display: flex;
       gap: 12px;
       position: sticky;
       bottom: 0;
       z-index: 10;
-      margin: 0 -14px -12px -14px;
+      margin: 16px -24px -24px;
+      border-radius: 0 0 var(--radius) var(--radius);
     }
+
+    /* ── Helper / hint text below form fields ── */
+    .helper {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.4;
+      opacity: 0.8;
+    }
+
+    /* ── Checkbox + label row ── */
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      accent-color: var(--accent);
+      cursor: pointer;
+      margin: 0;
+      border-radius: 4px;
+    }
+
+    .checkbox-row .small {
+      cursor: default;
+      line-height: 1.4;
+    }
+
+    /* ── Inline monospace text (e.g., .json, .csv) ── */
+    .mono {
+      font-family: var(--mono);
+      font-size: 0.88em;
+      background: color-mix(in srgb, var(--accent) 8%, var(--card));
+      padding: 1px 5px;
+      border-radius: 4px;
+      border: 1px solid var(--line);
+    }
+
+    /* ── Select arrow (replaces browser default) ── */
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239892AC' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    /* ── File input ── */
+    input[type="file"] {
+      padding: 10px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      appearance: auto;
+      -webkit-appearance: auto;
+    }
+
+    input[type="file"]::file-selector-button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: background 0.2s;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+      background: color-mix(in srgb, var(--accent) 85%, black);
+    }
+
+    /* ── Custom thin scrollbar ── */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--muted);
+    }
+
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--line) transparent;
+    }
+
+    /* ── Table styles (Ajustes comparativa) ── */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    table th,
+    table td {
+      padding: 8px 10px;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    table th {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-bottom: 2px solid var(--line);
+    }
+
+    table tr:not(:last-child) td {
+      border-bottom: 1px solid var(--line);
+    }
+
+    table td:not(:first-child),
+    table th:not(:first-child) {
+      text-align: center;
+    }
+
+    /* ── Header proper classes ── */
+    .site-header {
+      padding: 14px 0;
+      background: var(--card);
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 24px;
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .site-header .wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand .logo {
+      width: 34px;
+      height: 34px;
+      background: var(--accent);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: white;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 30%, transparent);
+      flex-shrink: 0;
+    }
+
+    .brand h1 {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .theme-select {
+      background: transparent !important;
+      border: 1px solid var(--line) !important;
+      color: var(--text) !important;
+      font-size: 12px;
+      padding: 6px 28px 6px 10px !important;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
   </style>
 </head>
 
@@ -1402,26 +1603,21 @@
       </div>
     </div>
   </div>
-  <header
-    style="padding: 16px 0; background: var(--card); border-bottom: 1px solid var(--line); margin-bottom: 24px;">
-    <div class="wrap" style="display:flex; justify-content:space-between; align-items:center;">
-      <div class="brand" style="display:flex; align-items:center; gap:12px;">
-        <div class="logo"
-          style="width:32px; height:32px; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:800; color:white; font-size:12px;">
-          CLZ</div>
-        <h1 style="font-size:16px; font-weight:700; margin:0;">CLZ Mini</h1>
+  <header class="site-header">
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo">CLZ</div>
+        <h1>CLZ Mini</h1>
       </div>
-      <div style="display:flex; gap:12px; align-items:center;">
-        <div class="pill" title="Paciente"
-          style="background:rgba(255,255,255,0.05); padding:4px 12px; border-radius:20px; font-size:12px;">
+      <div class="header-actions">
+        <div class="pill" title="Paciente">
           <strong id="patientLabel">—</strong>
         </div>
-        <select id="themeSelect"
-          style="background:transparent; border:none; color:var(--text); font-size:12px; cursor:pointer;">
-          <option value="light">Claro</option>
-          <option value="dark">Oscuro</option>
+        <select id="themeSelect" class="theme-select">
+          <option value="light">☀ Claro</option>
+          <option value="dark">🌙 Oscuro</option>
         </select>
-        <button class="ghost" id="btnInstall" style="padding:4px 8px; font-size:12px;" disabled>Instalar</button>
+        <button class="ghost" id="btnInstall" style="padding:6px 12px; font-size:12px;" disabled>Instalar</button>
       </div>
     </div>
   </header>
@@ -1517,7 +1713,7 @@
                   <span class="small">+ Fluvoxamina</span>
                 </div>
                 <div class="checkbox-row">
-                  <select id="f_habit_caffeine" style="padding:4px; font-size:11px;">
+                  <select id="f_habit_caffeine" style="padding:6px 28px 6px 8px; font-size:11px;">
                     <option value="0">Cafeína: Normal/Baja</option>
                     <option value="4">Cafeína: >3 tazas/día</option>
                   </select>
@@ -1525,8 +1721,6 @@
               </div>
             </div>
           </div>
-
-          <div class="divider"></div>
 
           <div class="divider"></div>
 
@@ -1855,15 +2049,12 @@
             <div><label>Meses para pasar a mensual</label><input type="number" step="1" id="t_mo_4w" /></div>
           </div>
 
-          <div
-            style="margin-top: 16px; background: rgba(0,0,0,0.02); padding: 12px; border-radius: 8px; border: 1px solid var(--line);">
-            <div class="checkbox-row" style="display: flex; align-items: center; gap: 12px;">
-              <input type="checkbox" id="s_low_power" style="width: auto; margin: 0;">
-              <label for="s_low_power" style="margin: 0; font-weight: 500; cursor: pointer;">Modo Ahorro (Desactivar
-                fondo animado)</label>
+          <div style="margin-top: 16px; background: var(--input-bg, rgba(0,0,0,0.04)); padding: 14px; border-radius: 10px; border: 1px solid var(--line);">
+            <div class="checkbox-row">
+              <input type="checkbox" id="s_low_power">
+              <label for="s_low_power" style="margin: 0; font-weight: 500; cursor: pointer;">Modo Ahorro (Desactivar fondo animado)</label>
             </div>
-            <p class="small" style="margin: 4px 0 0 24px; opacity: 0.7;">Actívalo si sientes lentitud en la aplicación.
-            </p>
+            <p class="helper" style="margin: 6px 0 0 24px;">Actívalo si sientes lentitud en la aplicación.</p>
           </div>
           <div class="divider"></div>
           <div class="row">
@@ -1873,33 +2064,31 @@
           <div class="divider"></div>
           <div class="support-box">
             <strong>Comparativa de Criterios (ANC x10³/µL)</strong>
-            <table class="note" style="width:100%; border-collapse:collapse; margin-top:8px;">
-              <tr style="border-bottom:1px solid var(--line);">
-                <th align="left">Umbral de Cese</th>
-                <th align="left">FDA (US)</th>
-                <th align="left">Delphi (Global)</th>
+            <table style="margin-top:8px;">
+              <thead>
+              <tr>
+                <th>Umbral de Cese</th>
+                <th>FDA (US)</th>
+                <th>Delphi (Global)</th>
               </tr>
-              <tr style="border-bottom:1px solid var(--line);">
+              </thead>
+              <tbody>
+              <tr>
                 <td>General</td>
-                <td>
-                  < 1.0 (o tabla ANC)</td>
-                <td><strong>
-                    < 1.0</strong>
-                </td>
+                <td>&lt; 1.0 (o tabla ANC)</td>
+                <td><strong>&lt; 1.0</strong></td>
               </tr>
-              <tr style="border-bottom:1px solid var(--line);">
+              <tr>
                 <td>BEN / DARC-null</td>
-                <td>
-                  < 0.5 (o tabla ANC)</td>
-                <td><strong>
-                    < 0.5</strong>
-                </td>
+                <td>&lt; 0.5 (o tabla ANC)</td>
+                <td><strong>&lt; 0.5</strong></td>
               </tr>
               <tr>
                 <td>Frecuencia ANC</td>
                 <td>Según ficha técnica</td>
                 <td><strong>Hasta 2 años</strong></td>
               </tr>
+              </tbody>
             </table>
             <p class="note" style="margin-top:8px;">
               🆕 <strong>Actualización FDA (2025):</strong> El programa REMS de clozapina fue eliminado (vigente desde el
