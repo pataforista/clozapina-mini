@@ -1577,6 +1577,291 @@
       font-weight: 500;
     }
 
+    /* ════════════════════════════════════════════════════════
+       MODERN UI 2025 — Targeted overrides & improvements
+       ════════════════════════════════════════════════════════ */
+
+    /* ── Extra design tokens ── */
+    :root {
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --transition-fast: all 0.15s var(--ease);
+      --transition: all 0.25s var(--ease);
+    }
+
+    /* ── Labels: uppercase label system (modern form design) ── */
+    label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 7px;
+    }
+
+    /* ── Card: subtle accent gradient at top edge ── */
+    .card {
+      background-image: linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--accent) 5%, var(--card)) 0px,
+        var(--card) 64px
+      );
+      border-top-color: color-mix(in srgb, var(--accent) 20%, var(--line));
+    }
+
+    /* ── Card hover: shadow only (no disruptive lift on form cards) ── */
+    .card:hover {
+      transform: none;
+      box-shadow:
+        0 6px 20px -4px rgba(0, 0, 0, 0.16),
+        0 16px 40px -8px rgba(0, 0, 0, 0.22);
+    }
+
+    /* ── Card h2: tighter tracking, bolder weight ── */
+    .card h2 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      margin-bottom: 18px;
+    }
+
+    /* ── Primary button: gradient + micro-lift ── */
+    button.primary {
+      background: linear-gradient(
+        135deg,
+        var(--accent),
+        color-mix(in srgb, var(--accent) 70%, var(--info))
+      );
+      box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 30%, transparent);
+      letter-spacing: 0.01em;
+    }
+
+    button.primary:hover {
+      background: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--accent) 88%, black),
+        color-mix(in srgb, var(--accent) 60%, var(--info))
+      );
+      box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 42%, transparent);
+      transform: translateY(-1px);
+    }
+
+    /* ── Ghost button: theme-aware hover ── */
+    button.ghost:hover {
+      background: color-mix(in srgb, var(--text) 6%, transparent);
+      border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+    }
+
+    /* ── Divider: fade in/out effect ── */
+    .divider {
+      background: linear-gradient(
+        to right,
+        transparent,
+        var(--line) 15%,
+        var(--line) 85%,
+        transparent
+      );
+    }
+
+    /* ── Tags: dot status indicator + squircle shape ── */
+    .tag {
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 4px 10px 4px 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 6px;
+    }
+
+    .tag::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* ── Rating group: hover color-hints (previews severity) ── */
+    .rating-opt[data-val="1"]:not(.active):hover,
+    .rating-opt[data-val="2"]:not(.active):hover {
+      color: var(--ok);
+      background: color-mix(in srgb, var(--ok) 10%, transparent);
+    }
+
+    .rating-opt[data-val="3"]:not(.active):hover {
+      color: var(--warn);
+      background: color-mix(in srgb, var(--warn) 10%, transparent);
+    }
+
+    .rating-opt[data-val="4"]:not(.active):hover,
+    .rating-opt[data-val="5"]:not(.active):hover {
+      color: var(--bad);
+      background: color-mix(in srgb, var(--bad) 10%, transparent);
+    }
+
+    /* ── Rating active: inner color ring (uses currentColor → adapts to value) ── */
+    .rating-opt.active {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10),
+                  inset 0 0 0 1.5px currentColor;
+      border-radius: 6px;
+    }
+
+    /* ── Collapsible trigger: CSS border-chevron (replaces ▾ glyph) ── */
+    .collapsible-trigger {
+      background: color-mix(in srgb, var(--accent) 4%, var(--card));
+      padding: 13px 16px;
+      gap: 12px;
+      transition: background 0.2s var(--ease);
+    }
+
+    .collapsible-trigger:hover {
+      background: color-mix(in srgb, var(--accent) 9%, var(--card));
+    }
+
+    .collapsible-trigger::after {
+      content: "";
+      display: block;
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      transform: rotate(45deg) translate(-1px, -3px);
+      transition: transform 0.28s var(--ease), border-color 0.15s;
+      flex-shrink: 0;
+    }
+
+    .collapsible-trigger:hover::after {
+      border-color: var(--text);
+    }
+
+    .collapsible.open .collapsible-trigger::after {
+      transform: rotate(-135deg) translate(-1px, 1px);
+    }
+
+    /* ── Support boxes: left-border accent (semantic per type) ── */
+    .support-box {
+      border-width: 0 0 0 3px;
+      border-style: solid;
+      border-color: var(--info);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      background: color-mix(in srgb, var(--info) 5%, var(--card));
+      padding: 12px 14px;
+    }
+
+    /* ── KPI boxes: accent gradient + refined typography ── */
+    .box {
+      background: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--accent) 5%, var(--card)),
+        var(--card) 70%
+      );
+      gap: 4px;
+    }
+
+    .box .lbl {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      line-height: 1;
+    }
+
+    .box .val {
+      font-size: 22px;
+      line-height: 1.15;
+      margin-top: 4px;
+    }
+
+    /* ── List items: stronger accent bar + better selected state ── */
+    .item::before {
+      opacity: 0.5;
+      width: 3px;
+    }
+
+    .item.selected {
+      border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+      background: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--accent) 7%, var(--card)),
+        var(--card) 70%
+      );
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    .item.selected::before {
+      opacity: 1;
+      background: var(--accent);
+    }
+
+    /* ── .note: clean opacity (color alone handles muting) ── */
+    .note {
+      opacity: 1;
+    }
+
+    /* ── Empty state for entry list ── */
+    #entryList:empty {
+      padding: 44px 16px;
+      text-align: center;
+      border: 1px dashed color-mix(in srgb, var(--accent) 22%, var(--line));
+      border-radius: var(--radius-sm);
+      margin-top: 4px;
+    }
+
+    #entryList:empty::before {
+      content: "📋";
+      display: block;
+      font-size: 34px;
+      margin-bottom: 10px;
+      opacity: 0.45;
+    }
+
+    #entryList:empty::after {
+      content: "Sin registros — agrega tu primera entrada";
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* ── Section transitions: snappier ── */
+    section {
+      animation-duration: 0.25s;
+    }
+
+    /* ── Privacy overlay: glassmorphism ── */
+    #privacyOverlay {
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+    }
+
+    /* ── Modal: rounder + elevated shadow ── */
+    .modal {
+      border-radius: 20px;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6),
+                  0 0 0 1px var(--glass-border);
+    }
+
+    /* ── Header patient pill: accent-tinted ── */
+    .site-header .pill {
+      background: color-mix(in srgb, var(--accent) 8%, transparent);
+      border-color: color-mix(in srgb, var(--accent) 25%, var(--line));
+    }
+
+    /* ── Disclaimer banner: tighter type ── */
+    .disclaimer-banner strong {
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── @media: remove card-hover lift on pointer:coarse (touch) ── */
+    @media (pointer: coarse) {
+      .card:hover { transform: none; box-shadow: var(--shadow); }
+      button.primary:hover { transform: none; }
+      .icon-btn:hover, .btn-doc:hover { transform: none; }
+    }
+
   </style>
 </head>
 
