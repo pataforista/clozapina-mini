@@ -6,20 +6,17 @@
 export const CLINICAL_RULES = {
     // Neutropenia Thresholds (ANC in k/ul)
     ANC: {
-        NORMAL: { START: 1.5, WARN: 1.5, CRITICAL: 1.0 },
-        BEN: { START: 1.0, WARN: 1.0, CRITICAL: 0.5 }
+        NORMAL: { START: 1.5, WARN: 1.5, CRITICAL: 1.0, SEVERE: 0.5 },
+        BEN: { START: 1.0, WARN: 1.0, CRITICAL: 0.5, SEVERE: 0.5 }
     },
     // Side Effect Severity Thresholds
     SIDE_EFFECTS: {
         CONSTIPATION_MAX: 3, // Above this, risk of Ileus
-        SIALORRHEA_MAX: 3,
-        SOMNOLENCE_MAX: 4
+        SIALORRHEA_MAX: 3
     },
     // CYP1A2 Interaction Factors
     INTERACTIONS: {
-        SMOKING_FACTOR: 2.0, // Smokers need ~double dose
-        CAFFEINE_LIMIT: 3,    // Throw warning if > 3 cups/day
-        FLUVOXAMINE_REDUCTION: 0.25 // Reduce dose to 25% (reduction of 75%)
+        CAFFEINE_LIMIT: 3    // Throw warning if > 3 cups/day
     }
 };
 
@@ -39,14 +36,25 @@ export function analyzeANC(anc, isBEN = false, thresholds = null) {
         limits = isBEN
             ? {
                 WARN:     validTh(thresholds.anc_norm_ben,     CLINICAL_RULES.ANC.BEN.WARN),
-                CRITICAL: validTh(thresholds.anc_interrupt_ben, CLINICAL_RULES.ANC.BEN.CRITICAL)
+                CRITICAL: validTh(thresholds.anc_interrupt_ben, CLINICAL_RULES.ANC.BEN.CRITICAL),
+                SEVERE:   validTh(thresholds.anc_severe,        CLINICAL_RULES.ANC.BEN.SEVERE)
             }
             : {
                 WARN:     validTh(thresholds.anc_norm,     CLINICAL_RULES.ANC.NORMAL.WARN),
-                CRITICAL: validTh(thresholds.anc_interrupt, CLINICAL_RULES.ANC.NORMAL.CRITICAL)
+                CRITICAL: validTh(thresholds.anc_interrupt, CLINICAL_RULES.ANC.NORMAL.CRITICAL),
+                SEVERE:   validTh(thresholds.anc_severe,        CLINICAL_RULES.ANC.NORMAL.SEVERE)
             };
     } else {
         limits = isBEN ? CLINICAL_RULES.ANC.BEN : CLINICAL_RULES.ANC.NORMAL;
+    }
+
+    if (anc < limits.SEVERE) {
+        return {
+            status: 'SEVERE',
+            color: 'var(--bad)',
+            message: 'RIESGO EXTREMO DE AGRANULOCITOSIS (ANC < 0.5 k/µL). Descontinuar inmediatamente.',
+            action: 'Urgencia médica absoluta. Aislamiento protector, valoración hematológica inmediata.'
+        };
     }
 
     if (anc < limits.CRITICAL) {

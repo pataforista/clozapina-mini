@@ -13,7 +13,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap"
     rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
   <style>
     /* Privacy Overlay */
     #privacyOverlay {
@@ -236,23 +236,35 @@
     button:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
+      box-shadow: 0 0 0 4px var(--focus);
     }
 
     @media (max-width: 620px) {
-      .nav-item {
-        min-width: 44px;
-        padding: 9px 10px;
-        gap: 0;
+      .floating-nav .nav-brand {
+        display: none;
       }
-      .nav-label { display: none; }
-      .nav-icon { width: 22px; height: 22px; }
-      .nav-brand { width: 38px; height: 38px; font-size: 10px; }
+      .nav-items {
+        width: 100%;
+        justify-content: space-around;
+      }
+      .nav-item {
+        min-width: 68px;
+        padding: 6px 4px;
+        gap: 3px;
+      }
+      .nav-label {
+        display: block;
+        font-size: 9px;
+      }
+      .nav-icon {
+        width: 20px;
+        height: 20px;
+      }
     }
 
     @media (max-width: 380px) {
       .floating-nav { padding: 4px; gap: 0; }
-      .nav-item { min-width: 38px; padding: 8px 7px; }
-      .nav-brand { width: 34px; height: 34px; font-size: 9px; margin-right: 2px; }
+      .nav-item { min-width: 60px; padding: 6px 2px; }
     }
 
     @media (max-width: 768px) {
@@ -261,68 +273,16 @@
       }
     }
 
-    /* Electric Border Effect */
-    @keyframes electric-rotate {
-      from {
-        transform: rotate(0deg);
-      }
-
-      to {
-        transform: rotate(360deg);
-      }
+    /* Tab transition animation */
+    main > section {
+      animation: tabFadeIn 0.28s var(--ease) forwards;
+    }
+    @keyframes tabFadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .electric-border {
-      position: relative;
-      padding: 1.5px;
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      background: transparent;
-      border: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
-    .electric-border::before {
-      content: "";
-      position: absolute;
-      top: -150%;
-      left: -150%;
-      width: 400%;
-      height: 400%;
-      background: conic-gradient(from 0deg,
-          transparent 0deg,
-          transparent 140deg,
-          var(--accent) 180deg,
-          color-mix(in srgb, var(--info) 50%, var(--accent)) 200deg,
-          transparent 240deg,
-          transparent 360deg);
-      animation: electric-rotate 4s linear infinite;
-      z-index: 1;
-    }
-
-    .electric-inner {
-      position: relative;
-      background: var(--card);
-      padding: 10px 22px;
-      border-radius: calc(var(--radius-sm) - 1px);
-      z-index: 2;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.3s;
-      color: var(--text);
-      font-weight: 600;
-      font-size: 14px;
-    }
-
-    .electric-border:hover .electric-inner {
-      background: color-mix(in srgb, var(--accent) 8%, var(--card));
-    }
+    /* Electric Border classes removed */
 
     main {
       padding: 24px 0 90px;
@@ -844,7 +804,7 @@
 
     .toast {
       position: fixed;
-      bottom: 24px;
+      bottom: 96px;
       left: 50%;
       transform: translateX(-50%);
       background: var(--card);
@@ -857,6 +817,59 @@
       display: none;
       font-weight: 500;
       font-size: 14px;
+    }
+
+    /* Modern classes replacing inline styles */
+    .context-banner {
+      background: color-mix(in srgb, var(--accent) 10%, var(--card));
+      border-left: 4px solid var(--accent);
+      padding: 10px 14px;
+      border-radius: 4px;
+      display: none;
+      margin-bottom: 16px;
+    }
+    .context-banner__title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .context-banner__label {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .context-banner__details {
+      font-size: 12px;
+      opacity: 0.7;
+      margin-top: 2px;
+    }
+    .modal-input-label {
+      margin-top: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .modal-input-row {
+      margin-top: 8px;
+      display: flex;
+      gap: 8px;
+    }
+    .modal-input-flex {
+      flex: 1;
+    }
+    .support-box--accent {
+      background: color-mix(in srgb, var(--info) 10%, var(--card));
+      border-color: var(--accent);
+    }
+    .support-box--warn-cv {
+      background: color-mix(in srgb, var(--bad) 5%, var(--card));
+      border-color: var(--bad);
+    }
+
+    @media (max-width: 768px) {
+      input, select, textarea {
+        font-size: 16px;
+      }
     }
 
     .toast.show {
@@ -952,132 +965,13 @@
     }
 
     /* ── PWA: actualización forzada (force update) ─────────────── */
-    @keyframes upd-banner-in {
-      from { opacity: 0; transform: translate(-50%, 28px) scale(0.96); }
-      to   { opacity: 1; transform: translate(-50%, 0) scale(1); }
-    }
-
-    @keyframes upd-banner-out {
-      from { opacity: 1; transform: translate(-50%, 0) scale(1); }
-      to   { opacity: 0; transform: translate(-50%, 28px) scale(0.96); }
-    }
-
     @keyframes upd-spin {
       to { transform: rotate(360deg); }
-    }
-
-    @keyframes upd-pulse-ring {
-      0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent); }
-      70%  { box-shadow: 0 0 0 12px transparent; }
-      100% { box-shadow: 0 0 0 0 transparent; }
     }
 
     @keyframes upd-shimmer {
       0%   { background-position: 200% 0; }
       100% { background-position: -200% 0; }
-    }
-
-    .update-banner {
-      position: fixed;
-      left: 50%;
-      bottom: 96px;
-      transform: translateX(-50%);
-      z-index: 1200;
-      display: none;
-      align-items: center;
-      gap: 14px;
-      width: min(440px, calc(100vw - 32px));
-      padding: 14px 16px;
-      border-radius: 18px;
-      background: var(--glass);
-      border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
-      box-shadow: var(--shadow), 0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-    }
-
-    .update-banner.show {
-      display: flex;
-      animation: upd-banner-in 0.45s var(--ease);
-    }
-
-    .update-banner.hiding {
-      animation: upd-banner-out 0.35s var(--ease) forwards;
-    }
-
-    .update-banner__icon {
-      flex: 0 0 auto;
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      color: #fff;
-      background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--info) 60%, var(--accent)));
-      animation: upd-pulse-ring 2.2s var(--ease) infinite;
-    }
-
-    .update-banner__icon svg {
-      width: 22px;
-      height: 22px;
-      animation: upd-spin 3.5s linear infinite;
-    }
-
-    .update-banner__body {
-      flex: 1 1 auto;
-      min-width: 0;
-    }
-
-    .update-banner__title {
-      font-weight: 700;
-      font-size: 14px;
-      line-height: 1.25;
-    }
-
-    .update-banner__sub {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 1px;
-    }
-
-    .update-banner__btn {
-      flex: 0 0 auto;
-      border: none;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 13px;
-      color: #fff;
-      padding: 9px 16px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--info) 55%, var(--accent)));
-      box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
-      transition: var(--transition);
-    }
-
-    .update-banner__btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 45%, transparent);
-    }
-
-    .update-banner__btn:active { transform: translateY(0); }
-
-    .update-banner__close {
-      flex: 0 0 auto;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1;
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      transition: var(--transition);
-    }
-
-    .update-banner__close:hover {
-      background: color-mix(in srgb, var(--text) 8%, transparent);
-      color: var(--text);
     }
 
     /* Pantalla completa: aplicando actualización */
@@ -1165,12 +1059,8 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .update-banner.show,
-      .update-banner.hiding,
       .update-overlay.show,
       .update-overlay__card,
-      .update-banner__icon,
-      .update-banner__icon svg,
       .update-overlay__spinner,
       .update-overlay__sub { animation: none !important; }
     }
@@ -1286,6 +1176,10 @@
       cursor: pointer;
       border-radius: 4px;
       color: var(--muted);
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      min-width: 0;
       transition: background 0.18s var(--ease), color 0.18s var(--ease), box-shadow 0.18s var(--ease);
       user-select: none;
     }
@@ -1942,11 +1836,11 @@
     <div class="wrap">
       <div class="brand">
         <div class="logo">CLZ</div>
-        <h1>CLZ Mini</h1>
+        <h1 id="appHeaderTitle">Registro</h1>
       </div>
       <div class="header-actions">
-        <div class="pill" title="Paciente">
-          <strong id="patientLabel">—</strong>
+        <div class="pill" title="Paciente Activo" style="display: inline-flex; align-items: center; gap: 4px;">
+          <span>👤</span> <strong id="patientLabel">—</strong>
         </div>
         <select id="themeSelect" class="theme-select">
           <option value="light">☀ Claro</option>
@@ -1964,13 +1858,10 @@
         <div class="card">
           <h2>Entrada</h2>
           <!-- Patient Context Banner inside Card for Context -->
-          <div id="patientContextBanner"
-            style="background: color-mix(in srgb, var(--accent) 10%, var(--card)); border-left: 4px solid var(--accent); padding: 10px 14px; border-radius: 4px; display: none; margin-bottom: 16px;">
-            <div
-              style="font-size:11px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:0.05em;">
-              Paciente Activo:</div>
-            <div style="font-size:15px; font-weight:600;" id="ctx_label">—</div>
-            <div style="font-size:12px; opacity:0.7; margin-top:2px;" id="ctx_details">—</div>
+          <div id="patientContextBanner" class="context-banner">
+            <div class="context-banner__title">Paciente Activo:</div>
+            <div class="context-banner__label" id="ctx_label">—</div>
+            <div class="context-banner__details" id="ctx_details">—</div>
           </div>
 
           <div class="support-box">
@@ -2032,11 +1923,11 @@
               <div class="checkbox-group" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
                 <div class="checkbox-row">
                   <input type="checkbox" id="f_habit_smoke" />
-                  <span class="small">Fumador activo</span>
+                  <label for="f_habit_smoke" class="small" style="cursor:pointer; margin:0;">Fumador activo</label>
                 </div>
                 <div class="checkbox-row">
                   <input type="checkbox" id="f_habit_quit" />
-                  <span class="small">Dejó de fumar (últimos 14 días)</span>
+                  <label for="f_habit_quit" class="small" style="cursor:pointer; margin:0;">Dejó de fumar (últimos 14 días)</label>
                 </div>
               </div>
             </div>
@@ -2045,7 +1936,7 @@
               <div class="checkbox-group" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
                 <div class="checkbox-row">
                   <input type="checkbox" id="f_habit_fluvox" />
-                  <span class="small">+ Fluvoxamina</span>
+                  <label for="f_habit_fluvox" class="small" style="cursor:pointer; margin:0;">+ Fluvoxamina</label>
                 </div>
                 <div class="checkbox-row">
                   <select id="f_habit_caffeine" style="padding:6px 28px 6px 8px; font-size:11px;">
@@ -2060,8 +1951,7 @@
           <div class="divider"></div>
 
           <h2>Laboratorios (en x10³/µL)</h2>
-          <div class="support-box"
-            style="background: color-mix(in srgb, var(--info) 10%, var(--card)); border-color: var(--accent);">
+          <div class="support-box support-box--accent">
             <strong>⚠️ Verificación de Unidades:</strong> Esta app usa <strong>x10³/µL</strong> (k/µL).
             <p class="small" style="margin-top:4px; opacity:0.8;">
               Si el laboratorio reporta en <strong>células/µL</strong> (p.ej., 2500), <strong>divide entre 1000</strong>
@@ -2114,14 +2004,14 @@
           <h2>Triage / Riesgo Inmediato</h2>
           <div class="row">
             <div>
-              <label>Estreñimiento (0–5)</label>
-              <div class="rating-group" data-input="f_const">
-                <div class="rating-opt" data-val="0">0</div>
-                <div class="rating-opt" data-val="1">1</div>
-                <div class="rating-opt" data-val="2">2</div>
-                <div class="rating-opt" data-val="3">3</div>
-                <div class="rating-opt" data-val="4">4</div>
-                <div class="rating-opt" data-val="5">5</div>
+              <label id="lbl_const">Estreñimiento (0–5)</label>
+              <div class="rating-group" data-input="f_const" role="radiogroup" aria-labelledby="lbl_const">
+                <button type="button" class="rating-opt" data-val="0" role="radio" aria-checked="true" aria-label="0 de 5">0</button>
+                <button type="button" class="rating-opt" data-val="1" role="radio" aria-checked="false" aria-label="1 de 5">1</button>
+                <button type="button" class="rating-opt" data-val="2" role="radio" aria-checked="false" aria-label="2 de 5">2</button>
+                <button type="button" class="rating-opt" data-val="3" role="radio" aria-checked="false" aria-label="3 de 5">3</button>
+                <button type="button" class="rating-opt" data-val="4" role="radio" aria-checked="false" aria-label="4 de 5">4</button>
+                <button type="button" class="rating-opt" data-val="5" role="radio" aria-checked="false" aria-label="5 de 5">5</button>
               </div>
               <input type="hidden" id="f_const" value="0">
               <div class="helper">Red flag: días sin evacuar y dolor.</div>
@@ -2140,22 +2030,18 @@
             <div style="display:flex; align-items:flex-end; padding-bottom:12px">
               <div class="checkbox-row">
                 <input type="checkbox" id="f_const_red" />
-                <span class="small">Dolor/Vómito</span>
+                <label for="f_const_red" class="small" style="cursor:pointer; margin:0;">Dolor/Vómito</label>
               </div>
             </div>
           </div>
 
-          <div class="support-box"
-            style="background: color-mix(in srgb, var(--bad) 5%, var(--card)); border-color: var(--bad);">
+          <div class="support-box support-box--warn-cv">
             <strong>Banderas Rojas (CV/RESP):</strong>
             <div class="row" style="margin-top:8px">
-              <div class="checkbox-row"><input type="checkbox" id="f_chest" /><span class="small">Dolor torácico</span>
-              </div>
-              <div class="checkbox-row"><input type="checkbox" id="f_dyspnea" /><span class="small">Disnea</span></div>
-              <div class="checkbox-row"><input type="checkbox" id="f_tachy" /><span class="small">Taquicardia</span>
-              </div>
-              <div class="checkbox-row"><input type="checkbox" id="f_unwell" /><span class="small">Mal estado</span>
-              </div>
+              <div class="checkbox-row"><input type="checkbox" id="f_chest" /><label for="f_chest" class="small" style="cursor:pointer; margin:0;">Dolor torácico</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="f_dyspnea" /><label for="f_dyspnea" class="small" style="cursor:pointer; margin:0;">Disnea</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="f_tachy" /><label for="f_tachy" class="small" style="cursor:pointer; margin:0;">Taquicardia</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="f_unwell" /><label for="f_unwell" class="small" style="cursor:pointer; margin:0;">Mal estado</label></div>
             </div>
           </div>
 
@@ -2168,64 +2054,64 @@
             <div class="collapsible-content" style="padding: 0 16px;">
               <div class="row" style="margin-top:12px">
                 <div>
-                  <label>Sialorrea</label>
-                  <div class="rating-group" data-input="f_sial">
-                    <div class="rating-opt" data-val="0">0</div>
-                    <div class="rating-opt" data-val="1">1</div>
-                    <div class="rating-opt" data-val="2">2</div>
-                    <div class="rating-opt" data-val="3">3</div>
-                    <div class="rating-opt" data-val="4">4</div>
-                    <div class="rating-opt" data-val="5">5</div>
+                  <label id="lbl_sial">Sialorrea</label>
+                  <div class="rating-group" data-input="f_sial" role="radiogroup" aria-labelledby="lbl_sial">
+                    <button type="button" class="rating-opt" data-val="0" role="radio" aria-checked="true" aria-label="0 de 5">0</button>
+                    <button type="button" class="rating-opt" data-val="1" role="radio" aria-checked="false" aria-label="1 de 5">1</button>
+                    <button type="button" class="rating-opt" data-val="2" role="radio" aria-checked="false" aria-label="2 de 5">2</button>
+                    <button type="button" class="rating-opt" data-val="3" role="radio" aria-checked="false" aria-label="3 de 5">3</button>
+                    <button type="button" class="rating-opt" data-val="4" role="radio" aria-checked="false" aria-label="4 de 5">4</button>
+                    <button type="button" class="rating-opt" data-val="5" role="radio" aria-checked="false" aria-label="5 de 5">5</button>
                   </div>
                   <input type="hidden" id="f_sial" value="0">
                 </div>
                 <div>
-                  <label>Somnolencia</label>
-                  <div class="rating-group" data-input="f_somn">
-                    <div class="rating-opt" data-val="0">0</div>
-                    <div class="rating-opt" data-val="1">1</div>
-                    <div class="rating-opt" data-val="2">2</div>
-                    <div class="rating-opt" data-val="3">3</div>
-                    <div class="rating-opt" data-val="4">4</div>
-                    <div class="rating-opt" data-val="5">5</div>
+                  <label id="lbl_somn">Somnolencia</label>
+                  <div class="rating-group" data-input="f_somn" role="radiogroup" aria-labelledby="lbl_somn">
+                    <button type="button" class="rating-opt" data-val="0" role="radio" aria-checked="true" aria-label="0 de 5">0</button>
+                    <button type="button" class="rating-opt" data-val="1" role="radio" aria-checked="false" aria-label="1 de 5">1</button>
+                    <button type="button" class="rating-opt" data-val="2" role="radio" aria-checked="false" aria-label="2 de 5">2</button>
+                    <button type="button" class="rating-opt" data-val="3" role="radio" aria-checked="false" aria-label="3 de 5">3</button>
+                    <button type="button" class="rating-opt" data-val="4" role="radio" aria-checked="false" aria-label="4 de 5">4</button>
+                    <button type="button" class="rating-opt" data-val="5" role="radio" aria-checked="false" aria-label="5 de 5">5</button>
                   </div>
                   <input type="hidden" id="f_somn" value="0">
                 </div>
                 <div>
-                  <label>Mareo</label>
-                  <div class="rating-group" data-input="f_diz">
-                    <div class="rating-opt" data-val="0">0</div>
-                    <div class="rating-opt" data-val="1">1</div>
-                    <div class="rating-opt" data-val="2">2</div>
-                    <div class="rating-opt" data-val="3">3</div>
-                    <div class="rating-opt" data-val="4">4</div>
-                    <div class="rating-opt" data-val="5">5</div>
+                  <label id="lbl_diz">Mareo</label>
+                  <div class="rating-group" data-input="f_diz" role="radiogroup" aria-labelledby="lbl_diz">
+                    <button type="button" class="rating-opt" data-val="0" role="radio" aria-checked="true" aria-label="0 de 5">0</button>
+                    <button type="button" class="rating-opt" data-val="1" role="radio" aria-checked="false" aria-label="1 de 5">1</button>
+                    <button type="button" class="rating-opt" data-val="2" role="radio" aria-checked="false" aria-label="2 de 5">2</button>
+                    <button type="button" class="rating-opt" data-val="3" role="radio" aria-checked="false" aria-label="3 de 5">3</button>
+                    <button type="button" class="rating-opt" data-val="4" role="radio" aria-checked="false" aria-label="4 de 5">4</button>
+                    <button type="button" class="rating-opt" data-val="5" role="radio" aria-checked="false" aria-label="5 de 5">5</button>
                   </div>
                   <input type="hidden" id="f_diz" value="0">
                 </div>
                 <div>
-                  <label>Visión borrosa</label>
-                  <div class="rating-group" data-input="f_blur">
-                    <div class="rating-opt" data-val="0">0</div>
-                    <div class="rating-opt" data-val="1">1</div>
-                    <div class="rating-opt" data-val="2">2</div>
-                    <div class="rating-opt" data-val="3">3</div>
-                    <div class="rating-opt" data-val="4">4</div>
-                    <div class="rating-opt" data-val="5">5</div>
+                  <label id="lbl_blur">Visión borrosa</label>
+                  <div class="rating-group" data-input="f_blur" role="radiogroup" aria-labelledby="lbl_blur">
+                    <button type="button" class="rating-opt" data-val="0" role="radio" aria-checked="true" aria-label="0 de 5">0</button>
+                    <button type="button" class="rating-opt" data-val="1" role="radio" aria-checked="false" aria-label="1 de 5">1</button>
+                    <button type="button" class="rating-opt" data-val="2" role="radio" aria-checked="false" aria-label="2 de 5">2</button>
+                    <button type="button" class="rating-opt" data-val="3" role="radio" aria-checked="false" aria-label="3 de 5">3</button>
+                    <button type="button" class="rating-opt" data-val="4" role="radio" aria-checked="false" aria-label="4 de 5">4</button>
+                    <button type="button" class="rating-opt" data-val="5" role="radio" aria-checked="false" aria-label="5 de 5">5</button>
                   </div>
                   <input type="hidden" id="f_blur" value="0">
                 </div>
               </div>
               <div class="row">
                 <div>
-                  <label>Apetito</label>
-                  <div class="rating-group" data-input="f_app">
-                    <div class="rating-opt" data-val="0">0</div>
-                    <div class="rating-opt" data-val="1">1</div>
-                    <div class="rating-opt" data-val="2">2</div>
-                    <div class="rating-opt" data-val="3">3</div>
-                    <div class="rating-opt" data-val="4">4</div>
-                    <div class="rating-opt" data-val="5">5</div>
+                  <label id="lbl_app">Apetito</label>
+                  <div class="rating-group" data-input="f_app" role="radiogroup" aria-labelledby="lbl_app">
+                    <button type="button" class="rating-opt" data-val="0" role="radio" aria-checked="true" aria-label="0 de 5">0</button>
+                    <button type="button" class="rating-opt" data-val="1" role="radio" aria-checked="false" aria-label="1 de 5">1</button>
+                    <button type="button" class="rating-opt" data-val="2" role="radio" aria-checked="false" aria-label="2 de 5">2</button>
+                    <button type="button" class="rating-opt" data-val="3" role="radio" aria-checked="false" aria-label="3 de 5">3</button>
+                    <button type="button" class="rating-opt" data-val="4" role="radio" aria-checked="false" aria-label="4 de 5">4</button>
+                    <button type="button" class="rating-opt" data-val="5" role="radio" aria-checked="false" aria-label="5 de 5">5</button>
                   </div>
                   <input type="hidden" id="f_app" value="0">
                 </div>
@@ -2238,13 +2124,21 @@
           <textarea id="f_notes" placeholder="Libre. Evita datos identificables." style="min-height:80px"></textarea>
 
           <div class="action-bar-bottom">
-            <button class="electric-border" id="btnSave" style="flex:2">
-              <span class="electric-inner">Guardar / Actualizar</span>
+            <button class="primary" id="btnSave" style="flex:2">
+              Guardar / Actualizar
             </button>
-            <button class="ghost" id="btnCopyClip" title="Copiar Nota Clínica">📋</button>
-            <button class="ghost" id="btnGuide" title="Guía">ℹ️</button>
-            <button class="ghost" id="btnClear" title="Limpiar">🧹</button>
-            <button class="danger" id="btnDelete" disabled title="Borrar">🗑️</button>
+            <button class="ghost" id="btnCopyClip" title="Copiar Nota Clínica">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+            <button class="ghost" id="btnGuide" title="Guía">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            </button>
+            <button class="ghost" id="btnClear" title="Limpiar">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21Z"></path><path d="m22 21H7"></path><path d="m5 11 9 9"></path></svg>
+            </button>
+            <button class="danger" id="btnDelete" disabled title="Borrar">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            </button>
           </div>
         </div>
 
@@ -2308,39 +2202,11 @@
               <option value="16">Últimas 16</option>
             </select>
           </div>
-          <div>
-            <label>&nbsp;</label>
-            <button class="ghost" id="btnRedraw">Redibujar</button>
-          </div>
         </div>
       </div>
     </section>
 
-    <!-- Import/Export -->
-    <section id="tab-import" class="hidden">
-      <div class="grid">
-        <div class="card">
-          <h2>Exportar</h2>
-          <p class="note">Descarga un archivo <span class="mono">.json</span> con tu registro completo. Útil para
-            respaldo o migración.</p>
-          <div class="row">
-            <button class="primary" id="btnExportJson">Exportar JSON</button>
-            <button class="ghost" id="btnExportCsv">Exportar CSV (labs)</button>
-          </div>
-          <div class="divider"></div>
-          <h2>Atajos</h2>
-          <button class="ghost" id="btnLoadDemoManual">Cargar Datos de Prueba (Demo)</button>
-        </div>
-        <div class="card">
-          <h2>Importar</h2>
-        <p class="note">Importa un archivo <span class="mono">.json</span> exportado previamente. Esto reemplaza el
-          registro actual.</p>
-        <input type="file" id="importFile" accept="application/json" />
-        <div class="divider"></div>
-        <button class="danger" id="btnWipe">Borrar todo (local)</button>
-      </div>
-      </div>
-    </section>
+
 
     <!-- Ajustes -->
     <section id="tab-ajustes" class="hidden">
@@ -2438,18 +2304,36 @@
           </div>
         </div>
 
-        <div class="card">
-          <h2>Privacidad operacional</h2>
-          <ul class="note">
-            <li>No hay backend; todo se guarda localmente en este navegador.</li>
-            <li>Si borras datos del navegador, se perderá el registro.</li>
-            <li>Para respaldo, exporta JSON periódicamente.</li>
-            <li>No capturar: nombre, CURP, NSS, teléfono, dirección, etc.</li>
-          </ul>
-        </div>
+        <div style="display:flex; flex-direction:column; gap:20px;">
+          <div class="card">
+            <h2>Exportar e Importar Datos</h2>
+            <p class="note">Descarga o sube un archivo <span class="mono">.json</span> para respaldo o migración.</p>
+            <div class="row" style="margin-top:12px">
+              <button class="primary" id="btnExportJson">Exportar JSON</button>
+              <button class="ghost" id="btnExportCsv">Exportar CSV (labs)</button>
+            </div>
+            <div class="divider"></div>
+            <label>Importar archivo de respaldo (.json)</label>
+            <input type="file" id="importFile" accept="application/json" style="padding:8px;" />
+            <div class="divider"></div>
+            <div class="row">
+              <button class="ghost" id="btnLoadDemoManual" style="flex:1;">Cargar Demo</button>
+              <button class="danger" id="btnWipe" style="flex:1;">Borrar todo (local)</button>
+            </div>
+          </div>
 
-        <div class="card">
-          <h2>App / Actualizaciones</h2>
+          <div class="card">
+            <h2>Privacidad operacional</h2>
+            <ul class="note">
+              <li>No hay backend; todo se guarda localmente en este navegador.</li>
+              <li>Si borras datos del navegador, se perderá el registro.</li>
+              <li>Para respaldo, exporta JSON periódicamente.</li>
+              <li>No capturar: nombre, CURP, NSS, teléfono, dirección, etc.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>App / Actualizaciones</h2>
           <p class="note">
             Versión instalada: <strong id="appVersion">—</strong>
           </p>
@@ -2466,127 +2350,129 @@
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Referencias -->
-    <section id="tab-referencias" class="hidden">
-      <div class="card">
-        <h2>Buscador Clínico / Info</h2>
-        <div style="margin-bottom: 20px;" id="refSearchCard">
-          <input type="text" id="refSearch" placeholder="Busca síntomas o guías (ej. 'fiebre', 'delphi')"
-            style="width:100%" />
-        </div>
-        <div id="refResults">
-          <div class="card">
-            <h2>Funcionalidad incluida</h2>
-            <ul class="note">
-              <li>Registro local de laboratorios (ANC, leucocitos, plaquetas, eosinófilos) y síntomas.</li>
-              <li>Alertas informativas según umbrales configurables y condición BEN.</li>
-              <li>Gráficas simples sin librerías externas, con selección de serie y ventana.</li>
-              <li>Importación y exportación de datos (JSON y CSV).</li>
-              <li>Modo offline con Service Worker y almacenamiento local.</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h2>Avisos y autoría</h2>
-            <ul class="note">
-              <li>Esta PWA es una herramienta de registro y visualización. No es un dispositivo médico ni sustituye el
-                juicio clínico.</li>
-              <li>El usuario es responsable de validar datos, interpretar resultados y seguir protocolos institucionales
-                vigentes.</li>
-              <li>En caso de urgencias o signos de alarma, priorizar la evaluación clínica y los servicios de
-                emergencia.
-              </li>
-              <li>Evita capturar datos identificables; la información se guarda solo en este navegador.</li>
-            </ul>
-            <p class="note"><strong>Autoría:</strong> Cesar Celada / Mauricio Rosel.</p>
-          </div>
-          <div class="card refs">
-            <h2>Referencias (para los umbrales por defecto)</h2>
-            <p class="note">
-              Estas referencias se incluyen para transparencia de los defaults. Los protocolos locales/institucionales
-              pueden diferir.
-            </p>
-            <div class="divider"></div>
-            <ol class="note">
-              <li><strong>FDA – Eliminación del REMS de clozapina (2025)</strong>. Desde el 24 de febrero de 2025 la FDA
-                dejó de exigir la participación en el programa REMS, y lo retiró formalmente el 13 de junio de 2025. Las
-                farmacias ya <strong>no</strong> requieren el reporte del ANC antes de dispensar. El <strong>monitoreo de
-                  ANC sigue recomendado</strong> según la información de prescripción, y las advertencias sobre
-                neutropenia grave se mantienen (Boxed Warning).</li>
-              <li><strong>Siskind et al., 2025 (Lancet Psychiatry / Global Delphi Consensus)</strong>. Guía clave que
-                actualiza los umbrales de cese a ANC &lt; 1.0 (General) y &lt; 0.5 (DARC-null). Recomienda cese de
-                monitoreo
-                de ANC tras 2 años de estabilidad.</li>
-              <li><strong>CLOZARIL (clozapina) – Prescribing Information (FDA)</strong>. Baseline ANC ≥1500/µL (general)
-                y
-                ≥1000/µL (BEN); ANC severa definida como &lt;500/µL.</li>
-              <li><strong>Kar et al., 2016 / SmPC (Europa, 2024)</strong>. Alertan sobre eosinofilia &gt;3000/mm³ y
-                plaquetas &lt;50,000/mm³ (3.0 y 50 en x10³/µL).</li>
-              <li><strong>Sultan et al., 2017</strong>. Describe el cambio en la guía FDA que elimina umbrales por
-                leucocitos totales (WBC) del algoritmo de monitoreo.</li>
-            </ol>
-            <p class="small">Esta PWA es una herramienta de registro/visualización. No constituye consejo médico ni un
-              dispositivo médico.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- Recursos -->
+    <section id="tab-recursos" class="hidden">
+      <div class="grid">
+        <div class="card">
+          <h2>Documentos y Recursos</h2>
+          <p class="note" style="margin-bottom: 20px;">
+            Guías y formatos oficiales para tu práctica clínica. Usa <strong>Ver</strong> para abrir el PDF o
+            <strong>Descargar</strong> para guardarlo en tu dispositivo (también funciona sin conexión una vez abierto).
+          </p>
 
-    <!-- Documentos -->
-    <section id="tab-docs" class="hidden">
-      <div class="card">
-        <h2>Documentos y Recursos</h2>
-        <p class="note" style="margin-bottom: 20px;">
-          Guías y formatos oficiales para tu práctica clínica. Usa <strong>Ver</strong> para abrir el PDF o
-          <strong>Descargar</strong> para guardarlo en tu dispositivo (también funciona sin conexión una vez abierto).
-        </p>
-
-        <div class="list">
-          <div class="item doc-item">
-            <div class="meta">
-              <div class="meta-main">
-                <strong><span class="doc-icon">📊</span> Infografía de Seguridad</strong>
-                <div class="note">Resumen visual de umbrales de ANC y banderas rojas de la clozapina.</div>
-                <div class="date">PDF • 425 KB</div>
+          <div class="list">
+            <div class="item doc-item">
+              <div class="meta">
+                <div class="meta-main">
+                  <strong><span class="doc-icon">📊</span> Infografía de Seguridad</strong>
+                  <div class="note">Resumen visual de umbrales de ANC y banderas rojas de la clozapina.</div>
+                  <div class="date">PDF • 425 KB</div>
+                </div>
+                <div class="meta-actions">
+                  <a class="btn-doc" href="docs/Infografia_clozapina.pdf" target="_blank"
+                    rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>Ver</a>
+                  <a class="btn-doc primary" href="docs/Infografia_clozapina.pdf"
+                    download="Infografia_clozapina.pdf"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>Descargar</a>
+                </div>
               </div>
-              <div class="meta-actions">
-                <a class="btn-doc" href="docs/Infografia_clozapina.pdf" target="_blank"
-                  rel="noopener">👁️ Ver</a>
-                <a class="btn-doc primary" href="docs/Infografia_clozapina.pdf"
-                  download="Infografia_clozapina.pdf">⬇ Descargar</a>
+            </div>
+
+            <div class="item doc-item">
+              <div class="meta">
+                <div class="meta-main">
+                  <strong><span class="doc-icon">📝</span> Consentimiento Informado 2026</strong>
+                  <div class="note">Formato para la firma del paciente antes de iniciar el tratamiento.</div>
+                  <div class="date">PDF • 1.0 MB</div>
+                </div>
+                <div class="meta-actions">
+                  <a class="btn-doc" href="docs/consentimieto_informado_cloza_2026.pdf" target="_blank"
+                    rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>Ver</a>
+                  <a class="btn-doc primary" href="docs/consentimieto_informado_cloza_2026.pdf"
+                    download="Consentimiento_informado_clozapina_2026.pdf"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>Descargar</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="item doc-item">
+              <div class="meta">
+                <div class="meta-main">
+                  <strong><span class="doc-icon">📋</span> Escala de Efectos Secundarios</strong>
+                  <div class="note">Instrumento para evaluar y registrar los efectos adversos del paciente.</div>
+                  <div class="date">PDF • 546 KB</div>
+                </div>
+                <div class="meta-actions">
+                  <a class="btn-doc" href="docs/escala_efectos_secundarios_clozapina.pdf" target="_blank"
+                    rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>Ver</a>
+                  <a class="btn-doc primary" href="docs/escala_efectos_secundarios_clozapina.pdf"
+                    download="Escala_efectos_secundarios_clozapina.pdf"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>Descargar</a>
+                </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="item doc-item">
-            <div class="meta">
-              <div class="meta-main">
-                <strong><span class="doc-icon">📝</span> Consentimiento Informado 2026</strong>
-                <div class="note">Formato para la firma del paciente antes de iniciar el tratamiento.</div>
-                <div class="date">PDF • 1.0 MB</div>
-              </div>
-              <div class="meta-actions">
-                <a class="btn-doc" href="docs/consentimieto_informado_cloza_2026.pdf" target="_blank"
-                  rel="noopener">👁️ Ver</a>
-                <a class="btn-doc primary" href="docs/consentimieto_informado_cloza_2026.pdf"
-                  download="Consentimiento_informado_clozapina_2026.pdf">⬇ Descargar</a>
-              </div>
+        <div style="display:flex; flex-direction:column; gap:20px;">
+          <div class="card">
+            <h2>Buscador Clínico / Info</h2>
+            <div style="margin-bottom: 20px;" id="refSearchCard">
+              <input type="text" id="refSearch" placeholder="Busca síntomas o guías (ej. 'fiebre', 'delphi')"
+                style="width:100%" />
             </div>
-          </div>
-
-          <div class="item doc-item">
-            <div class="meta">
-              <div class="meta-main">
-                <strong><span class="doc-icon">📋</span> Escala de Efectos Secundarios</strong>
-                <div class="note">Instrumento para evaluar y registrar los efectos adversos del paciente.</div>
-                <div class="date">PDF • 546 KB</div>
+            <div id="refResults">
+              <div class="card">
+                <h2>Funcionalidad incluida</h2>
+                <ul class="note">
+                  <li>Registro local de laboratorios (ANC, leucocitos, plaquetas, eosinófilos) y síntomas.</li>
+                  <li>Alertas informativas según umbrales configurables y condición BEN.</li>
+                  <li>Gráficas simples sin librerías externas, con selección de serie y ventana.</li>
+                  <li>Importación y exportación de datos (JSON y CSV).</li>
+                  <li>Modo offline con Service Worker y almacenamiento local.</li>
+                </ul>
               </div>
-              <div class="meta-actions">
-                <a class="btn-doc" href="docs/escala_efectos_secundarios_clozapina.pdf" target="_blank"
-                  rel="noopener">👁️ Ver</a>
-                <a class="btn-doc primary" href="docs/escala_efectos_secundarios_clozapina.pdf"
-                  download="Escala_efectos_secundarios_clozapina.pdf">⬇ Descargar</a>
+              <div class="card">
+                <h2>Avisos y autoría</h2>
+                <ul class="note">
+                  <li>Esta PWA es una herramienta de registro y visualización. No es un dispositivo médico ni sustituye el
+                    juicio clínico.</li>
+                  <li>El usuario es responsable de validar datos, interpretar resultados y seguir protocolos institucionales
+                    vigentes.</li>
+                  <li>En caso de urgencias o signos de alarma, priorizar la evaluación clínica y los servicios de
+                    emergencia.
+                  </li>
+                  <li>Evita capturar datos identificables; la información se guarda solo en este navegador.</li>
+                </ul>
+                <p class="note"><strong>Autoría:</strong> Cesar Celada / Mauricio Rosel.</p>
+              </div>
+              <div class="card refs">
+                <h2>Referencias (para los umbrales por defecto)</h2>
+                <p class="note">
+                  Estas referencias se incluyen para transparencia de los defaults. Los protocolos locales/institucionales
+                  pueden diferir.
+                </p>
+                <div class="divider"></div>
+                <ol class="note">
+                  <li><strong>FDA – Eliminación del REMS de clozapina (2025)</strong>. Desde el 24 de febrero de 2025 la FDA
+                    dejó de exigir la participación en el programa REMS, y lo retiró formalmente el 13 de junio de 2025. Las
+                    farmacias ya <strong>no</strong> requieren el reporte del ANC antes de dispensar. El <strong>monitoreo de
+                      ANC sigue recomendado</strong> según la información de prescripción, y las advertencias sobre
+                    neutropenia grave se mantienen (Boxed Warning).</li>
+                  <li><strong>Siskind et al., 2025 (Lancet Psychiatry / Global Delphi Consensus)</strong>. Guía clave que
+                    actualiza los umbrales de cese a ANC &lt; 1.0 (General) y &lt; 0.5 (DARC-null). Recomienda cese de
+                    monitoreo
+                    de ANC tras 2 años de estabilidad.</li>
+                  <li><strong>CLOZARIL (clozapina) – Prescribing Information (FDA)</strong>. Baseline ANC ≥1500/µL (general)
+                    y
+                    ≥1000/µL (BEN); ANC severa definida como &lt;500/µL.</li>
+                  <li><strong>Kar et al., 2016 / SmPC (Europa, 2024)</strong>. Alertan sobre eosinofilia &gt;3000/mm³ y
+                    plaquetas &lt;50,000/mm³ (3.0 y 50 en x10³/µL).</li>
+                  <li><strong>Sultan et al., 2017</strong>. Describe el cambio en la guía FDA que elimina umbrales por
+                    leucocitos totales (WBC) del algoritmo de monitoreo.</li>
+                </ol>
+                <p class="small">Esta PWA es una herramienta de registro/visualización. No constituye consejo médico ni un
+                  dispositivo médico.</p>
               </div>
             </div>
           </div>
@@ -2634,46 +2520,32 @@
     <div class="nav-brand" aria-hidden="true">CLZ</div>
     <div class="nav-items" id="navItems" role="tablist" aria-label="Secciones">
 
-      <div class="nav-item active" role="tab" aria-selected="true" aria-controls="tab-registro" tabindex="0" data-tab="registro">
+      <div id="navtab-registro" class="nav-item active" role="tab" aria-selected="true" aria-controls="tab-registro" tabindex="0" data-tab="registro">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
         </svg>
         <span class="nav-label">Registro</span>
       </div>
 
-      <div class="nav-item" role="tab" aria-selected="false" aria-controls="tab-graficas" tabindex="-1" data-tab="graficas">
+      <div id="navtab-graficas" class="nav-item" role="tab" aria-selected="false" aria-controls="tab-graficas" tabindex="-1" data-tab="graficas">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M5 9.2h3V19H5V9.2zm5.6-4.2h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z"/>
         </svg>
         <span class="nav-label">Gráficas</span>
       </div>
 
-      <div class="nav-item" role="tab" aria-selected="false" aria-controls="tab-import" tabindex="-1" data-tab="import">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7 7-7z"/>
-        </svg>
-        <span class="nav-label">Importar</span>
-      </div>
-
-      <div class="nav-item" role="tab" aria-selected="false" aria-controls="tab-ajustes" tabindex="-1" data-tab="ajustes">
+      <div id="navtab-ajustes" class="nav-item" role="tab" aria-selected="false" aria-controls="tab-ajustes" tabindex="-1" data-tab="ajustes">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.68.07-1.08s-.03-.74-.07-1.08l2.32-1.81a.55.55 0 0 0 .13-.7l-2.2-3.8a.55.55 0 0 0-.67-.23l-2.74 1.1c-.57-.44-1.18-.8-1.86-1.06l-.42-2.91A.56.56 0 0 0 14 3h-4a.56.56 0 0 0-.55.47l-.42 2.91c-.68.26-1.3.62-1.86 1.06L4.43 6.34a.55.55 0 0 0-.67.23L1.56 10.37a.54.54 0 0 0 .13.7l2.32 1.81c-.04.34-.07.69-.07 1.12s.03.75.07 1.08L1.69 16.9a.54.54 0 0 0-.13.7l2.2 3.8a.55.55 0 0 0 .67.23l2.74-1.1c.57.44 1.18.8 1.86 1.06l.42 2.91c.04.27.27.47.55.47h4c.28 0 .51-.2.55-.47l.42-2.91c.68-.26 1.3-.62 1.86-1.06l2.74 1.1a.55.55 0 0 0 .67-.23l2.2-3.8a.54.54 0 0 0-.13-.7l-2.32-1.82z"/>
         </svg>
         <span class="nav-label">Ajustes</span>
       </div>
 
-      <div class="nav-item" role="tab" aria-selected="false" aria-controls="tab-referencias" tabindex="-1" data-tab="referencias">
+      <div id="navtab-recursos" class="nav-item" role="tab" aria-selected="false" aria-controls="tab-recursos" tabindex="-1" data-tab="recursos">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
         </svg>
-        <span class="nav-label">Info</span>
-      </div>
-
-      <div class="nav-item" role="tab" aria-selected="false" aria-controls="tab-docs" tabindex="-1" data-tab="docs">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
-        </svg>
-        <span class="nav-label">Docs</span>
+        <span class="nav-label">Recursos</span>
       </div>
 
     </div>
@@ -2727,7 +2599,7 @@
       const STORAGE_KEY = "clz_mini_pwa_v1";
       const THEME_KEY = "clz_mini_pwa_theme";
       const DEFAULTS = {
-        version: "clz-mini-pwa-v2-delphi",
+        version: "1.5.0",
         patient: { label: "—", ben: false, start_date: "" },
         thresholds: {
           // Criterios Default: Delphi Global Consensus (Siskind et al. 2022)
@@ -2793,8 +2665,44 @@
           el.classList.add("is-visible");
         }
       };
+
+      // Modal focus trap state
+      let activeElementBeforeModal = null;
+
+      const handleModalKeyDown = (e) => {
+        if (e.key === "Escape") {
+          const modalEl = document.querySelector(".modal");
+          if (modalEl && !modalEl.classList.contains("hard-stop")) {
+            modal.close();
+          }
+          return;
+        }
+
+        if (e.key === "Tab") {
+          const modalBackdrop = $("modalBackdrop");
+          const focusableEls = modalBackdrop.querySelectorAll('button, [href], input, select, textarea, [tabindex="0"]');
+          const focusable = Array.from(focusableEls).filter(el => !el.classList.contains("hidden") && el.style.display !== "none");
+          if (focusable.length === 0) return;
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+
+          if (e.shiftKey) {
+            if (document.activeElement === first) {
+              last.focus();
+              e.preventDefault();
+            }
+          } else {
+            if (document.activeElement === last) {
+              first.focus();
+              e.preventDefault();
+            }
+          }
+        }
+      };
+
       const modal = {
         open: ({ title, text, steps, type = "info", formula = null }) => {
+          activeElementBeforeModal = document.activeElement;
           $("modalTitle").textContent = title;
           $("modalText").textContent = text;
           const list = $("modalSteps");
@@ -2806,6 +2714,13 @@
           });
           const container = document.querySelector(".modal");
           container.classList.toggle("critical", type === "critical");
+          container.classList.toggle("hard-stop", type === "hard-stop");
+
+          if (type === "hard-stop") {
+            $("btnModalClose").textContent = "Guardar y Continuar";
+          } else {
+            $("btnModalClose").textContent = "Entendido";
+          }
 
           const fBox = $("modalFormula");
           if (formula) {
@@ -2817,29 +2732,32 @@
 
           $("modalBackdrop").style.display = "flex";
           $("modalBackdrop").setAttribute("aria-hidden", "false");
+          window.addEventListener("keydown", handleModalKeyDown);
+          setTimeout(() => {
+            const btn = $("btnModalClose");
+            if (btn) btn.focus();
+          }, 50);
         },
-        close: () => {
+        close: (force = false) => {
+          const container = document.querySelector(".modal");
+          if (container.classList.contains("hard-stop") && !force) return;
           $("modalBackdrop").style.display = "none";
           $("modalBackdrop").setAttribute("aria-hidden", "true");
           $("modalBackdrop").classList.remove("hard-stop-bg");
-          document.querySelector(".modal").classList.remove("hard-stop");
+          container.classList.remove("hard-stop");
           $("btnModalClose").style.display = "inline-flex";
+          $("btnModalClose").textContent = "Entendido";
           $("btnModalAction").classList.add("hidden");
+          window.removeEventListener("keydown", handleModalKeyDown);
+          if (activeElementBeforeModal) {
+            activeElementBeforeModal.focus();
+            activeElementBeforeModal = null;
+          }
         }
       };
 
       // Shared predicate — single source of truth for "no patient configured"
       const isPatientEmpty = (p) => !p.label || p.label === "—" || p.label.trim() === "";
-
-      // Ensure hard stop context
-      const checkPatientContext = () => {
-        const p = state.data.patient;
-        if (isPatientEmpty(p)) {
-          forcePatientSetup();
-        } else {
-          updateContextBanner();
-        }
-      };
 
       const updateContextBanner = () => {
         const p = state.data.patient;
@@ -2864,47 +2782,18 @@
             "Define fecha de inicio y estatus BEN.",
             "Esta información persistirá en este dispositivo."
           ],
-          type: "hard-stop" // Custom type we added css for
+          type: "hard-stop"
         });
 
-        // Inject form into modal notes or handle via special logic? 
-        // Simplest: Redirect to settings tab and lock modal? 
-        // Better: We'll hijack the modal steps to show inputs OR just force them to Settings tab with an overlay?
-        // Let's make a custom 'content' for the modal in open() if needed, but for now let's just use the existing modal structure 
-        // and add a button that goes to settings and doesn't close until valid.
-
-        // Actually, let's inject a mini-form into the modal text area for immediate action to reduce friction.
         const modalText = $("modalText");
         modalText.innerHTML = `
           <p>Para garantizar la seguridad, asigna un ID:</p>
-          <input id="quick_pt_label" placeholder="ID / Alias del Paciente" style="margin-top:8px; width:100%; box-sizing:border-box;">
-          <div style="margin-top:8px; display:flex; gap:8px;">
-            <select id="quick_pt_ben" style="flex:1"><option value="0">General</option><option value="1">BEN</option></select>
-            <input type="date" id="quick_pt_start" style="flex:1">
+          <input id="quick_pt_label" class="modal-input-label" placeholder="ID / Alias del Paciente">
+          <div class="modal-input-row">
+            <select id="quick_pt_ben" class="modal-input-flex"><option value="0">General</option><option value="1">BEN</option></select>
+            <input type="date" id="quick_pt_start" class="modal-input-flex">
           </div>
         `;
-
-        const btn = $("btnModalClose");
-        btn.textContent = "Guardar y Continuar";
-
-        // Remove old listeners to avoid duplicates if called multiple times (though shouldn't happen often)
-        const newBtn = btn.cloneNode(true);
-        btn.parentNode.replaceChild(newBtn, btn);
-
-        newBtn.addEventListener("click", () => {
-          const label = $("quick_pt_label").value;
-          if (!label || label.trim().length < 2) {
-            alert("Por favor ingresa un ID válido (min 2 caracteres).");
-            return;
-          }
-          state.data.patient.label = label;
-          state.data.patient.ben = $("quick_pt_ben").value === "1";
-          state.data.patient.start_date = $("quick_pt_start").value;
-          save(true);
-          modal.close();
-          updateContextBanner();
-          renderAll(); // refresh UI
-        });
 
         // Visually lock
         $("modalBackdrop").classList.add("hard-stop-bg");
@@ -2914,7 +2803,8 @@
       const state = {
         data: null,
         selectedId: null,
-        lastAlertKey: null
+        lastAlertKey: null,
+        swVersion: "1.5.0"
       };
 
       const uid = () => "e_" + Math.random().toString(16).slice(2) + Date.now().toString(16);
@@ -2933,13 +2823,17 @@
         // ensure ids and sanitize
         state.data.entries = state.data.entries.map(e => validateAndSanitizeEntry(e)).filter(Boolean);
         updateContextBanner();
-        save(false);
+        save(false, false);
       };
 
       const setTheme = (theme) => {
         document.documentElement.setAttribute("data-theme", theme);
         localStorage.setItem(THEME_KEY, theme);
         $("themeSelect").value = theme;
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) {
+          meta.setAttribute("content", theme === "dark" ? "#0D0C12" : "#F5F3EE");
+        }
       };
 
       const initTheme = () => {
@@ -2947,10 +2841,10 @@
         setTheme(saved);
       };
 
-      const save = (notify = true) => {
+      const save = (notify = true, runRender = true) => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
         if (notify) toast("Guardado local.");
-        renderAll();
+        if (runRender) renderAll();
       };
 
       const auditLog = (action, details) => {
@@ -2961,7 +2855,7 @@
           details
         });
         if (state.data.audit.length > 50) state.data.audit.shift();
-        save(false);
+        save(false, false);
       };
 
       const fmtDate = (iso) => {
@@ -2986,6 +2880,8 @@
         return Number.isFinite(n) ? n : null;
       };
 
+      const clamp = (v, max) => v === null ? null : Math.max(0, Math.min(max, v));
+
       const validateAndSanitizeEntry = (e) => {
         if (!e) return null;
         const s = {
@@ -2994,22 +2890,22 @@
           week: parseNum(e.week),
           ben: !!(e.ben ?? state.data?.patient?.ben),
           labs: {
-            anc_k: Math.max(0, Math.min(25, parseNum(e.labs?.anc_k))),
-            wbc_k: Math.max(0, Math.min(100, parseNum(e.labs?.wbc_k))),
-            plt_k: Math.max(0, Math.min(2000, parseNum(e.labs?.plt_k))),
-            eos_k: Math.max(0, Math.min(15, parseNum(e.labs?.eos_k))),
+            anc_k: clamp(parseNum(e.labs?.anc_k), 25),
+            wbc_k: clamp(parseNum(e.labs?.wbc_k), 100),
+            plt_k: clamp(parseNum(e.labs?.plt_k), 2000),
+            eos_k: clamp(parseNum(e.labs?.eos_k), 15),
           },
-          dose_mg: Math.max(0, Math.min(2000, parseNum(e.dose_mg))), /* New Field */
+          dose_mg: clamp(parseNum(e.dose_mg), 2000),
           effects: {
-            sialorrhea: Math.max(0, Math.min(5, parseNum(e.effects?.sialorrhea))),
-            constipation: Math.max(0, Math.min(5, parseNum(e.effects?.constipation))),
-            somnolence: Math.max(0, Math.min(5, parseNum(e.effects?.somnolence))),
+            sialorrhea: clamp(parseNum(e.effects?.sialorrhea), 5),
+            constipation: clamp(parseNum(e.effects?.constipation), 5),
+            somnolence: clamp(parseNum(e.effects?.somnolence), 5),
             fever: !!e.effects?.fever,
-            dizziness: Math.max(0, Math.min(5, parseNum(e.effects?.dizziness))),
-            blurred_vision: Math.max(0, Math.min(5, parseNum(e.effects?.blurred_vision))),
-            appetite: Math.max(0, Math.min(5, parseNum(e.effects?.appetite))),
+            dizziness: clamp(parseNum(e.effects?.dizziness), 5),
+            blurred_vision: clamp(parseNum(e.effects?.blurred_vision), 5),
+            appetite: clamp(parseNum(e.effects?.appetite), 5),
             other: String(e.effects?.other || ""),
-            constipation_days: Math.max(0, Math.min(30, parseNum(e.effects?.constipation_days))),
+            constipation_days: clamp(parseNum(e.effects?.constipation_days), 30),
             constipation_red: !!e.effects?.constipation_red,
             chest_pain: !!e.effects?.chest_pain,
             dyspnea: !!e.effects?.dyspnea,
@@ -3029,6 +2925,42 @@
         return s;
       };
 
+      const fallbackCopy = (text) => {
+        try {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          textarea.style.top = "0";
+          textarea.style.left = "0";
+          textarea.style.position = "fixed";
+          document.body.appendChild(textarea);
+          textarea.focus();
+          textarea.select();
+          const successful = document.execCommand("copy");
+          document.body.removeChild(textarea);
+          if (successful) {
+            toast("Copiado al portapapeles.");
+          } else {
+            toast("No se pudo copiar al portapapeles.", "error");
+          }
+        } catch (err) {
+          console.error("Fallback copy failed", err);
+          toast("No se pudo copiar al portapapeles.", "error");
+        }
+      };
+
+      const copyToClipboard = (text) => {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            toast("Copiado al portapapeles.");
+          }).catch((err) => {
+            console.error("Clipboard copy failed", err);
+            fallbackCopy(text);
+          });
+        } else {
+          fallbackCopy(text);
+        }
+      };
+
       const shareEntry = (e) => {
         const a = assess(e);
         const summary = `
@@ -3046,13 +2978,13 @@ ${a.alerts.map(al => `- [${al.tag}] ${al.title}: ${al.text}`).join("\n") || "Sin
 NOTAS:
 ${e.notes || "Sin notas."}
 ---
-Generado por CLZ Mini PWA v2026.
+Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         `.trim();
 
         if (navigator.share) {
           navigator.share({ title: `CLZ Summary ${e.date}`, text: summary }).catch(() => { });
         } else {
-          navigator.clipboard.writeText(summary).then(() => toast("Resumen copiado."));
+          copyToClipboard(summary);
         }
       };
 
@@ -3081,9 +3013,9 @@ Generado por CLZ Mini PWA v2026.
           const res = analyzeANC(anc, ben, th);
           if (res.status !== 'OK') {
             alerts.push({
-              kind: res.status === 'CRITICAL' ? 'bad' : 'warn',
+              kind: res.status === 'CRITICAL' || res.status === 'SEVERE' ? 'bad' : 'warn',
               tag: 'ANC',
-              title: res.status === 'CRITICAL' ? 'ALERTA CRÍTICA ANC' : 'Aviso ANC',
+              title: res.status === 'SEVERE' ? 'ALERTA CRÍTICA EXTREMA ANC' : (res.status === 'CRITICAL' ? 'ALERTA CRÍTICA ANC' : 'Aviso ANC'),
               text: `${res.message} ACCIÓN: ${res.action}`
             });
           } else {
@@ -3211,27 +3143,42 @@ Generado por CLZ Mini PWA v2026.
           btn.setAttribute("tabindex", on ? "0" : "-1");
           btn.classList.toggle("active", on);
         }
-        const tabs = ["registro", "graficas", "import", "ajustes", "referencias", "docs"];
+        const tabs = ["registro", "graficas", "ajustes", "recursos"];
         for (const t of tabs) {
           const el = $("tab-" + t);
           if (el) {
             el.classList.toggle("hidden", t !== name);
             el.setAttribute("role", "tabpanel");
-            el.setAttribute("aria-labelledby", `tab-${t}`);
+            el.setAttribute("aria-labelledby", `navtab-${t}`);
           }
         }
+
+        // Dynamically update sticky header title
+        const headerTitleEl = $("appHeaderTitle");
+        if (headerTitleEl) {
+          const titles = {
+            registro: "Registro",
+            graficas: "Gráficas de Tendencias",
+            ajustes: "Ajustes del Sistema",
+            recursos: "Recursos y Guías"
+          };
+          headerTitleEl.textContent = titles[name] || "CLZ Mini";
+        }
+
         if (name === "graficas") drawChart();
       };
 
-      // Keyboard navigation for tabs
+      // Keyboard navigation for tabs (Arrow keys, Home, End)
       $("navItems").addEventListener("keydown", (e) => {
         const items = Array.from(document.querySelectorAll(".nav-item"));
         const active = document.querySelector(".nav-item.active");
         const idx = items.findIndex(b => b === active);
-        if (idx < 0) return; // no active tab — bail to avoid items[-1] deref
+        if (idx < 0) return;
         let next = idx;
         if (e.key === "ArrowRight") next = (idx + 1) % items.length;
         if (e.key === "ArrowLeft") next = (idx - 1 + items.length) % items.length;
+        if (e.key === "Home") next = 0;
+        if (e.key === "End") next = items.length - 1;
         if (e.key === "Enter" || e.key === " ") {
           setTab(items[idx].dataset.tab);
         } else if (next !== idx) {
@@ -3244,6 +3191,55 @@ Generado por CLZ Mini PWA v2026.
         btn.addEventListener("click", () => setTab(btn.dataset.tab));
       });
 
+      // Global Alt + [1-4] shortcuts for tab switching
+      window.addEventListener("keydown", (e) => {
+        if (e.altKey && e.key >= "1" && e.key <= "4") {
+          const tabs = ["registro", "graficas", "ajustes", "recursos"];
+          const targetIndex = parseInt(e.key, 10) - 1;
+          if (targetIndex >= 0 && targetIndex < tabs.length) {
+            e.preventDefault();
+            setTab(tabs[targetIndex]);
+          }
+        }
+      });
+
+      // Touch swipe gestures for navigation on <main>
+      let touchStartX = 0;
+      let touchStartY = 0;
+      const mainEl = document.querySelector("main");
+      if (mainEl) {
+        mainEl.addEventListener("touchstart", (e) => {
+          touchStartX = e.touches[0].clientX;
+          touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        mainEl.addEventListener("touchend", (e) => {
+          if (!touchStartX || !touchStartY) return;
+          const diffX = e.changedTouches[0].clientX - touchStartX;
+          const diffY = e.changedTouches[0].clientY - touchStartY;
+          
+          // Horizontal swipe > 70px, Vertical scroll < 30px
+          if (Math.abs(diffX) > 70 && Math.abs(diffY) < 30) {
+            const tabs = ["registro", "graficas", "ajustes", "recursos"];
+            const currentTab = document.querySelector(".nav-item.active")?.dataset.tab || "registro";
+            const currentIdx = tabs.indexOf(currentTab);
+            if (currentIdx !== -1) {
+              let nextIdx = currentIdx;
+              if (diffX > 0) {
+                // Swipe right -> previous tab
+                nextIdx = (currentIdx - 1 + tabs.length) % tabs.length;
+              } else {
+                // Swipe left -> next tab
+                nextIdx = (currentIdx + 1) % tabs.length;
+              }
+              setTab(tabs[nextIdx]);
+            }
+          }
+          touchStartX = 0;
+          touchStartY = 0;
+        }, { passive: true });
+      }
+
       const clearForm = () => {
         state.selectedId = null;
         $("btnDelete").disabled = true;
@@ -3253,11 +3249,19 @@ Generado por CLZ Mini PWA v2026.
         $("f_week").value = "";
         $("f_ben").value = (state.data.patient.ben ? "1" : "0");
 
-        ["anc", "wbc", "plt", "eos", "sial", "const", "somn", "diz", "blur", "app"].forEach(k => {
+        ["anc", "wbc", "plt", "eos"].forEach(k => {
           const el = $("f_" + k);
           if (el) {
             el.value = "";
             el.className = ""; // clear live validation
+          }
+        });
+
+        ["sial", "const", "somn", "diz", "blur", "app"].forEach(k => {
+          const el = $("f_" + k);
+          if (el) {
+            el.value = "0";
+            el.className = "";
           }
         });
 
@@ -3327,6 +3331,124 @@ Generado por CLZ Mini PWA v2026.
         updateLikertVisuals();
 
         // Trigger validation visuals
+        setTimeout(() => {
+          ["f_anc", "f_wbc", "f_plt", "f_eos"].forEach(id => {
+            const el = $(id);
+            if (el) el.dispatchEvent(new Event("input"));
+          });
+        }, 50);
+      };
+
+      const isFormDirty = () => {
+        if (state.selectedId !== null) return true;
+        if ($("f_anc").value !== "") return true;
+        if ($("f_wbc").value !== "") return true;
+        if ($("f_plt").value !== "") return true;
+        if ($("f_eos").value !== "") return true;
+        if ($("f_dose").value !== "") return true;
+        if ($("f_notes").value !== "") return true;
+        if ($("f_const_days").value !== "") return true;
+        
+        const likerts = ["sial", "const", "somn", "diz", "blur", "app"];
+        for (const k of likerts) {
+          const el = $("f_" + k);
+          if (el && el.value !== "" && el.value !== "0") return true;
+        }
+
+        if ($("f_fever").value !== "0") return true;
+        if ($("f_other").value !== "") return true;
+        if ($("f_const_red").checked) return true;
+        if ($("f_chest").checked) return true;
+        if ($("f_dyspnea").checked) return true;
+        if ($("f_tachy").checked) return true;
+        if ($("f_unwell").checked) return true;
+
+        if ($("f_habit_smoke").checked) return true;
+        if ($("f_habit_quit").checked) return true;
+        if ($("f_habit_fluvox").checked) return true;
+        if ($("f_habit_caffeine").value !== "0") return true;
+        
+        return false;
+      };
+
+      const getFormData = () => {
+        return {
+          id: state.selectedId,
+          date: $("f_date").value,
+          week: $("f_week").value,
+          ben: $("f_ben").value,
+          dose_mg: $("f_dose").value,
+          labs: {
+            anc_k: $("f_anc").value,
+            wbc_k: $("f_wbc").value,
+            plt_k: $("f_plt").value,
+            eos_k: $("f_eos").value,
+          },
+          effects: {
+            sialorrhea: $("f_sial").value,
+            constipation: $("f_const").value,
+            somnolence: $("f_somn").value,
+            fever: $("f_fever").value,
+            dizziness: $("f_diz").value,
+            blurred_vision: $("f_blur").value,
+            appetite: $("f_app").value,
+            other: $("f_other").value,
+            constipation_days: $("f_const_days").value,
+            constipation_red: $("f_const_red").checked,
+            chest_pain: $("f_chest").checked,
+            dyspnea: $("f_dyspnea").checked,
+            tachycardia: $("f_tachy").checked,
+            unwell: $("f_unwell").checked
+          },
+          habits: {
+            smoke: $("f_habit_smoke").checked,
+            quit: $("f_habit_quit").checked,
+            fluvox: $("f_habit_fluvox").checked,
+            caffeine: $("f_habit_caffeine").value
+          },
+          notes: $("f_notes").value
+        };
+      };
+
+      const restoreFormData = (e) => {
+        if (!e) return;
+        state.selectedId = e.id;
+        $("btnDelete").disabled = !e.id;
+
+        $("f_dose").value = e.dose_mg || "";
+        $("f_date").value = e.date || "";
+        $("f_week").value = e.week || "";
+        $("f_ben").value = e.ben || "0";
+
+        $("f_anc").value = e.labs?.anc_k ?? "";
+        $("f_wbc").value = e.labs?.wbc_k ?? "";
+        $("f_plt").value = e.labs?.plt_k ?? "";
+        $("f_eos").value = e.labs?.eos_k ?? "";
+
+        $("f_sial").value = e.effects?.sialorrhea ?? "";
+        $("f_const").value = e.effects?.constipation ?? "";
+        $("f_somn").value = e.effects?.somnolence ?? "";
+        $("f_fever").value = e.effects?.fever || "0";
+
+        $("f_diz").value = e.effects?.dizziness ?? "";
+        $("f_blur").value = e.effects?.blurred_vision ?? "";
+        $("f_app").value = e.effects?.appetite ?? "";
+        $("f_other").value = e.effects?.other ?? "";
+        $("f_const_days").value = e.effects?.constipation_days ?? "";
+        $("f_const_red").checked = !!e.effects?.constipation_red;
+        $("f_chest").checked = !!e.effects?.chest_pain;
+        $("f_dyspnea").checked = !!e.effects?.dyspnea;
+        $("f_tachy").checked = !!e.effects?.tachycardia;
+        $("f_unwell").checked = !!e.effects?.unwell;
+
+        $("f_habit_smoke").checked = !!e.habits?.smoke;
+        $("f_habit_quit").checked = !!e.habits?.quit;
+        $("f_habit_fluvox").checked = !!e.habits?.fluvox;
+        $("f_habit_caffeine").value = String(e.habits?.caffeine || "0");
+
+        $("f_notes").value = e.notes || "";
+
+        updateLikertVisuals();
         setTimeout(() => {
           ["f_anc", "f_wbc", "f_plt", "f_eos"].forEach(id => {
             const el = $(id);
@@ -3441,9 +3563,8 @@ Generado por CLZ Mini PWA v2026.
           auditLog("CREATE", `New entry ${entry.id}`);
         }
 
-        save(true);
+        save(true, true);
         clearForm();
-        renderAll();
 
         // Critical Check
         const analysis = assess(entry);
@@ -3469,7 +3590,7 @@ Generado por CLZ Mini PWA v2026.
         if (idx >= 0) {
           state.data.entries.splice(idx, 1);
           auditLog("DELETE", `Entry ${state.selectedId} deleted`);
-          save(true);
+          save(true, true);
           clearForm();
         }
       };
@@ -3479,7 +3600,6 @@ Generado por CLZ Mini PWA v2026.
         const root = $("entryList");
         root.innerHTML = "";
         if (!state.data.entries.length) {
-          root.innerHTML = `<div class="note">Sin entradas. Usa “Nueva”.</div>`;
           return;
         }
         sortEntries();
@@ -3526,10 +3646,8 @@ Generado por CLZ Mini PWA v2026.
           });
 
           const shareBtn = document.createElement("button");
-          shareBtn.className = "ghost";
-          shareBtn.style.padding = "4px 8px";
           shareBtn.className = "icon-btn";
-          shareBtn.innerHTML = "🔗";
+          shareBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>';
           shareBtn.title = "Compartir Resumen";
           shareBtn.onclick = (ev) => {
             ev.stopPropagation();
@@ -3538,11 +3656,8 @@ Generado por CLZ Mini PWA v2026.
           div.querySelector(".meta-actions").appendChild(shareBtn);
 
           const delBtn = document.createElement("button");
-          delBtn.className = "ghost";
-          delBtn.style.padding = "4px 8px";
-          delBtn.style.color = "var(--bad)";
           delBtn.className = "icon-btn danger";
-          delBtn.innerHTML = "🗑️";
+          delBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>';
           delBtn.title = "Borrar registro";
           delBtn.onclick = (ev) => {
             ev.stopPropagation();
@@ -3701,9 +3816,11 @@ Generado por CLZ Mini PWA v2026.
           .map(e => ({ x: e.date, y: parseNum(e.labs?.[seriesKey]) }))
           .filter(p => p.y !== null);
 
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+
         if (pts.length < 2) {
           ctx.font = `${14 * devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
-          ctx.fillStyle = "rgba(233,238,247,.75)";
+          ctx.fillStyle = isDark ? "rgba(233, 238, 247, 0.75)" : "rgba(31, 41, 55, 0.75)";
           ctx.fillText("No hay datos suficientes para graficar.", 16 * devicePixelRatio, 32 * devicePixelRatio);
           return;
         }
@@ -3718,7 +3835,7 @@ Generado por CLZ Mini PWA v2026.
         const plotW = W - left - right, plotH = H - top - bottom;
 
         // grid
-        ctx.strokeStyle = "rgba(255,255,255,.08)";
+        ctx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.08)";
         ctx.lineWidth = 1 * devicePixelRatio;
         for (let i = 0; i <= 4; i++) {
           const y = top + (plotH * i / 4);
@@ -3726,7 +3843,6 @@ Generado por CLZ Mini PWA v2026.
         }
 
         // axes labels
-        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
         ctx.fillStyle = isDark ? "rgba(241, 245, 249, 0.7)" : "rgba(26, 26, 30, 0.7)";
         ctx.font = `${13 * devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
 
@@ -3852,8 +3968,16 @@ Generado por CLZ Mini PWA v2026.
           if (!el) return;
           const val = el.value;
           group.querySelectorAll(".rating-opt").forEach(opt => {
-            if (opt.dataset.val === val) opt.classList.add("active");
-            else opt.classList.remove("active");
+            const active = opt.dataset.val === val;
+            if (active) {
+              opt.classList.add("active");
+              opt.setAttribute("aria-checked", "true");
+              opt.setAttribute("tabindex", "0");
+            } else {
+              opt.classList.remove("active");
+              opt.setAttribute("aria-checked", "false");
+              opt.setAttribute("tabindex", "-1");
+            }
           });
         });
       };
@@ -3866,6 +3990,28 @@ Generado por CLZ Mini PWA v2026.
             const val = e.target.dataset.val;
             $(inputId).value = val;
             updateLikertVisuals();
+          });
+        });
+
+        document.querySelectorAll(".rating-group").forEach(group => {
+          group.addEventListener("keydown", (e) => {
+            const opts = Array.from(group.querySelectorAll(".rating-opt"));
+            const activeIdx = opts.findIndex(o => o.classList.contains("active"));
+            if (activeIdx < 0) return;
+            let nextIdx = activeIdx;
+            if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+              nextIdx = (activeIdx + 1) % opts.length;
+            } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+              nextIdx = (activeIdx - 1 + opts.length) % opts.length;
+            } else {
+              return; // let other keys pass
+            }
+            e.preventDefault();
+            const nextOpt = opts[nextIdx];
+            const inputId = group.dataset.input;
+            $(inputId).value = nextOpt.dataset.val;
+            updateLikertVisuals();
+            nextOpt.focus();
           });
         });
       };
@@ -3940,8 +4086,6 @@ Generado por CLZ Mini PWA v2026.
             badge.classList.add("visible");
           } else {
             el.classList.add("live-ok");
-            // badge.textContent = "OK"; 
-            // badge.classList.add("visible");
           }
         };
 
@@ -4006,7 +4150,7 @@ Síntomas: ${symptoms.join(", ") || "Niega datos de alarma."}
 Evaluación: ${risk}
 Notas: ${$("f_notes").value}
 `.trim();
-        navigator.clipboard.writeText(text).then(() => toast("Nota copiada al portapapeles."));
+        copyToClipboard(text);
       };
 
       // ---- events ----
@@ -4035,7 +4179,7 @@ Notas: ${$("f_notes").value}
       $("btnWipe").addEventListener("click", () => {
         if (!confirm("¿Seguro que deseas BORRAR TODO? Esta acción eliminará permanentemente todos tus registros locales.")) return;
         state.data = structuredClone(DEFAULTS);
-        save(true);
+        save(true, true);
         clearForm();
         toast("Registro borrado (local).");
         redirectIfNoPatient();
@@ -4053,7 +4197,7 @@ Notas: ${$("f_notes").value}
         }
       });
 
-      $("btnRedraw").addEventListener("click", drawChart);
+      $("chartSeries").addEventListener("change", drawChart);
       $("chartWindow").addEventListener("change", drawChart);
 
       const btnDemo = $("btnLoadDemoManual");
@@ -4079,7 +4223,7 @@ Notas: ${$("f_notes").value}
 
       const filterRefs = () => {
         const q = $("refSearch").value.toLowerCase().trim();
-        const cards = document.querySelectorAll("#tab-referencias .card");
+        const cards = document.querySelectorAll("#tab-recursos .card");
         if (!q) {
           cards.forEach(c => c.style.display = "block");
           return;
@@ -4146,7 +4290,28 @@ Notas: ${$("f_notes").value}
         deferredPrompt = null;
         $("btnInstall").disabled = true;
       });
-      $("btnModalClose").addEventListener("click", modal.close);
+
+      // Unified Modal Close listener
+      $("btnModalClose").addEventListener("click", () => {
+        const container = document.querySelector(".modal");
+        if (container.classList.contains("hard-stop")) {
+          const label = $("quick_pt_label").value;
+          if (!label || label.trim().length < 2) {
+            alert("Por favor ingresa un ID válido (min 2 caracteres).");
+            return;
+          }
+          state.data.patient.label = label;
+          state.data.patient.ben = $("quick_pt_ben").value === "1";
+          state.data.patient.start_date = $("quick_pt_start").value;
+          save(true);
+          modal.close(true); // force close
+          updateContextBanner();
+          renderAll(); // refresh UI
+        } else {
+          modal.close();
+        }
+      });
+
       $("modalBackdrop").addEventListener("click", (event) => {
         if (event.target.id === "modalBackdrop") modal.close();
       });
@@ -4154,12 +4319,12 @@ Notas: ${$("f_notes").value}
         setTheme(event.target.value);
       });
 
-      // Redirige a Docs cuando no hay paciente y la pestaña activa es clínica
+      // Redirige a Recursos cuando no hay paciente y la pestaña activa es clínica
       const redirectIfNoPatient = () => {
         if (!isPatientEmpty(state.data.patient)) return;
         const current = document.querySelector(".nav-item.active")?.dataset.tab;
         if (!current || ["registro", "graficas"].includes(current)) {
-          setTab("docs");
+          setTab("recursos");
         }
       };
 
@@ -4181,6 +4346,9 @@ Notas: ${$("f_notes").value}
         const applyNow = () => {
           if (refreshing) return;
           refreshing = true;
+          if (isFormDirty()) {
+            localStorage.setItem("clz_mini_pwa_draft", JSON.stringify(getFormData()));
+          }
           showUpdatingOverlay();
           // pequeño respiro para que se vea el overlay antes de recargar
           setTimeout(() => location.reload(), 400);
@@ -4196,6 +4364,7 @@ Notas: ${$("f_notes").value}
         // Versión activa (para Ajustes)
         navigator.serviceWorker.addEventListener("message", (event) => {
           if (event.data && event.data.type === "VERSION") {
+            state.swVersion = event.data.version;
             const el = $("appVersion");
             if (el) el.textContent = "v" + event.data.version;
           }
@@ -4264,6 +4433,18 @@ Notas: ${$("f_notes").value}
       clearForm();
       renderAll();
       redirectIfNoPatient();
+
+      // Check for draft
+      const draft = localStorage.getItem("clz_mini_pwa_draft");
+      if (draft) {
+        try {
+          restoreFormData(JSON.parse(draft));
+          localStorage.removeItem("clz_mini_pwa_draft");
+          toast("Borrador recuperado tras actualización.", "info");
+        } catch (e) {
+          console.warn("Failed to restore draft", e);
+        }
+      }
 
       // PWA features check
       if (location.protocol !== "file:") {

@@ -1,5 +1,5 @@
 /* sw.js — CLZ Mini PWA (offline-first) */
-const SW_VERSION = "1.4.0";
+const SW_VERSION = "1.5.0";
 const CACHE_NAME = "clz-mini-pwa-v" + SW_VERSION;
 const ASSETS = [
   "./",
@@ -62,7 +62,8 @@ self.addEventListener("fetch", (event) => {
       return fresh;
     } catch (err) {
       // offline fallback
-      return cache.match("./index.html", { ignoreSearch: true });
+      if (req.mode === "navigate") return cache.match("./index.html", { ignoreSearch: true });
+      return Response.error();
     }
   })());
 });
