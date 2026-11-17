@@ -1,11 +1,11 @@
 {
-  "name": "CLZ Mini PWA",
-  "short_name": "CLZ",
+  "name": "Clozapina: registro y seguimiento",
+  "short_name": "Clozapina",
   "description": "Registro local de monitoreo de clozapina (labs + efectos) sin servidores.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0D0C12",
-  "theme_color": "#0D0C12",
+  "background_color": "#FBF1EC",
+  "theme_color": "#FBF1EC",
   "icons": [
     {
       "src": "icon-192.png",
