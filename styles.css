@@ -1808,3 +1808,6 @@ html[data-theme="dark"] .primary:not(.ghost) {
   border-color: var(--h-btn);
   color: #FFFFFF;
 }
+
+/* Móvil: el botón Instalar está deshabilitado en el navegador y ocupa espacio en la cabecera. */
+@media (max-width: 480px) { #btnInstall { display: none; } }
