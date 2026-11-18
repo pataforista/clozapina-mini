@@ -71,7 +71,7 @@
           <div class="support-box">
             <strong>Soporte de Decisión (Criterios Delphi Global)</strong>
             <p class="note" style="margin-top:4px; font-size:11.5px;">
-              Puntos de corte recomendados por consenso Delphi (2022-2025): Cese de clozapina si
+              Puntos de corte recomendados por consenso Delphi (2025): Cese de clozapina si
               <strong>ANC < 1.0 (Gral)</strong> o <strong>ANC < 0.5 (BEN)</strong>.
             </p>
           </div>
@@ -658,15 +658,12 @@
                 </p>
                 <div class="divider"></div>
                 <ol class="note">
-                  <li><strong>FDA – Eliminación del REMS de clozapina (2025)</strong>. Desde el 24 de febrero de 2025 la FDA
-                    dejó de exigir la participación en el programa REMS, y lo retiró formalmente el 13 de junio de 2025. Las
+                  <li><strong>FDA – Eliminación del REMS de clozapina (2025)</strong>. La FDA retiró el programa REMS el 13 de junio de 2025. Las
                     farmacias ya <strong>no</strong> requieren el reporte del ANC antes de dispensar. El <strong>monitoreo de
                       ANC sigue recomendado</strong> según la información de prescripción, y las advertencias sobre
                     neutropenia grave se mantienen (Boxed Warning).</li>
-                  <li><strong>Siskind et al., 2025 (Lancet Psychiatry / Global Delphi Consensus)</strong>. Guía clave que
-                    actualiza los umbrales de cese a ANC &lt; 1.0 (General) y &lt; 0.5 (DARC-null). Recomienda cese de
-                    monitoreo
-                    de ANC tras 2 años de estabilidad.</li>
+                  <li><strong>Siskind et al., 2025, consenso Delphi global (Lancet Psychiatry)</strong>. <a href="https://doi.org/10.1016/S2215-0366(25)00098-7">DOI 10.1016/S2215-0366(25)00098-7</a>. Umbral para considerar la suspensión: ANC &lt; 1.0 (general) y &lt; 0.5 (Duffy-null). Propone suspender el monitoreo rutinario de ANC tras 2 años.</li>
+                  <li><strong>CERSI-PGx 2026, Reino Unido (ADAN/Duffy-null)</strong>. <a href="https://doi.org/10.1002/bcp.70576">DOI 10.1002/bcp.70576</a>. Ofrece genotipado ACKR1 para ajustar umbrales de ADAN; valoración hematológica con ANC &lt; 1.0 y fiebre sostenida ≥ 38 °C.</li>
                   <li><strong>CLOZARIL (clozapina) – Prescribing Information (FDA)</strong>. Baseline ANC ≥1500/µL (general)
                     y
                     ≥1000/µL (BEN); ANC severa definida como &lt;500/µL.</li>
@@ -808,7 +805,7 @@
         version: "1.5.0",
         patient: { label: "—", ben: false, start_date: "" },
         thresholds: {
-          // Criterios Default: Delphi Global Consensus (Siskind et al. 2022)
+          // Criterios por defecto: consenso Delphi global 2025 (Siskind et al., Lancet Psychiatry; DOI 10.1016/S2215-0366(25)00098-7)
           anc_norm: 1.5,        // general normal >= 1.5
           anc_norm_ben: 1.0,    // BEN normal >= 1.0
           anc_interrupt: 1.0,   // Delphi General: < 1.0

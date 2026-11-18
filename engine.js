@@ -1,6 +1,6 @@
 /**
  * engine.js - Core Clinical Logic for Clozapine Monitoring (CLZ-Mini-PWA)
- * Based on 2024-2025 Guidelines (FDA REMS Update & Delphi Consensus)
+ * Based on the 2025 Delphi consensus and the FDA 2025 REMS withdrawal
  */
 
 export const CLINICAL_RULES = {
