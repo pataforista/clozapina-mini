@@ -1,11 +1,14 @@
 /* sw.js — CLZ Mini PWA (offline-first) */
-const SW_VERSION = "2.0.0";
+const SW_VERSION = "2.1.0";
 const CACHE_NAME = "clz-mini-pwa-v" + SW_VERSION;
 const ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
   "./humano-tokens.css",
+  "./shared/shell/shell.css",
+  "./shared/shell/shell.js",
+  "./shared/shell/apps.json",
   "./fonts/fonts.css",
   "./fonts/inter-latin-wght-normal.woff2",
   "./fonts/poppins-latin-600-normal.woff2",
