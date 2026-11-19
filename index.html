@@ -48,7 +48,7 @@
         <div class="pill" title="Paciente Activo" style="display: inline-flex; align-items: center; gap: 4px;">
           <span><svg class="ui-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span> <strong id="patientLabel">—</strong>
         </div>
-        <select id="themeSelect" class="theme-select">
+        <select id="themeSelect" class="theme-select" aria-label="Tema de color">
           <option value="light">Claro</option>
           <option value="dark">Oscuro</option>
         </select>
@@ -96,17 +96,17 @@
 
           <div class="row">
             <div>
-              <label>Fecha</label>
+              <label for="f_date">Fecha</label>
               <input type="date" id="f_date" />
               <div class="helper">1) Define la fecha del laboratorio.</div>
             </div>
             <div>
-              <label>Semana (opcional)</label>
+              <label for="f_week">Semana (opcional)</label>
               <input type="number" id="f_week" min="1" max="99" placeholder="p.ej., 6" />
               <div class="helper">Opcional: semana de tratamiento si aplica.</div>
             </div>
             <div>
-              <label>¿BEN?</label>
+              <label for="f_ben">¿BEN?</label>
               <select id="f_ben">
                 <option value="0">No / General</option>
                 <option value="1">Sí (Benign Ethnic Neutropenia)</option>
@@ -117,7 +117,7 @@
 
           <div class="row" style="margin-top:16px;">
             <div>
-              <label>Dosis Actual</label>
+              <label for="f_fever">Dosis Actual</label>
               <div class="input-wrapper">
                 <input type="number" id="f_dose" placeholder="p.ej., 300" step="12.5" />
                 <span class="unit-suffix">mg/día</span>
@@ -145,7 +145,7 @@
                   <label for="f_habit_fluvox" class="small" style="cursor:pointer; margin:0;">+ Fluvoxamina</label>
                 </div>
                 <div class="checkbox-row">
-                  <select id="f_habit_caffeine" style="padding:6px 28px 6px 8px; font-size:11px;">
+                  <select id="f_habit_caffeine" aria-label="Consumo de cafeína" style="padding:6px 28px 6px 8px; font-size:11px;">
                     <option value="0">Cafeína: Normal/Baja</option>
                     <option value="4">Cafeína: >3 tazas/día</option>
                   </select>
@@ -230,7 +230,7 @@
               </select>
             </div>
             <div>
-              <label>Días sin evacuar</label>
+              <label for="f_const_days">Días sin evacuar</label>
               <input type="number" min="0" max="14" step="1" id="f_const_days" placeholder="p.ej., 3" />
             </div>
             <div style="display:flex; align-items:flex-end; padding-bottom:12px">
@@ -260,7 +260,7 @@
             <div class="collapsible-content" style="padding: 0 16px;">
               <div class="row" style="margin-top:12px">
                 <div>
-                  <label id="lbl_sial">Sialorrea</label>
+                  <label for="f_other" id="lbl_sial">Sialorrea</label>
                   <div class="rating-group" data-input="f_sial" role="radiogroup" aria-labelledby="lbl_sial">
                     <button type="button" class="rating-opt" data-val="0" role="radio" aria-checked="true" aria-label="0 de 5">0</button>
                     <button type="button" class="rating-opt" data-val="1" role="radio" aria-checked="false" aria-label="1 de 5">1</button>
@@ -326,7 +326,7 @@
             </div>
           </div>
 
-          <label>Notas clínicas (breves)</label>
+          <label for="f_notes">Notas clínicas (breves)</label>
           <textarea id="f_notes" placeholder="Libre. Evita datos identificables." style="min-height:80px"></textarea>
 
           <div class="action-bar-bottom" data-hs-tabbar>
@@ -378,7 +378,7 @@
           <div id="alerts"></div>
 
           <div class="divider"></div>
-          <div class="list" id="entryList" aria-label="Listado de entradas"></div>
+          <div class="list" id="entryList" role="region" aria-label="Listado de entradas"></div>
         </div>
       </div>
     </section>
@@ -392,7 +392,7 @@
         <div class="divider"></div>
         <div class="row">
           <div>
-            <label>Serie</label>
+            <label for="chartSeries">Serie</label>
             <select id="chartSeries">
               <option value="anc_k">ANC</option>
               <option value="wbc_k">Leucocitos</option>
@@ -401,7 +401,7 @@
             </select>
           </div>
           <div>
-            <label>Ventana</label>
+            <label for="chartWindow">Ventana</label>
             <select id="chartWindow">
               <option value="all">Todo</option>
               <option value="8">Últimas 8</option>
@@ -421,15 +421,15 @@
           <h2>Paciente / configuración</h2>
           <div class="row">
             <div>
-              <label>Etiqueta (apodo)</label>
+              <label for="s_label">Etiqueta (apodo)</label>
               <input id="s_label" placeholder="p.ej., Paciente A" />
             </div>
             <div>
-              <label>Fecha de inicio de clozapina</label>
+              <label for="s_start">Fecha de inicio de clozapina</label>
               <input type="date" id="s_start" />
             </div>
             <div>
-              <label>BEN por defecto</label>
+              <label for="s_ben">BEN por defecto</label>
               <select id="s_ben">
                 <option value="0">No / General</option>
                 <option value="1">Sí</option>
@@ -443,17 +443,17 @@
             eosinófilos &gt;3.0 para suspensión, plaquetas &lt;50 para suspensión.
           </p>
           <div class="row">
-            <div><label>ANC normal (general) ≥</label><input type="number" step="0.01" id="t_anc_norm" /></div>
-            <div><label>ANC normal (BEN) ≥</label><input type="number" step="0.01" id="t_anc_norm_ben" /></div>
-            <div><label>ANC interrumpir (general) &lt;</label><input type="number" step="0.01" id="t_anc_int" /></div>
-            <div><label>ANC grave (def. &lt;)</label><input type="number" step="0.01" id="t_anc_sev" /></div>
-            <div><label>ANC interrumpir (BEN) &lt;</label><input type="number" step="0.01" id="t_anc_int_ben" /></div>
+            <div><label for="t_anc_norm">ANC normal (general) ≥</label><input type="number" step="0.01" id="t_anc_norm" /></div>
+            <div><label for="t_anc_norm_ben">ANC normal (BEN) ≥</label><input type="number" step="0.01" id="t_anc_norm_ben" /></div>
+            <div><label for="t_anc_int">ANC interrumpir (general) &lt;</label><input type="number" step="0.01" id="t_anc_int" /></div>
+            <div><label for="t_anc_sev">ANC grave (def. &lt;)</label><input type="number" step="0.01" id="t_anc_sev" /></div>
+            <div><label for="t_anc_int_ben">ANC interrumpir (BEN) &lt;</label><input type="number" step="0.01" id="t_anc_int_ben" /></div>
           </div>
           <div class="row">
-            <div><label>Eosinófilos suspender &gt;</label><input type="number" step="0.01" id="t_eos_stop" /></div>
-            <div><label>Plaquetas suspender &lt;</label><input type="number" step="1" id="t_plt_stop" /></div>
-            <div><label>Meses para pasar a c/2 sem</label><input type="number" step="1" id="t_mo_2w" /></div>
-            <div><label>Meses para pasar a mensual</label><input type="number" step="1" id="t_mo_4w" /></div>
+            <div><label for="t_eos_stop">Eosinófilos suspender &gt;</label><input type="number" step="0.01" id="t_eos_stop" /></div>
+            <div><label for="t_plt_stop">Plaquetas suspender &lt;</label><input type="number" step="1" id="t_plt_stop" /></div>
+            <div><label for="t_mo_2w">Meses para pasar a c/2 sem</label><input type="number" step="1" id="t_mo_2w" /></div>
+            <div><label for="t_mo_4w">Meses para pasar a mensual</label><input type="number" step="1" id="t_mo_4w" /></div>
           </div>
 
           <div style="margin-top: 16px; background: var(--input-bg, rgba(0,0,0,0.04)); padding: 14px; border-radius: 10px; border: 1px solid var(--line);">
@@ -519,7 +519,7 @@
               <button class="ghost" id="btnExportCsv">Exportar CSV (labs)</button>
             </div>
             <div class="divider"></div>
-            <label>Importar archivo de respaldo (.json)</label>
+            <label for="importFile">Importar archivo de respaldo (.json)</label>
             <input type="file" id="importFile" accept="application/json" style="padding:8px;" />
             <div class="divider"></div>
             <div class="row">
