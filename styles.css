@@ -1811,3 +1811,17 @@ html[data-theme="dark"] .primary:not(.ghost) {
 
 /* Móvil: el botón Instalar está deshabilitado en el navegador y ocupa espacio en la cabecera. */
 @media (max-width: 480px) { #btnInstall { display: none; } }
+
+/* ── Cabecera única (docs/CABECERA_Y_NAVEGACION.md) ─────────────────
+   Marca · título en una línea · acciones. Sin desborde a 320 px; el
+   paciente activo se conserva (dato clínico) aunque se compacte. */
+.site-header .wrap { min-width: 0; }
+.site-header .brand { min-width: 0; flex: 1 1 0; }
+.site-header .brand h1 { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.site-header .header-actions { flex: none; gap: 6px; }
+@media (max-width: 360px) {
+  .site-header .header-actions { gap: 4px; }
+  .site-header .theme-select { max-width: 76px; font-size: 13px; padding-left: 6px; padding-right: 4px; }
+  .site-header .brand h1 { font-size: 15px; }
+  .site-header .brand .logo { display: none; }
+}
