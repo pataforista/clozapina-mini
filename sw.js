@@ -1,5 +1,5 @@
 /* sw.js — CLZ Mini PWA (offline-first) */
-const SW_VERSION = "2.2.2";
+const SW_VERSION = "2.2.3";
 const CACHE_NAME = "clz-mini-pwa-v" + SW_VERSION;
 const ASSETS = [
   "./",
@@ -9,6 +9,15 @@ const ASSETS = [
   "./shared/shell/shell.css",
   "./shared/shell/shell.js",
   "./shared/shell/apps.json",
+  "./shared/humano-chrome.css",
+  "./fonts/inter-latin-ext-wght-normal.woff2",
+  "./fonts/poppins-latin-500-normal.woff2",
+  "./fonts/poppins-latin-700-normal.woff2",
+  "./fonts/poppins-latin-ext-500-normal.woff2",
+  "./fonts/poppins-latin-ext-600-normal.woff2",
+  "./fonts/poppins-latin-ext-700-normal.woff2",
+  "./fonts/jetbrains-mono-latin-500-normal.woff2",
+  "./fonts/jetbrains-mono-latin-ext-500-normal.woff2",
   "./fonts/fonts.css",
   "./fonts/inter-latin-wght-normal.woff2",
   "./fonts/poppins-latin-600-normal.woff2",
