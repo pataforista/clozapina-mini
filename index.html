@@ -1982,6 +1982,9 @@
     .myo-hint { margin: 0 0 12px; padding: 12px 14px; border-radius: var(--radius-sm); font-size: 13.5px;
       border: 1px solid var(--warn); border-left-width: 4px; background: color-mix(in srgb, var(--warn) 10%, var(--card)); }
     .myo-hint strong { color: var(--warn); }
+  
+    .kpi-note { margin-top: 6px; font-size: 11.5px; line-height: 1.4; color: var(--muted); }
+    .kpi-note:empty { display: none; }
   </style>
 </head>
 
@@ -2197,17 +2200,19 @@
               <div class="checkbox-row"><input type="checkbox" id="f_dyspnea" /><label for="f_dyspnea" class="small" style="cursor:pointer; margin:0;">Disnea</label></div>
               <div class="checkbox-row"><input type="checkbox" id="f_tachy" /><label for="f_tachy" class="small" style="cursor:pointer; margin:0;">Taquicardia</label></div>
               <div class="checkbox-row"><input type="checkbox" id="f_unwell" /><label for="f_unwell" class="small" style="cursor:pointer; margin:0;">Mal estado</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="f_palp" /><label for="f_palp" class="small" style="cursor:pointer; margin:0;">Palpitaciones</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="f_flu" /><label for="f_flu" class="small" style="cursor:pointer; margin:0;">Síntomas gripales</label></div>
             </div>
           </div>
 
           <div class="divider"></div>
 
           <div class="myo-hint hidden" id="myoHint" role="status">
-            <strong>Datos sugestivos de miocarditis.</strong> Considera solicitar PCR y troponina, sobre todo en las semanas 2 a 8.
+            <strong>Datos sugestivos de miocarditis.</strong> Considera solicitar PCR y troponina, sobre todo en las primeras 8 semanas (más frecuente el primer mes).
           </div>
           <details class="inline-help" id="myoDetails">
             <summary>Estudios de miocarditis (opcional)</summary>
-            <p class="helper">Habitualmente no se piden. Solicítalos si hay fiebre, taquicardia, disnea o dolor torácico.</p>
+            <p class="helper">Su uso varía entre protocolos: algunos piden hs-troponina y PCR cada semana en las primeras 4 semanas; otros, solo ante sospecha. Considera pedirlos si hay fiebre, dolor torácico, disnea o síntomas gripales. La taquicardia sola no activa el aviso.</p>
             <div class="row">
               <div>
                 <label for="f_crp">PCR</label>
@@ -2229,7 +2234,7 @@
                 </select>
               </div>
             </div>
-            <p class="helper">Usa la unidad de tu laboratorio. La app solo registra estos valores; interprétalos con tu protocolo.</p>
+            <p class="helper">Usa la unidad de tu laboratorio. La app solo registra estos valores: interprétalos con los límites de tu laboratorio (el consenso insiste en los puntos de corte locales) y con tu juicio clínico.</p>
           </details>
 
           <div class="collapsible" id="colEffects">
@@ -2325,6 +2330,7 @@
           <button class="ghost" id="btnNew" style="margin-bottom:16px">＋ Nueva entrada</button>
 
           <div id="alerts"></div>
+          <p class="helper alerts-note">Las alertas son apoyo a la decisión, no un diagnóstico ni una indicación. Tu juicio clínico y tu protocolo institucional prevalecen.</p>
 
           <div class="kpi">
             <div class="box" id="box_anc">
@@ -2340,6 +2346,7 @@
             <div class="box">
               <div class="lbl">Próximo laboratorio</div>
               <div class="val" id="k_next"><small style="font-size:12px">Configura el inicio en Ajustes</small></div>
+              <div class="kpi-note" id="k_next_note"></div>
             </div>
             <div class="box">
               <div class="lbl">Último control</div>
@@ -2438,8 +2445,9 @@
           </div>
           <h3 class="sub-title">Otras células y calendario</h3>
           <div class="row">
-            <div><label for="t_eos_stop">Eosinófilos suspender &gt;</label><input type="number" step="0.01" id="t_eos_stop" /></div>
-            <div><label for="t_plt_stop">Plaquetas suspender &lt;</label><input type="number" step="1" id="t_plt_stop" /></div>
+            <div><label for="t_eos_watch">Eosinófilos: vigilar &gt;</label><input type="number" step="0.01" id="t_eos_watch" /><div class="helper">Ficha FDA: eosinofilia &gt; 0.7.</div></div>
+            <div><label for="t_eos_stop">Eosinófilos: alerta alta &gt;</label><input type="number" step="0.01" id="t_eos_stop" /><div class="helper">Criterio local; no figura en la ficha FDA.</div></div>
+            <div><label for="t_plt_stop">Plaquetas: alerta alta &lt;</label><input type="number" step="1" id="t_plt_stop" /><div class="helper">Criterio local; no figura en la ficha FDA.</div></div>
             <div><label for="t_mo_2w">Meses para pasar a c/2 sem</label><input type="number" step="1" id="t_mo_2w" /></div>
             <div><label for="t_mo_4w">Meses para pasar a mensual</label><input type="number" step="1" id="t_mo_4w" /></div>
           </div>
@@ -2623,7 +2631,7 @@
         </details>
 
         <details class="acc ref-block">
-          <summary><span class="acc-t">Referencias de los umbrales<small>FDA, Delphi 2025, ficha técnica</small></span></summary>
+          <summary><span class="acc-t">Referencias de los umbrales<small>FDA, Delphi 2025 y 2026, ficha técnica</small></span></summary>
           <div class="acc-body refs">
             <p class="note">Respaldan los valores predeterminados. Tu protocolo institucional puede diferir.</p>
                 <ol class="note">
@@ -2639,8 +2647,13 @@
                   <li><strong>CLOZARIL (clozapina) – Prescribing Information (FDA)</strong>. Baseline ANC ≥1500/µL (general)
                     y
                     ≥1000/µL (BEN); ANC severa definida como &lt;500/µL.</li>
-                  <li><strong>Kar et al., 2016 / SmPC (Europa, 2024)</strong>. Alertan sobre eosinofilia &gt;3000/mm³ y
-                    plaquetas &lt;50,000/mm³ (3.0 y 50 en x10³/µL).</li>
+                  <li><strong>Eosinófilos y plaquetas (criterios locales)</strong>. La ficha FDA (revisión 1/2025, sección 5.9)
+                    define eosinofilia como &gt;700/µL y guía el manejo según el compromiso de órganos, sin un límite numérico de
+                    suspensión. Los valores 3.0 (eosinófilos) y 50 (plaquetas) se mantienen como umbrales <em>configurables</em>
+                    basados en literatura y fichas europeas no verificadas aquí; no figuran en la ficha FDA.</li>
+                  <li><strong>Wagner et al., 2026 (Br J Psychiatry 228:348-356, Delphi de miocarditis)</strong>. Respalda hs-troponina y
+                    PCR como cribado en las primeras 4 a 8 semanas; considera la taquicardia sola de bajo valor diagnóstico y la
+                    eosinofilia un marcador tardío. Las guías difieren en si el cribado es obligatorio o solo ante sospecha.</li>
                   <li><strong>Sultan et al., 2017</strong>. Describe el cambio en la guía FDA que elimina umbrales por
                     leucocitos totales (WBC) del algoritmo de monitoreo.</li>
                 </ol>
@@ -2803,6 +2816,7 @@
           anc_interrupt: 1.0,   // Delphi General: < 1.0
           anc_severe: 0.5,      // Delphi Severe: < 0.5
           anc_interrupt_ben: 0.5, // BEN: interrupt < 0.5
+          eos_watch: 0.7,       // ficha FDA 5.9: eosinofilia > 700/µL
           eos_stop: 3.0,
           plt_stop: 50,
           months_to_2w: 6,
@@ -3108,7 +3122,9 @@
             chest_pain: !!e.effects?.chest_pain,
             dyspnea: !!e.effects?.dyspnea,
             tachycardia: !!e.effects?.tachycardia,
-            unwell: !!e.effects?.unwell
+            unwell: !!e.effects?.unwell,
+            palpitations: !!e.effects?.palpitations,
+            flu_like: !!e.effects?.flu_like
           },
           habits: {
             smoke: !!e.habits?.smoke,
@@ -3203,7 +3219,14 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
           entry.effects?.chest_pain,
           entry.effects?.dyspnea,
           entry.effects?.tachycardia,
-          entry.effects?.unwell
+          entry.effects?.unwell,
+          entry.effects?.palpitations,
+          entry.effects?.flu_like
+        ].some(Boolean);
+        // La taquicardia sola es frecuente al titular y de bajo valor diagnóstico (consenso Delphi 2026)
+        const strongCardiac = [
+          entry.effects?.chest_pain, entry.effects?.dyspnea, entry.effects?.unwell,
+          entry.effects?.palpitations, entry.effects?.flu_like
         ].some(Boolean);
 
         const alerts = [];
@@ -3224,7 +3247,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
 
         if (plt !== null) {
           if (plt < th.plt_stop) {
-            alerts.push({ kind: "bad", tag: "PLT", title: "Plaquetas bajas", text: `PLT ${plt} (<${th.plt_stop}). Considerar suspensión y valoración hematología.` });
+            alerts.push({ kind: "bad", tag: "PLT", title: "Plaquetas bajas", text: `PLT ${plt} (<${th.plt_stop}, umbral configurado; no figura en la ficha FDA). Considera valoración con hematología y revisar la indicación.` });
           } else if (plt < (th.plt_stop + 50)) {
             alerts.push({ kind: "warn", tag: "PLT", title: "Plaquetas a vigilar", text: `PLT ${plt}. Revisar tendencia y clínica.` });
           }
@@ -3238,8 +3261,11 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         }
 
         if (eos !== null) {
+          const eosOrgans = "Evalúa compromiso de órganos (miocarditis, pancreatitis, hepatitis, colitis, nefritis; posible DRESS).";
           if (eos > th.eos_stop) {
-            alerts.push({ kind: "bad", tag: "EOS", title: "Eosinofilia de suspensión", text: `EOS ${eos} (>${th.eos_stop}). Considerar suspensión y reinicio cuando <1.0 según guía.` });
+            alerts.push({ kind: "bad", tag: "EOS", title: "Eosinofilia marcada", text: `EOS ${eos} (>${th.eos_stop}, umbral configurado; no figura en la ficha FDA). ${eosOrgans} Si sospechas enfermedad sistémica, la ficha indica suspender.` });
+          } else if (eos > th.eos_watch) {
+            alerts.push({ kind: "warn", tag: "EOS", title: "Eosinofilia a vigilar", text: `EOS ${eos} (>${th.eos_watch}, definición de la ficha FDA). ${eosOrgans} Sin compromiso de órganos, la ficha contempla continuar con vigilancia estrecha. En el consenso Delphi 2026 la eosinofilia suele ser un marcador tardío y justifica intensificar el monitoreo cardíaco.` });
           }
         }
 
@@ -3247,10 +3273,10 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         const wk = parseNum(entry.week);
         const myoSuggest = hasMyoLabs
           ? " PCR/troponina registradas: interprétalas con tu protocolo."
-          : " Considera solicitar PCR y troponina.";
+          : " Considera solicitar PCR y troponina (cribado respaldado por el consenso Delphi 2026).";
         if (fever) {
-          const inWindow = wk !== null && wk >= 2 && wk <= 8;
-          alerts.push({ kind: "warn", tag: "FIEBRE", title: "Fiebre reportada", text: "Vigilar signos de infección, síndrome inflamatorio y otras banderas rojas (según protocolo). La ficha FDA indica solicitar un ANC y considerar interrumpir clozapina como medida de precaución con fiebre ≥38.5 °C." + (inWindow && !earlyFlags ? " Estás en la ventana de miocarditis (semanas 2 a 8)." + myoSuggest : "") });
+          const inWindow = wk !== null && wk >= 1 && wk <= 8;
+          alerts.push({ kind: "warn", tag: "FIEBRE", title: "Fiebre reportada", text: "Vigilar signos de infección, síndrome inflamatorio y otras banderas rojas (según protocolo). La ficha FDA indica solicitar un ANC y considerar interrumpir clozapina como medida de precaución con fiebre ≥38.5 °C." + (inWindow && !earlyFlags ? " Estás en las primeras 8 semanas, cuando es más frecuente la miocarditis." + myoSuggest : "") });
         }
         if (constipationRed || (constipationDays !== null && constipationDays >= 4)) {
           alerts.push({ kind: "bad", tag: "GI", title: "Riesgo de Íleo / Obstrucción", text: `Datos de alarma detectados (${constipationDays || 0} días sin evacuar). Requiere evaluación quirúrgica/clínica urgente.` });
@@ -3259,9 +3285,13 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         }
 
         if (earlyFlags) {
-          alerts.push({ kind: "warn", tag: "CV/RESP", title: "Signos Inflamatorios", text: "Banderas rojas (taquicardia, disnea, dolor torácico). Evaluar miocarditis (sem 2-8) o neumonía." + myoSuggest });
+          if (strongCardiac) {
+            alerts.push({ kind: "warn", tag: "CV/RESP", title: "Datos sugestivos de miocarditis", text: "Hay banderas rojas (dolor torácico, disnea, palpitaciones, síntomas gripales o mal estado). Según la ficha FDA, ante sospecha de miocarditis se suspende clozapina y se solicita evaluación cardíaca; decide con tu juicio clínico." + myoSuggest });
+          } else {
+            alerts.push({ kind: "warn", tag: "CV/RESP", title: "Taquicardia a vigilar", text: "Es frecuente durante la titulación y, por sí sola, de bajo valor diagnóstico (consenso Delphi 2026). Vigila fiebre, dolor torácico, disnea o síntomas gripales." });
+          }
           if (fever) {
-            alerts.push({ kind: "bad", tag: "CRÍTICO", title: "Riesgo Combinado", text: "Fiebre + signos cardiopulmonares. Descartar miocarditis o serositis de clozapina con urgencia." + myoSuggest });
+            alerts.push({ kind: "bad", tag: "CRÍTICO", title: "Riesgo Combinado", text: "Fiebre + signos cardiovasculares. Considera descartar miocarditis o serositis; la ficha FDA indica suspender y evaluar el corazón ante sospecha." + myoSuggest });
           }
         }
 
@@ -3489,6 +3519,8 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("f_dyspnea").checked = false;
         $("f_tachy").checked = false;
         $("f_unwell").checked = false;
+        $("f_palp").checked = false;
+        $("f_flu").checked = false;
 
         $("f_habit_smoke").checked = false;
         $("f_habit_quit").checked = false;
@@ -3534,6 +3566,8 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("f_dyspnea").checked = !!e.effects?.dyspnea;
         $("f_tachy").checked = !!e.effects?.tachycardia;
         $("f_unwell").checked = !!e.effects?.unwell;
+        $("f_palp").checked = !!e.effects?.palpitations;
+        $("f_flu").checked = !!e.effects?.flu_like;
 
         $("f_habit_smoke").checked = !!e.habits?.smoke;
         $("f_habit_quit").checked = !!e.habits?.quit;
@@ -3576,6 +3610,8 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         if ($("f_dyspnea").checked) return true;
         if ($("f_tachy").checked) return true;
         if ($("f_unwell").checked) return true;
+        if ($("f_palp").checked) return true;
+        if ($("f_flu").checked) return true;
 
         if ($("f_habit_smoke").checked) return true;
         if ($("f_habit_quit").checked) return true;
@@ -3615,7 +3651,9 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             chest_pain: $("f_chest").checked,
             dyspnea: $("f_dyspnea").checked,
             tachycardia: $("f_tachy").checked,
-            unwell: $("f_unwell").checked
+            unwell: $("f_unwell").checked,
+            palpitations: $("f_palp").checked,
+            flu_like: $("f_flu").checked
           },
           habits: {
             smoke: $("f_habit_smoke").checked,
@@ -3661,6 +3699,8 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("f_dyspnea").checked = !!e.effects?.dyspnea;
         $("f_tachy").checked = !!e.effects?.tachycardia;
         $("f_unwell").checked = !!e.effects?.unwell;
+        $("f_palp").checked = !!e.effects?.palpitations;
+        $("f_flu").checked = !!e.effects?.flu_like;
 
         $("f_habit_smoke").checked = !!e.habits?.smoke;
         $("f_habit_quit").checked = !!e.habits?.quit;
@@ -3738,7 +3778,9 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             chest_pain: $("f_chest").checked,
             dyspnea: $("f_dyspnea").checked,
             tachycardia: $("f_tachy").checked,
-            unwell: $("f_unwell").checked
+            unwell: $("f_unwell").checked,
+            palpitations: $("f_palp").checked,
+            flu_like: $("f_flu").checked
           },
           habits: {
             smoke: $("f_habit_smoke").checked,
@@ -3919,6 +3961,13 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         setKpiState("anc", "ANC");
         setKpiState("plt", "PLT");
 
+        // Nota informativa tras 2 años de tratamiento (consenso Delphi); la frecuencia mostrada sigue la ficha FDA
+        const sd = state.data.patient.start_date;
+        const monthsOn = sd ? (Date.now() - new Date(sd + "T00:00:00").getTime()) / (30.44 * 86400000) : 0;
+        $("k_next_note").textContent = monthsOn >= 24
+          ? "Tras 2 años, el consenso Delphi permite dejar el ANC de rutina y revisar efectos adversos cada 3 meses. La ficha FDA no lo contempla; decide con tu criterio."
+          : "";
+
         const next = nextLabDate();
         if (latest) {
           const res = assess(latest);
@@ -4000,6 +4049,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("t_anc_int").value = th.anc_interrupt;
         $("t_anc_sev").value = th.anc_severe;
         $("t_anc_int_ben").value = th.anc_interrupt_ben;
+        $("t_eos_watch").value = th.eos_watch;
         $("t_eos_stop").value = th.eos_stop;
         $("t_plt_stop").value = th.plt_stop;
         $("t_mo_2w").value = th.months_to_2w;
@@ -4066,10 +4116,10 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         const ref = (() => {
           if (seriesKey === "anc_k") {
             const ben = !!state.data.patient.ben;
-            return { v: ben ? thr.anc_interrupt_ben : thr.anc_interrupt, txt: "Límite de suspensión" };
+            return { v: ben ? thr.anc_interrupt_ben : thr.anc_interrupt, txt: "Umbral para considerar suspender" };
           }
-          if (seriesKey === "plt_k") return { v: thr.plt_stop, txt: "Límite de suspensión" };
-          if (seriesKey === "eos_k") return { v: thr.eos_stop, txt: "Límite de suspensión" };
+          if (seriesKey === "plt_k") return { v: thr.plt_stop, txt: "Umbral de alerta alta (configurable)" };
+          if (seriesKey === "eos_k") return { v: thr.eos_stop, txt: "Umbral de alerta alta (configurable)" };
           return null;
         })();
         const tbody = $("chartTable");
@@ -4244,14 +4294,14 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
 
       // ---- Visual UX Helpers ----
       const updateMyoHint = () => {
-        const flags = ["f_chest", "f_dyspnea", "f_tachy", "f_unwell"].some(id => $(id).checked) || $("f_fever").value === "1";
+        const flags = ["f_chest", "f_dyspnea", "f_unwell", "f_palp", "f_flu"].some(id => $(id).checked) || $("f_fever").value === "1";
         const hasLabs = $("f_crp").value !== "" || $("f_trop").value !== "";
         const show = flags && !hasLabs;
         const wasHidden = $("myoHint").classList.contains("hidden");
         $("myoHint").classList.toggle("hidden", !show);
         if (show && wasHidden) $("myoDetails").open = true; // deja los campos a la vista
       };
-      ["f_chest", "f_dyspnea", "f_tachy", "f_unwell", "f_fever", "f_crp", "f_trop"].forEach(id => {
+      ["f_chest", "f_dyspnea", "f_tachy", "f_unwell", "f_palp", "f_flu", "f_fever", "f_crp", "f_trop"].forEach(id => {
         $(id).addEventListener("change", updateMyoHint);
         $(id).addEventListener("input", updateMyoHint);
       });
@@ -4365,6 +4415,11 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
               badge.textContent = "ALTO";
               badge.style.color = "var(--bad)";
               badge.classList.add("visible");
+            } else if (val > th.eos_watch) {
+              el.classList.add("live-warn");
+              badge.textContent = "VIGILAR";
+              badge.style.color = "var(--warn)";
+              badge.classList.add("visible");
             }
             return;
           }
@@ -4430,10 +4485,16 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         if ($("f_chest").checked) symptoms.push("Dolor torácico");
         if ($("f_dyspnea").checked) symptoms.push("Disnea");
         if ($("f_tachy").checked) symptoms.push("Taquicardia");
+        if ($("f_palp").checked) symptoms.push("Palpitaciones");
+        if ($("f_flu").checked) symptoms.push("Síntomas gripales");
 
         const analysis = assess({
           labs: { anc_k: anc, wbc_k: wbc, plt_k: plt, eos_k: eos },
-          effects: { fever: $("f_fever").value === "1" },
+          effects: {
+            fever: $("f_fever").value === "1",
+            chest_pain: $("f_chest").checked, dyspnea: $("f_dyspnea").checked, tachycardia: $("f_tachy").checked,
+            unwell: $("f_unwell").checked, palpitations: $("f_palp").checked, flu_like: $("f_flu").checked
+          },
           ben: $("f_ben").value === "1"
         });
         const risk = analysis.overall === "bad" ? "ALTO RIESGO" : analysis.overall === "warn" ? "RIESGO MODERADO" : "Rango seguro";
@@ -4578,6 +4639,7 @@ Notas: ${$("f_notes").value}
         th.anc_interrupt = parseNum($("t_anc_int").value) ?? DEFAULTS.thresholds.anc_interrupt;
         th.anc_severe = parseNum($("t_anc_sev").value) ?? DEFAULTS.thresholds.anc_severe;
         th.anc_interrupt_ben = parseNum($("t_anc_int_ben").value) ?? DEFAULTS.thresholds.anc_interrupt_ben;
+        th.eos_watch = parseNum($("t_eos_watch").value) ?? DEFAULTS.thresholds.eos_watch;
         th.eos_stop = parseNum($("t_eos_stop").value) ?? DEFAULTS.thresholds.eos_stop;
         th.plt_stop = parseNum($("t_plt_stop").value) ?? DEFAULTS.thresholds.plt_stop;
         th.months_to_2w = parseNum($("t_mo_2w").value) ?? DEFAULTS.thresholds.months_to_2w;
