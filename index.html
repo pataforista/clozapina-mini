@@ -1828,7 +1828,6 @@
     @media (max-width: 520px) {
       .brand .logo { display: none; }
       .brand h1 { font-size: 15px; }
-      #btnInstall { display: none; }
       .header-actions .pill { max-width: 96px; }
     }
 
@@ -1985,6 +1984,63 @@
   
     .kpi-note { margin-top: 6px; font-size: 11.5px; line-height: 1.4; color: var(--muted); }
     .kpi-note:empty { display: none; }
+  
+    /* ═══ Modales, color y adaptabilidad (revisión) ═══ */
+    .modal-backdrop { z-index: 1500; padding: 16px; padding-bottom: max(16px, env(safe-area-inset-bottom)); overscroll-behavior: contain; }
+    .modal { display: flex; flex-direction: column; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px);
+      padding: 24px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--glass-border, var(--line)); }
+    .modal h3 { margin: 0 0 12px; flex-shrink: 0; }
+    .modal-body { overflow-y: auto; min-height: 0; flex: 1 1 auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+    .modal-body ul { margin: 12px 0 0 20px; padding: 0; }
+    #modalFormula { margin-top: 16px; padding: 10px; background: color-mix(in srgb, var(--text) 5%, transparent); border-radius: 8px; display: none; font-family: var(--mono); }
+    .modal-actions { flex-shrink: 0; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; gap: 10px; }
+    .modal-actions button { min-height: 48px; min-width: 140px; }
+    @media (max-width: 520px) { .modal { padding: 20px; } .modal-actions button { flex: 1; } }
+    .modal.critical h3::before { content: "!"; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 24px; height: 24px; border-radius: 50%; background: var(--bad); color: #fff; font-size: 15px; font-weight: 800; }
+    html[data-theme="dark"] .modal.critical h3::before { color: #1a0a0c; }
+
+    /* Contraste: sin opacidad que reste legibilidad al texto */
+    .small { opacity: 1; color: var(--muted); }
+    .helper { opacity: 1; }
+    footer { opacity: 1; color: var(--muted); }
+    .checkbox-row label, .checkbox-row .small { color: var(--text); font-weight: 500; text-transform: none; letter-spacing: 0; }
+    html[data-theme="light"] { --muted: #625F70; }
+
+    /* Objetivos táctiles de 44 px */
+    .action-secondary button { min-height: 44px; }
+    .rating-opt { min-height: 44px; }
+    .icon-btn { width: 44px; height: 44px; }
+    .theme-select, .btn-sm { min-height: 44px; }
+    .inline-help summary { min-height: 44px; display: flex; align-items: center; }
+    #f_habit_caffeine { padding: 10px 32px 10px 12px; font-size: 13px; min-height: 44px; }
+
+    /* Rendimiento: el desenfoque de fondo no aporta con tarjetas opacas */
+    .card, .site-header { backdrop-filter: none; -webkit-backdrop-filter: none; }
+    body { min-height: 100vh; min-height: 100dvh; }
+
+    /* Muescas y bordes redondeados en horizontal */
+    .wrap { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+
+    /* Móvil en horizontal: poca altura, así que cabecera y menú compactos */
+    @media (max-height: 480px) and (orientation: landscape) {
+      .site-header { position: static; margin-bottom: 8px; }
+      .floating-nav { left: 50%; right: auto; bottom: 8px !important; width: auto; transform: translateX(-50%); border-radius: 28px; padding: 3px; }
+      .floating-nav .nav-brand { display: none; }
+      .nav-item { flex-direction: row; gap: 6px; min-height: 44px; padding: 4px 14px; min-width: 0; }
+      .nav-label { font-size: 12px; display: block; }
+      main { padding-bottom: 76px; }
+      .toast { bottom: 64px; }
+      .modal { max-height: calc(100dvh - 16px); }
+      .modal-backdrop { padding: 8px; }
+    }
+  
+    button, .btn-doc { min-height: 44px; }
+    .disclaimer-close { width: 44px; height: 44px; min-width: 44px; }
+    .action-danger { min-height: 44px; }
+  
+    .icon-btn { flex-shrink: 0; min-width: 44px; }
+    input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select { min-height: 44px; }
   </style>
 </head>
 
@@ -2020,7 +2076,6 @@
           <option value="light">☀ Claro</option>
           <option value="dark">🌙 Oscuro</option>
         </select>
-        <button class="ghost btn-sm" id="btnInstall" disabled>Instalar</button>
       </div>
     </div>
   </header>
@@ -2106,7 +2161,7 @@
                   <label for="f_habit_fluvox" class="small" style="cursor:pointer; margin:0;">+ Fluvoxamina</label>
                 </div>
                 <div class="checkbox-row">
-                  <select id="f_habit_caffeine" style="padding:6px 28px 6px 8px; font-size:11px;">
+                  <select id="f_habit_caffeine">
                     <option value="0">Cafeína: Normal/Baja</option>
                     <option value="4">Cafeína: >3 tazas/día</option>
                   </select>
@@ -2401,6 +2456,9 @@
 
     <!-- Ajustes -->
     <section id="tab-ajustes" class="hidden">
+      <div class="support-box hidden" id="firstRunHint" role="status">
+        <strong>Bienvenido. Empieza aquí.</strong> Escribe una etiqueta para el paciente (sin nombre real) y la fecha de inicio de clozapina; luego pulsa «Guardar ajustes». Después podrás capturar la primera entrada en Registro.
+      </div>
       <p class="note settings-intro">Toca una sección para abrirla. Lo más usado está primero; lo delicado, al final.</p>
       <div class="acc-list">
 
@@ -2565,6 +2623,10 @@
           <summary><span class="acc-t">App y actualizaciones<small>Versión <span id="appVersion">—</span></small></span></summary>
           <div class="acc-body">
             <p class="note">Funciona sin conexión. Las nuevas versiones se aplican solas; también puedes comprobarlo aquí.</p>
+            <div style="margin-top:12px">
+              <button class="ghost" id="btnInstall" type="button" disabled>Instalar en este dispositivo</button>
+              <p class="helper">Se activa cuando el navegador permite instalarla (Chrome, Edge, Android). En iPhone: Compartir → Añadir a pantalla de inicio.</p>
+            </div>
             <div class="upd-check-row" style="margin-top:12px">
               <button class="primary" id="btnCheckUpdate" type="button">Buscar actualizaciones</button>
               <span class="upd-status" id="updCheckStatus">
@@ -2727,15 +2789,16 @@
     </div>
   </div>
 
-  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true"
+    aria-labelledby="modalTitle" aria-describedby="modalText">
     <div class="modal">
       <h3 id="modalTitle">Alerta</h3>
-      <p class="note" id="modalText"></p>
-      <ul class="note" id="modalSteps" style="margin-left:20px; margin-top:12px"></ul>
-      <div id="modalFormula" class="note"
-        style="margin-top:16px; padding:10px; background:rgba(0,0,0,0.03); border-radius:8px; display:none; font-family:var(--mono);">
+      <div class="modal-body">
+        <p class="note" id="modalText"></p>
+        <ul class="note" id="modalSteps"></ul>
+        <div id="modalFormula" class="note"></div>
       </div>
-      <div style="margin-top:24px; text-align:right;">
+      <div class="modal-actions">
         <button class="primary" id="btnModalClose">Entendido</button>
         <button class="primary hidden" id="btnModalAction">Confirmar</button>
       </div>
@@ -2786,7 +2849,9 @@
     const loadGalaxy = async () => {
       // Check Low Power Mode
       const isLowPower = localStorage.getItem("clz_mini_pwa_low_power") === "true";
-      if (isLowPower) return;
+      const prefersReduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const saveData = navigator.connection && navigator.connection.saveData;
+      if (isLowPower || prefersReduced || saveData) return;
 
       try {
         const { initGalaxy } = await import('./galaxy.js');
@@ -2927,6 +2992,13 @@
         }
       };
 
+      // Con el modal abierto el resto de la página queda inerte (teclado, lector de pantalla) y sin scroll
+      const MODAL_BG = ".disclaimer-banner, .site-header, main, footer, #floatingNav";
+      const setModalBackground = (on) => {
+        document.querySelectorAll(MODAL_BG).forEach(el => { el.inert = on; });
+        document.body.style.overflow = on ? "hidden" : "";
+      };
+
       const modal = {
         open: ({ title, text, steps, type = "info", formula = null }) => {
           activeElementBeforeModal = document.activeElement;
@@ -2957,8 +3029,11 @@
             fBox.style.display = "none";
           }
 
+          $("modalBackdrop").setAttribute("role", type === "critical" ? "alertdialog" : "dialog");
           $("modalBackdrop").style.display = "flex";
           $("modalBackdrop").setAttribute("aria-hidden", "false");
+          $("modalBackdrop").querySelector(".modal-body").scrollTop = 0;
+          setModalBackground(true);
           window.addEventListener("keydown", handleModalKeyDown);
           setTimeout(() => {
             const btn = $("btnModalClose");
@@ -2971,6 +3046,7 @@
           $("modalBackdrop").style.display = "none";
           $("modalBackdrop").setAttribute("aria-hidden", "true");
           $("modalBackdrop").classList.remove("hard-stop-bg");
+          setModalBackground(false);
           container.classList.remove("hard-stop");
           $("btnModalClose").style.display = "inline-flex";
           $("btnModalClose").textContent = "Entendido";
@@ -4677,6 +4753,7 @@ Notas: ${$("f_notes").value}
 
       // settings
       const saveSettings = () => {
+        const wasEmpty = isPatientEmpty(state.data.patient);
         state.data.patient.label = $("s_label").value || "—";
         state.data.patient.start_date = $("s_start").value || "";
         state.data.patient.ben = $("s_ben").value === "1";
@@ -4697,7 +4774,14 @@ Notas: ${$("f_notes").value}
         th.months_to_4w = parseNum($("t_mo_4w").value) ?? DEFAULTS.thresholds.months_to_4w;
 
         save(true);
-        toast("Ajustes guardados.");
+        const nowEmpty = isPatientEmpty(state.data.patient);
+        $("firstRunHint").classList.toggle("hidden", !nowEmpty);
+        if (wasEmpty && !nowEmpty) {
+          toast("Listo. Ahora captura la primera entrada.");
+          setTab("registro");
+        } else {
+          toast("Ajustes guardados.");
+        }
       };
 
       $("btnSaveSettings").addEventListener("click", saveSettings);
@@ -4745,7 +4829,8 @@ Notas: ${$("f_notes").value}
       });
 
       $("modalBackdrop").addEventListener("click", (event) => {
-        if (event.target.id === "modalBackdrop") modal.close();
+        // Las alertas críticas solo se cierran con el botón: un toque accidental no debe descartarlas
+        if (event.target.id === "modalBackdrop" && !document.querySelector(".modal").classList.contains("critical")) modal.close();
       });
       $("themeSelect").addEventListener("change", (event) => {
         setTheme(event.target.value);
@@ -4755,8 +4840,12 @@ Notas: ${$("f_notes").value}
       const redirectIfNoPatient = () => {
         if (!isPatientEmpty(state.data.patient)) return;
         const current = document.querySelector(".nav-item.active")?.dataset.tab;
+        $("firstRunHint").classList.remove("hidden");
         if (!current || ["registro", "graficas"].includes(current)) {
-          setTab("recursos");
+          // Primera vez: lleva a configurar al paciente, el único paso previo necesario
+          setTab("ajustes");
+          const first = document.querySelector("#tab-ajustes details.acc");
+          if (first) first.open = true;
         }
       };
 
