@@ -2446,8 +2446,8 @@
           <h3 class="sub-title">Otras células y calendario</h3>
           <div class="row">
             <div><label for="t_eos_watch">Eosinófilos: vigilar &gt;</label><input type="number" step="0.01" id="t_eos_watch" /><div class="helper">Ficha FDA: eosinofilia &gt; 0.7.</div></div>
-            <div><label for="t_eos_stop">Eosinófilos: alerta alta &gt;</label><input type="number" step="0.01" id="t_eos_stop" /><div class="helper">Criterio local; no figura en la ficha FDA.</div></div>
-            <div><label for="t_plt_stop">Plaquetas: alerta alta &lt;</label><input type="number" step="1" id="t_plt_stop" /><div class="helper">Criterio local; no figura en la ficha FDA.</div></div>
+            <div><label for="t_eos_stop">Eosinófilos: alerta alta &gt;</label><input type="number" step="0.01" id="t_eos_stop" /><div class="helper">Monografía canadiense (3.0); no figura en la ficha FDA.</div></div>
+            <div><label for="t_plt_stop">Plaquetas: alerta alta &lt;</label><input type="number" step="1" id="t_plt_stop" /><div class="helper">Monografía canadiense (50); no figura en la ficha FDA.</div></div>
             <div><label for="t_mo_2w">Meses para pasar a c/2 sem</label><input type="number" step="1" id="t_mo_2w" /></div>
             <div><label for="t_mo_4w">Meses para pasar a mensual</label><input type="number" step="1" id="t_mo_4w" /></div>
           </div>
@@ -2649,8 +2649,11 @@
                     ≥1000/µL (BEN); ANC severa definida como &lt;500/µL.</li>
                   <li><strong>Eosinófilos y plaquetas (criterios locales)</strong>. La ficha FDA (revisión 1/2025, sección 5.9)
                     define eosinofilia como &gt;700/µL y guía el manejo según el compromiso de órganos, sin un límite numérico de
-                    suspensión. Los valores 3.0 (eosinófilos) y 50 (plaquetas) se mantienen como umbrales <em>configurables</em>
-                    basados en literatura y fichas europeas no verificadas aquí; no figuran en la ficha FDA.</li>
+                    suspensión. Los valores 3.0 (eosinófilos, con reinicio solo bajo 1.0) y 50 (plaquetas) provienen de la
+                    <strong>monografía canadiense de Gen-Clozapine (Viatris, 2022)</strong>, que recomienda suspender por encima de 3.0 y por debajo
+                    de 50 respectivamente. Se mantienen como umbrales <em>configurables</em>; no figuran en la ficha FDA. Una síntesis de
+                    literatura (Consensus, 2026) coincide en que la eosinofilia o trombocitopenia aisladas, sin daño de órganos, suelen
+                    ser benignas y permiten continuar con vigilancia.</li>
                   <li><strong>Wagner et al., 2026 (Br J Psychiatry 228:348-356, Delphi de miocarditis)</strong>. Respalda hs-troponina y
                     PCR como cribado en las primeras 4 a 8 semanas; considera la taquicardia sola de bajo valor diagnóstico y la
                     eosinofilia un marcador tardío. Las guías difieren en si el cribado es obligatorio o solo ante sospecha.</li>
@@ -3247,7 +3250,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
 
         if (plt !== null) {
           if (plt < th.plt_stop) {
-            alerts.push({ kind: "bad", tag: "PLT", title: "Plaquetas bajas", text: `PLT ${plt} (<${th.plt_stop}, umbral configurado; no figura en la ficha FDA). Considera valoración con hematología y revisar la indicación.` });
+            alerts.push({ kind: "bad", tag: "PLT", title: "Plaquetas bajas", text: `PLT ${plt} (<${th.plt_stop}, umbral configurado). La monografía canadiense (Gen-Clozapine, 2022) indica suspender por debajo de 50; la ficha FDA no fija un umbral. Considera valoración con hematología.` });
           } else if (plt < (th.plt_stop + 50)) {
             alerts.push({ kind: "warn", tag: "PLT", title: "Plaquetas a vigilar", text: `PLT ${plt}. Revisar tendencia y clínica.` });
           }
@@ -3263,7 +3266,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         if (eos !== null) {
           const eosOrgans = "Evalúa compromiso de órganos (miocarditis, pancreatitis, hepatitis, colitis, nefritis; posible DRESS).";
           if (eos > th.eos_stop) {
-            alerts.push({ kind: "bad", tag: "EOS", title: "Eosinofilia marcada", text: `EOS ${eos} (>${th.eos_stop}, umbral configurado; no figura en la ficha FDA). ${eosOrgans} Si sospechas enfermedad sistémica, la ficha indica suspender.` });
+            alerts.push({ kind: "bad", tag: "EOS", title: "Eosinofilia marcada", text: `EOS ${eos} (>${th.eos_stop}, umbral configurado). La monografía canadiense (Gen-Clozapine, 2022) indica suspender por encima de 3.0 y reiniciar solo cuando baje de 1.0; la ficha FDA no fija un número y guía el manejo según el compromiso de órganos. ${eosOrgans}` });
           } else if (eos > th.eos_watch) {
             alerts.push({ kind: "warn", tag: "EOS", title: "Eosinofilia a vigilar", text: `EOS ${eos} (>${th.eos_watch}, definición de la ficha FDA). ${eosOrgans} Sin compromiso de órganos, la ficha contempla continuar con vigilancia estrecha. En el consenso Delphi 2026 la eosinofilia suele ser un marcador tardío y justifica intensificar el monitoreo cardíaco.` });
           }
