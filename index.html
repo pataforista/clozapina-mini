@@ -2048,7 +2048,7 @@
           <p class="helper" style="margin:-4px 0 8px">Solo la fecha es obligatoria. Captura lo que tengas; el resto puede quedar vacío.</p>
           <details class="inline-help">
             <summary>Criterios de referencia y aviso de privacidad</summary>
-            <p class="note">Consenso Delphi (2022-2025): suspender clozapina si <strong>ANC &lt; 1.0</strong> (general) o <strong>ANC &lt; 0.5</strong> (BEN). Cuaderno digital local; evita capturar datos identificables.</p>
+            <p class="note">Consenso Delphi (Siskind et al., 2025): considerar suspender clozapina si <strong>ANC &lt; 1.0</strong> (general) o <strong>ANC &lt; 0.5</strong> (BEN / DARC-null). Cuaderno digital local; evita capturar datos identificables.</p>
           </details>
 
           <h3 class="step-title" id="step1"><span class="step-n">1</span> Datos del control</h3>
@@ -2064,12 +2064,12 @@
               <div class="helper">Opcional: semana de tratamiento si aplica.</div>
             </div>
             <div>
-              <label for="f_ben">¿BEN?</label>
+              <label for="f_ben">¿BEN / DARC-null?</label>
               <select id="f_ben">
                 <option value="0">No / General</option>
-                <option value="1">Sí (Benign Ethnic Neutropenia)</option>
+                <option value="1">Sí (BEN / DARC-null)</option>
               </select>
-              <div class="helper">Neutropenia étnica benigna.</div>
+              <div class="helper">Neutropenia étnica benigna (DARC-null).</div>
             </div>
           </div>
 
@@ -2512,7 +2512,7 @@
               <tr>
                 <td>Frecuencia ANC</td>
                 <td>Según ficha técnica</td>
-                <td><strong>Hasta 2 años</strong></td>
+                <td><strong>Hasta 2 años</strong>; luego control de efectos adversos c/3 meses</td>
               </tr>
               </tbody>
             </table>
@@ -2633,9 +2633,9 @@
                       ANC sigue recomendado</strong> según la información de prescripción, y las advertencias sobre
                     neutropenia grave se mantienen (Boxed Warning).</li>
                   <li><strong>Siskind et al., 2025 (Lancet Psychiatry / Global Delphi Consensus)</strong>. Guía clave que
-                    actualiza los umbrales de cese a ANC &lt; 1.0 (General) y &lt; 0.5 (DARC-null). Recomienda cese de
-                    monitoreo
-                    de ANC tras 2 años de estabilidad.</li>
+                    actualiza los umbrales de cese a ANC &lt; 1.0 (General) y &lt; 0.5 (DARC-null). Recomienda dejar el
+                    monitoreo rutinario de ANC tras 2 años y, después, revisar efectos adversos cada 3 meses
+                    (metabólicos, estreñimiento, taquicardia, sialorrea, sedación, entre otros).</li>
                   <li><strong>CLOZARIL (clozapina) – Prescribing Information (FDA)</strong>. Baseline ANC ≥1500/µL (general)
                     y
                     ≥1000/µL (BEN); ANC severa definida como &lt;500/µL.</li>
@@ -2797,7 +2797,7 @@
         version: "1.5.0",
         patient: { label: "—", ben: false, start_date: "" },
         thresholds: {
-          // Criterios Default: Delphi Global Consensus (Siskind et al. 2022)
+          // Criterios Default: Delphi Global Consensus (Siskind et al., Lancet Psychiatry 2025)
           anc_norm: 1.5,        // general normal >= 1.5
           anc_norm_ben: 1.0,    // BEN normal >= 1.0
           anc_interrupt: 1.0,   // Delphi General: < 1.0
