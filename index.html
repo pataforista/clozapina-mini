@@ -2079,6 +2079,61 @@
   
     /* Las mayúsculas convertirían µ (micro) en M: las unidades se muestran tal cual */
     .u { text-transform: none !important; letter-spacing: 0; }
+  
+    /* ═══ Legibilidad: jerarquía, líneas y contraste ═══ */
+    html[data-theme="light"] { --line-mid: #C9C5D2; --line-strong: #85828F; }
+    html[data-theme="dark"] { --line-mid: rgba(255, 255, 255, 0.18); --line-strong: rgba(255, 255, 255, 0.36); }
+    /* Bordes de campos y controles con contraste de 3:1 (WCAG 1.4.11); separadores visibles */
+    input, select, textarea, .rating-group, button.ghost { border-color: var(--line-strong); }
+    .card, .acc, .item, .box, .seg, .collapsible, .support-box { border-color: var(--line-mid); }
+    .divider, .step-title, .modal-actions, table th, table td { border-color: var(--line-mid); }
+    .divider { background: var(--line-mid); }
+    .step-title { border-top-color: var(--line-mid); }
+
+    /* Alertas: severidad clara, hallazgo, pasos y fuente */
+    .alert-summary { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; border: 1px solid; }
+    .chip.bad { color: var(--bad); border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--card)); }
+    .chip.warn { color: var(--warn); border-color: var(--warn); background: color-mix(in srgb, var(--warn) 12%, var(--card)); }
+    .chip.info { color: var(--info); border-color: var(--info); background: color-mix(in srgb, var(--info) 12%, var(--card)); }
+    .chip.ok { color: var(--ok); border-color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, var(--card)); }
+    .alert-list { display: flex; flex-direction: column; gap: 14px; }
+    .alert-card { --c: var(--info); padding: 16px 16px 14px; border-radius: var(--radius-sm); border: 1px solid color-mix(in srgb, var(--c) 45%, var(--line-mid));
+      border-left: 6px solid var(--c); background: color-mix(in srgb, var(--c) 9%, var(--card)); }
+    .alert-card.bad { --c: var(--bad); } .alert-card.warn { --c: var(--warn); } .alert-card.ok { --c: var(--ok); } .alert-card.info { --c: var(--info); }
+    .alert-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+    .alert-level { font-size: 12.5px; font-weight: 800; color: var(--c); letter-spacing: .02em; text-transform: uppercase; }
+    .alert-title { margin: 0 0 6px; font-size: 17px; line-height: 1.3; font-weight: 700; color: var(--text); }
+    .alert-lead { margin: 0; font-size: 15px; line-height: 1.55; color: var(--text); }
+    .alert-steps { list-style: none; margin: 12px 0 0; padding: 12px 0 0; border-top: 1px solid var(--line-mid); display: flex; flex-direction: column; gap: 8px; }
+    .alert-steps li { position: relative; padding-left: 20px; font-size: 14.5px; line-height: 1.5; color: var(--text); }
+    .alert-steps li::before { content: ""; position: absolute; left: 4px; top: .6em; width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+    .alert-src { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line-mid); font-size: 12.5px; line-height: 1.45; color: var(--muted); }
+    .alert-src strong { color: var(--text); font-weight: 700; }
+
+    /* KPI: textos largos con tipografía de texto, no de cifra */
+    .box .val.is-text { font-family: var(--sans); font-size: 15px; font-weight: 700; line-height: 1.3; margin-top: 8px; }
+
+    /* Modal: bloques separados por líneas */
+    .modal-body > p { margin: 0 0 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line-mid); color: var(--text); font-size: 15px; }
+    .modal-body ul { list-style: none; margin: 0; padding: 0; }
+    .modal-body li { padding: 12px 0; border-bottom: 1px solid var(--line-mid); font-size: 14.5px; line-height: 1.5; color: var(--text); }
+    .modal-body li:last-child { border-bottom: 0; }
+    .modal-body li strong { display: inline-block; margin-right: 6px; padding: 1px 8px; border-radius: 6px; font-size: 12px; background: color-mix(in srgb, var(--text) 10%, transparent); }
+    .modal.critical .modal-body li strong { background: color-mix(in srgb, var(--bad) 18%, transparent); color: var(--bad); }
+    #modalFormula { border: 1px solid var(--line-mid); }
+  
+    /* Etiquetas de severidad legibles en tema claro */
+    html[data-theme="light"] .tag.bad { color: color-mix(in srgb, var(--bad) 80%, #000); }
+    html[data-theme="light"] .tag.warn { color: color-mix(in srgb, var(--warn) 78%, #000); }
+    html[data-theme="light"] .tag.info { color: color-mix(in srgb, var(--info) 85%, #000); }
+    html[data-theme="light"] .tag.ok { color: color-mix(in srgb, var(--ok) 82%, #000); }
+
+    /* Flecha en los bloques plegables pequeños: indica que se abren */
+    .inline-help summary { list-style: none; gap: 8px; }
+    .inline-help summary::-webkit-details-marker { display: none; }
+    .inline-help summary::before { content: ""; width: 8px; height: 8px; flex-shrink: 0; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(-45deg); transition: transform .2s var(--ease); }
+    .inline-help[open] > summary::before { transform: rotate(45deg); }
   </style>
 </head>
 
@@ -3374,7 +3429,7 @@ PCR: ${e.labs.crp_mgl ?? "—"} mg/L | Troponina: ${e.labs.trop ?? "—"} ${e.la
 Dosis: ${e.dose_mg ? e.dose_mg + " mg" : "—"}
 
 ALERTAS:
-${a.alerts.map(al => `- [${al.tag}] ${al.title}: ${al.text}`).join("\n") || "Sin alertas activas."}
+${a.alerts.map(al => `- [${al.tag}] ${al.title}: ${al.text}${(al.steps && al.steps.length) ? " " + al.steps.join(" ") : ""}`).join("\n") || "Sin alertas activas."}
 
 NOTAS:
 ${e.notes || "Sin notas."}
@@ -3390,6 +3445,9 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
       };
 
       // ---- clinical-ish helpers (transparent + editable thresholds) ----
+      // Escapa texto antes de insertarlo como HTML
+      const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
       const assess = (entry) => {
         const th = state.data.thresholds;
         const ben = entry.ben ?? state.data.patient.ben;
@@ -3416,68 +3474,88 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         ].some(Boolean);
 
         const alerts = [];
+        // Cada alerta: kind, tag, title, text (hallazgo breve), steps (qué considerar), source (de dónde viene el criterio)
+        const add = (kind, tag, title, text, steps = [], source = "") =>
+          alerts.push({ kind, tag, title, text, steps: steps.filter(Boolean), source });
 
         if (anc !== null) {
           const res = analyzeANC(anc, ben, th);
+          const ancSource = "Umbrales por defecto: consenso Delphi 2025 y ficha FDA (editables en Ajustes).";
           if (res.status !== 'OK') {
-            alerts.push({
-              kind: res.status === 'CRITICAL' || res.status === 'SEVERE' ? 'bad' : 'warn',
-              tag: 'ANC',
-              title: res.status === 'SEVERE' ? 'ALERTA CRÍTICA EXTREMA ANC' : (res.status === 'CRITICAL' ? 'ALERTA CRÍTICA ANC' : 'Aviso ANC'),
-              text: `${res.message} ACCIÓN: ${res.action}`
-            });
+            add(res.status === 'CRITICAL' || res.status === 'SEVERE' ? 'bad' : 'warn', 'ANC',
+              res.status === 'SEVERE' ? 'ANC crítico, riesgo extremo' : (res.status === 'CRITICAL' ? 'ANC crítico' : 'ANC a vigilar'),
+              res.message, [res.action], ancSource);
           } else {
-            alerts.push({ kind: "ok", tag: "ANC", title: "ANC en rango", text: res.message });
+            add("ok", "ANC", "ANC en rango", res.message, [res.action]);
           }
         }
 
         if (plt !== null) {
           if (plt < th.plt_stop) {
-            alerts.push({ kind: "bad", tag: "PLT", title: "Plaquetas bajas", text: `PLT ${plt} (<${th.plt_stop}, umbral configurado). La monografía canadiense (Gen-Clozapine, 2022) indica suspender por debajo de 50; la ficha FDA no fija un umbral. Considera valoración con hematología.` });
+            add("bad", "PLT", "Plaquetas bajas", `PLT ${plt}, por debajo del umbral configurado (${th.plt_stop}).`,
+              ["Considera valoración con hematología y revisar la indicación."],
+              "Monografía canadiense de Gen-Clozapine (2022): suspender por debajo de 50. La ficha FDA no fija un umbral.");
           } else if (plt < (th.plt_stop + 50)) {
-            alerts.push({ kind: "warn", tag: "PLT", title: "Plaquetas a vigilar", text: `PLT ${plt}. Revisar tendencia y clínica.` });
+            add("warn", "PLT", "Plaquetas a vigilar", `PLT ${plt}, cerca del umbral configurado.`, ["Revisa la tendencia y la clínica."]);
           }
         }
 
         const wbc = parseNum(entry.labs?.wbc_k);
-        if (wbc !== null) {
-          if (wbc < 3.0) {
-            alerts.push({ kind: "info", tag: "WBC", title: "Leucocitos bajos (informativo)", text: `WBC ${wbc} (<3.0). Informativo: desde 2025 la EMA eliminó el monitoreo de leucocitos y basta el ANC. Interprétalo junto con el ANC y tu juicio clínico.` });
-          }
+        if (wbc !== null && wbc < 3.0) {
+          add("info", "WBC", "Leucocitos bajos (informativo)", `Leucocitos ${wbc}, por debajo de 3.0.`,
+            ["Interprétalos junto con el ANC y tu juicio clínico."],
+            "EMA 2025: se eliminó el monitoreo de leucocitos; basta el ANC.");
         }
 
         if (eos !== null) {
-          const eosOrgans = "Evalúa compromiso de órganos (miocarditis, pancreatitis, hepatitis, colitis, nefritis; posible DRESS).";
+          const eosOrgans = "Evalúa compromiso de órganos: miocarditis, pancreatitis, hepatitis, colitis, nefritis o DRESS.";
           if (eos > th.eos_stop) {
-            alerts.push({ kind: "bad", tag: "EOS", title: "Eosinofilia marcada", text: `EOS ${eos} (>${th.eos_stop}, umbral configurado). La monografía canadiense (Gen-Clozapine, 2022) indica suspender por encima de 3.0 y reiniciar solo cuando baje de 1.0; la ficha FDA no fija un número y guía el manejo según el compromiso de órganos. ${eosOrgans}` });
+            add("bad", "EOS", "Eosinofilia marcada", `EOS ${eos}, por encima del umbral configurado (${th.eos_stop}).`,
+              [eosOrgans, "Si sospechas enfermedad sistémica, la ficha FDA indica suspender.", "La monografía canadiense indica suspender y reiniciar solo cuando baje de 1.0."],
+              "Ficha FDA 5.9 (sin límite numérico); monografía canadiense de Gen-Clozapine (2022).");
           } else if (eos > th.eos_watch) {
-            alerts.push({ kind: "warn", tag: "EOS", title: "Eosinofilia a vigilar", text: `EOS ${eos} (>${th.eos_watch}, definición de la ficha FDA). ${eosOrgans} Sin compromiso de órganos, la ficha contempla continuar con vigilancia estrecha. En el consenso Delphi 2026 la eosinofilia suele ser un marcador tardío y justifica intensificar el monitoreo cardíaco.` });
+            add("warn", "EOS", "Eosinofilia a vigilar", `EOS ${eos}, por encima de ${th.eos_watch} (definición de la ficha FDA).`,
+              [eosOrgans, "Sin compromiso de órganos, la ficha contempla continuar con vigilancia estrecha.", "Si hay fiebre o síntomas cardíacos, intensifica el monitoreo cardíaco: la eosinofilia suele ser un marcador tardío."],
+              "Ficha FDA 5.9; consenso Delphi de miocarditis (2026).");
           }
         }
 
         const hasMyoLabs = parseNum(entry.labs?.crp_mgl) !== null || parseNum(entry.labs?.trop) !== null;
         const wk = parseNum(entry.week);
-        const myoSuggest = hasMyoLabs
-          ? " PCR/troponina registradas: interprétalas con tu protocolo."
-          : " Considera solicitar PCR y troponina (cribado respaldado por el consenso Delphi 2026).";
+        const myoStep = hasMyoLabs
+          ? "PCR y troponina registradas: interprétalas con los límites de tu laboratorio."
+          : "Considera solicitar PCR y troponina (cribado respaldado por el consenso Delphi 2026).";
         if (fever) {
           const inWindow = wk !== null && wk >= 1 && wk <= 8;
-          alerts.push({ kind: "warn", tag: "FIEBRE", title: "Fiebre reportada", text: "Vigilar signos de infección, síndrome inflamatorio y otras banderas rojas (según protocolo). La ficha FDA indica solicitar un ANC y considerar interrumpir clozapina como medida de precaución con fiebre ≥38.5 °C." + (inWindow && !earlyFlags ? " Estás en las primeras 8 semanas, cuando es más frecuente la miocarditis." + myoSuggest : "") });
+          add("warn", "FIEBRE", "Fiebre reportada", "Fiebre durante el tratamiento.",
+            ["Vigila signos de infección, síndrome inflamatorio y otras banderas rojas.",
+              "Descarta infección neutropénica o miocarditis. Solicita un ANC y considera interrumpir clozapina como precaución si la fiebre es ≥ 38.5 °C.",
+              inWindow ? "Estás en las primeras 8 semanas, cuando es más frecuente la miocarditis." : "",
+              myoStep],
+            "Ficha FDA 5.1; consenso Delphi de miocarditis (2026).");
         }
         if (constipationRed || (constipationDays !== null && constipationDays >= 4)) {
-          alerts.push({ kind: "bad", tag: "GI", title: "Riesgo de Íleo / Obstrucción", text: `Datos de alarma detectados (${constipationDays || 0} días sin evacuar). Requiere evaluación quirúrgica/clínica urgente.` });
+          add("bad", "GI", "Riesgo de íleo u obstrucción", `Datos de alarma: ${constipationDays || 0} días sin evacuar.`,
+            ["Requiere evaluación quirúrgica o clínica urgente."], "Ficha FDA 5.8 (hipomotilidad gastrointestinal).");
         } else if (constipationScore !== null && constipationScore >= 3 || (constipationDays !== null && constipationDays >= 3)) {
-          alerts.push({ kind: "warn", tag: "GI", title: "Estreñimiento severo", text: "Iniciar protocolo laxante agresivo. Vigilancia estrecha de motilidad intestinal." });
+          add("warn", "GI", "Estreñimiento severo", "Estreñimiento de intensidad alta.",
+            ["Inicia un protocolo laxante enérgico.", "Vigila de cerca la motilidad intestinal."], "Ficha FDA 5.8 (hipomotilidad gastrointestinal).");
         }
 
         if (earlyFlags) {
           if (strongCardiac) {
-            alerts.push({ kind: "warn", tag: "CV/RESP", title: "Datos sugestivos de miocarditis", text: "Hay banderas rojas (dolor torácico, disnea, palpitaciones, síntomas gripales o mal estado). Según la ficha FDA, ante sospecha de miocarditis se suspende clozapina y se solicita evaluación cardíaca; decide con tu juicio clínico." + myoSuggest });
+            add("warn", "CV/RESP", "Datos sugestivos de miocarditis", "Hay banderas rojas cardiovasculares o respiratorias.",
+              ["Ante sospecha de miocarditis, la ficha FDA indica suspender clozapina y obtener evaluación cardíaca.", myoStep],
+              "Ficha FDA 5.6; consenso Delphi de miocarditis (2026).");
           } else {
-            alerts.push({ kind: "warn", tag: "CV/RESP", title: "Taquicardia a vigilar", text: "Es frecuente durante la titulación y, por sí sola, de bajo valor diagnóstico (consenso Delphi 2026). Vigila fiebre, dolor torácico, disnea o síntomas gripales." });
+            add("warn", "CV/RESP", "Taquicardia a vigilar", "Taquicardia aislada.",
+              ["Es frecuente al titular y, por sí sola, de bajo valor diagnóstico.", "Vigila fiebre, dolor torácico, disnea o síntomas gripales."],
+              "Consenso Delphi de miocarditis (2026).");
           }
           if (fever) {
-            alerts.push({ kind: "bad", tag: "CRÍTICO", title: "Riesgo Combinado", text: "Fiebre + signos cardiovasculares. Considera descartar miocarditis o serositis; la ficha FDA indica suspender y evaluar el corazón ante sospecha." + myoSuggest });
+            add("bad", "CRÍTICO", "Riesgo combinado", "Fiebre más signos cardiovasculares.",
+              ["Considera descartar miocarditis o serositis.", "La ficha FDA indica suspender y evaluar el corazón ante sospecha.", myoStep],
+              "Ficha FDA 5.6.");
           }
         }
 
@@ -3487,15 +3565,15 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
           fever: fever,
           sialorrhea: parseNum(entry.effects?.sialorrhea)
         });
+        const ENGINE_TAGS = { GI_Ileo: "GI", Sialorrhea: "SIALORREA" };
 
-        engineAlerts.forEach(ea => {
-          alerts.push({
-            kind: ea.severity === 'CRITICAL' || ea.severity === 'HIGH' ? 'bad' : 'warn',
-            tag: ea.type,
-            title: ea.title,
-            text: `${ea.message} ${ea.advice}`
+        engineAlerts
+          .filter(ea => ea.type !== 'Infection_Myocarditis') // la alerta de fiebre ya cubre este caso
+          .forEach(ea => {
+            add(ea.severity === 'CRITICAL' || ea.severity === 'HIGH' ? 'bad' : 'warn',
+              ENGINE_TAGS[ea.type] || String(ea.type).replace(/_/g, " ").toUpperCase(),
+              ea.title.charAt(0) + ea.title.slice(1).toLowerCase(), ea.message, [ea.advice]);
           });
-        });
 
         const interactFindings = checkInteractions({
           smokingCessation: entry.habits?.quit,
@@ -3504,12 +3582,8 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         });
 
         interactFindings.forEach(f => {
-          alerts.push({
-            kind: 'warn',
-            tag: 'INTERACCIÓN',
-            title: f.risk,
-            text: `${f.message} ${f.justification} ACCIÓN: ${f.action}`
-          });
+          add('warn', 'INTERACCIÓN', f.risk.charAt(0) + f.risk.slice(1).toLowerCase(), f.message,
+            [f.justification, "Acción: " + f.action], "Ficha FDA 2.6 (ajuste de dosis con inhibidores e inductores de CYP).");
         });
 
         // overall label
@@ -4044,7 +4118,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             title: "ALERTA CLÍNICA CRÍTICA",
             text: "Se han detectado hallazgos de alto riesgo que requieren acción inmediata.",
             type: "critical",
-            steps: bad.map(a => `<strong>${a.tag}:</strong> ${a.text}`),
+            steps: bad.map(a => `<strong>${esc(a.tag)}</strong> ${esc(a.title)}. ${esc(a.text)}`),
             formula: "ANC < 1.0 (General) | ANC < 0.5 (BEN) | PLT < 50 | EOS > 3.0 | Banderas Rojas GI/CV"
           });
         }
@@ -4174,11 +4248,13 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
           : schedule === "ema" ? "Esquema EMA 2025: tras 2 años sin neutropenia, ANC una vez al año."
           : "Esquema Delphi 2025: sin ANC de rutina tras 2 años; revisa efectos adversos cada 3 meses.";
 
+        const markText = () => { const k = $("k_next"); k.classList.toggle("is-text", !/^\d{1,2} \S{3} \d{4}$/.test(k.textContent.trim())); };
         const next = nextLabDate();
         if (latest) {
           const res = assess(latest);
           if (res.alerts.some(a => a.tag === "ANC" && (a.kind === "warn" || a.kind === "bad"))) {
             $("k_next").textContent = "Más frecuente según protocolo";
+            markText();
             return;
           }
         }
@@ -4191,6 +4267,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         } else {
           $("k_next").textContent = "—";
         }
+        markText();
       };
 
       const renderAlerts = () => {
@@ -4202,14 +4279,27 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
           return;
         }
         const res = assess(latest);
-        const blocks = res.alerts.map(a => {
-          const cls = a.kind === "bad" ? "bad" : a.kind === "warn" ? "warn" : a.kind === "ok" ? "ok" : "info";
-          const title = `<span class="tag ${cls}">${a.tag}</span> <strong style="margin-left:8px">${a.title}</strong>`;
-          const text = `<div class="note" style="margin-top:6px">${a.text}</div>`;
-          return `<div class="item" style="cursor:default">
-        <div>${title}</div>${text}
-      </div>`;
+        const KIND = { bad: ["Crítico", "✕"], warn: ["Vigilar", "!"], info: ["Informativo", "i"], ok: ["Normal", "✓"] };
+        const rank = { bad: 0, warn: 1, info: 2, ok: 3 };
+        const sorted = res.alerts.map((a, i) => ({ a, i })).sort((x, y) => (rank[x.a.kind] ?? 9) - (rank[y.a.kind] ?? 9) || x.i - y.i).map(x => x.a);
+        const count = (k) => res.alerts.filter(a => a.kind === k).length;
+        const chips = [
+          count("bad") ? `<span class="chip bad">✕ ${count("bad")} ${count("bad") === 1 ? "crítica" : "críticas"}</span>` : "",
+          count("warn") ? `<span class="chip warn">! ${count("warn")} a vigilar</span>` : "",
+          count("info") ? `<span class="chip info">i ${count("info")} ${count("info") === 1 ? "informativa" : "informativas"}</span>` : "",
+          count("ok") && !count("bad") && !count("warn") ? `<span class="chip ok">✓ Sin alertas, en rango</span>` : ""
+        ].join("");
+        const cards = sorted.map(a => {
+          const kind = KIND[a.kind] ? a.kind : "info";
+          const steps = (a.steps && a.steps.length) ? `<ul class="alert-steps">${a.steps.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : "";
+          const src = a.source ? `<div class="alert-src"><strong>Fuente:</strong> ${esc(a.source)}</div>` : "";
+          return `<article class="alert-card ${kind}" role="group" aria-label="${KIND[kind][0]}: ${esc(a.title)}">
+        <header class="alert-head"><span class="tag ${kind}">${esc(a.tag)}</span><span class="alert-level ${kind}">${KIND[kind][1]} ${KIND[kind][0]}</span></header>
+        <h4 class="alert-title">${esc(a.title)}</h4>
+        <p class="alert-lead">${esc(a.text)}</p>${steps}${src}
+      </article>`;
         }).join("");
+        const blocks = cards ? `<div class="alert-summary" role="status">${chips}</div><div class="alert-list">${cards}</div>` : "";
         root.innerHTML = blocks || `<div class="note">Sin señales en la última entrada.</div>`;
         const worst = res.alerts.some(a => a.kind === "bad")
           ? "bad"
