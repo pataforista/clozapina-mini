@@ -1806,6 +1806,89 @@
       transition: border-color 0.25s var(--ease), background 0.25s var(--ease), transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
     }
 
+  
+    /* ═══ Revisión de usabilidad: orden, pasos y navegación ═══ */
+    .disclaimer-banner { padding: 6px 0; font-size: 12.5px; }
+    .disclaimer-banner .wrap { display: flex; align-items: flex-start; gap: 8px; }
+    .disclaimer-details { flex: 1; min-width: 0; }
+    .disclaimer-details summary { cursor: pointer; list-style: none; line-height: 1.4; padding: 4px 0; }
+    .disclaimer-details summary::-webkit-details-marker { display: none; }
+    .disclaimer-more { text-decoration: underline; opacity: .75; white-space: nowrap; }
+    .disclaimer-details[open] .disclaimer-more { display: none; }
+    .disclaimer-details p { margin: 4px 0 6px; }
+    .disclaimer-close { padding: 0; width: 32px; height: 32px; min-width: 32px; flex-shrink: 0; font-size: 14px; }
+
+    .site-header { margin-bottom: 16px; padding: 10px 0; }
+    .site-header .wrap { gap: 10px; }
+    .brand { min-width: 0; }
+    .brand h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-actions { flex-shrink: 0; gap: 8px; }
+    .header-actions .pill { max-width: 120px; }
+    .header-actions .pill strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    @media (max-width: 520px) {
+      .brand .logo { display: none; }
+      .brand h1 { font-size: 15px; }
+      #btnInstall { display: none; }
+      .header-actions .pill { max-width: 96px; }
+    }
+
+    main { padding: 8px 0 120px; }
+    .card:hover { transform: none; }
+    .box:hover, .item:hover { transform: none; }
+
+    /* Selector de vista (Nueva entrada / Historial) */
+    .seg { display: flex; gap: 4px; padding: 4px; margin-bottom: 16px; background: var(--card);
+      border: 1px solid var(--line); border-radius: var(--radius-sm); }
+    .seg-btn { flex: 1; padding: 10px 8px; font-size: 13px; border-radius: 8px; background: transparent;
+      color: var(--muted); border: 0; min-height: 44px; }
+    .seg-btn.active { background: var(--accent); color: #fff; }
+    @media (min-width: 940px) { .seg { display: none; } }
+    @media (max-width: 939px) {
+      #tab-registro[data-view="form"] #cardList,
+      #tab-registro[data-view="list"] #cardForm { display: none; }
+    }
+
+    /* Guía de pasos y títulos de paso */
+    .howto { list-style: none; display: flex; gap: 6px; padding: 0; margin: 0 0 12px; flex-wrap: wrap; }
+    .howto li { flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: 6px; font-size: 11.5px;
+      color: var(--muted); padding: 6px 8px; border: 1px solid var(--line); border-radius: 999px; white-space: nowrap; }
+    .howto li b { display: inline-flex; width: 18px; height: 18px; flex: 0 0 18px; align-items: center;
+      justify-content: center; border-radius: 50%; background: var(--accent); color: #fff; font-size: 11px; }
+    @media (max-width: 520px) { .howto li { flex: 1 1 calc(50% - 6px); } }
+    .inline-help { margin-bottom: 8px; font-size: 12.5px; }
+    .inline-help summary { cursor: pointer; color: var(--muted); padding: 4px 0; }
+    .step-title { display: flex; align-items: center; gap: 10px; margin: 28px 0 14px; padding-top: 20px;
+      border-top: 1px solid var(--line); font-size: 16px; font-weight: 700; }
+    .step-title small { font-weight: 500; color: var(--muted); font-size: 12px; }
+    .step-title:first-of-type { border-top: 0; padding-top: 0; margin-top: 16px; }
+    .step-n { display: inline-flex; width: 26px; height: 26px; align-items: center; justify-content: center;
+      border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; flex-shrink: 0; }
+
+    /* Campos y botones: tamaño táctil, sin cortes */
+    .row > * { flex: 1 1 150px; min-width: 0; }
+    .rating-opt { min-height: 40px; }
+    .checkbox-row input[type="checkbox"] { width: 20px; height: 20px; }
+    .checkbox-row { min-height: 36px; }
+    .checkbox-row label { text-transform: none; }
+    .support-box--warn-cv .row { gap: 4px 16px; }
+    .support-box--warn-cv .checkbox-row { flex: 1 1 140px; }
+
+    .action-bar-bottom { flex-direction: column; gap: 10px; padding: 16px 24px; position: static; margin: 24px -24px -24px; }
+    .action-bar-bottom .primary { width: 100%; min-height: 48px; font-size: 15px; }
+    .action-secondary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .action-secondary button { padding: 10px 6px; font-size: 12.5px; gap: 4px; min-width: 0; white-space: nowrap; }
+    @media (max-width: 520px) { .action-secondary { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .card { padding: 18px 16px; } .action-bar-bottom { margin: 24px -16px -18px; padding: 14px 16px; } }
+
+    /* Menú inferior: barra fija a ancho completo en móvil (no tapa contenido) */
+    @media (max-width: 620px) {
+      .floating-nav { left: 0; right: 0; bottom: 0 !important; transform: none; max-width: none; width: 100%;
+        border-radius: 16px 16px 0 0; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); }
+      .nav-item { flex: 1; min-width: 0; padding: 6px 2px; }
+      .nav-label { font-size: 11px; }
+      .toast { bottom: 84px; max-width: calc(100vw - 32px); }
+    }
   </style>
 </head>
 
@@ -1819,17 +1902,12 @@
 
   <div class="disclaimer-banner" id="disclaimerBanner">
     <div class="wrap">
-      <div style="display:flex; gap:12px; align-items:flex-start;">
-        <span style="font-size:20px;">⚠️</span>
-        <div style="flex:1;">
-          <strong>AVISO MÉDICO CRÍTICO:</strong> Esta aplicación es una herramienta de <u>apoyo a la decisión
-            clínica</u> y registro personal. No es un dispositivo médico ni sustituye el juicio de un profesional de la
-          salud. Las decisiones sobre el tratamiento con clozapina deben basarse en protocolos institucionales, la ficha
-          técnica del medicamento y la evaluación clínica individual del paciente.
-        </div>
-        <button class="ghost" style="padding:4px 8px; font-size:12px;"
-          onclick="document.getElementById('disclaimerBanner').style.display='none'">Cerrar</button>
-      </div>
+      <details class="disclaimer-details">
+        <summary><span aria-hidden="true">⚠️</span> <strong>Apoyo a la decisión clínica, no sustituye tu juicio.</strong> <span class="disclaimer-more">Ver aviso completo</span></summary>
+        <p>Esta aplicación es una herramienta de <u>apoyo a la decisión clínica</u> y registro personal. No es un dispositivo médico ni sustituye el juicio de un profesional de la salud. Las decisiones sobre el tratamiento con clozapina deben basarse en protocolos institucionales, la ficha técnica del medicamento y la evaluación clínica individual del paciente.</p>
+      </details>
+      <button class="ghost disclaimer-close" aria-label="Cerrar aviso"
+        onclick="document.getElementById('disclaimerBanner').style.display='none'">✕</button>
     </div>
   </div>
   <header class="site-header">
@@ -1839,14 +1917,14 @@
         <h1 id="appHeaderTitle">Registro</h1>
       </div>
       <div class="header-actions">
-        <div class="pill" title="Paciente Activo" style="display: inline-flex; align-items: center; gap: 4px;">
-          <span>👤</span> <strong id="patientLabel">—</strong>
+        <div class="pill" title="Paciente activo (se cambia en Ajustes)">
+          <span aria-hidden="true">👤</span> <strong id="patientLabel">—</strong>
         </div>
-        <select id="themeSelect" class="theme-select">
+        <select id="themeSelect" class="theme-select" aria-label="Tema">
           <option value="light">☀ Claro</option>
           <option value="dark">🌙 Oscuro</option>
         </select>
-        <button class="ghost" id="btnInstall" style="padding:6px 12px; font-size:12px;" disabled>Instalar</button>
+        <button class="ghost btn-sm" id="btnInstall" disabled>Instalar</button>
       </div>
     </div>
   </header>
@@ -1854,9 +1932,13 @@
   <main class="wrap">
     <!-- Registro -->
     <section id="tab-registro">
-      <div class="grid">
-        <div class="card">
-          <h2>Entrada</h2>
+      <div class="seg" id="regSeg" role="tablist" aria-label="Vista de registro">
+        <button type="button" class="seg-btn active" data-view="form" role="tab" aria-selected="true">✏️ Nueva entrada</button>
+        <button type="button" class="seg-btn" data-view="list" role="tab" aria-selected="false">📋 Historial y alertas</button>
+      </div>
+      <div class="grid" data-view="form">
+        <div class="card" id="cardForm">
+          <h2>Nueva entrada</h2>
           <!-- Patient Context Banner inside Card for Context -->
           <div id="patientContextBanner" class="context-banner">
             <div class="context-banner__title">Paciente Activo:</div>
@@ -1864,35 +1946,23 @@
             <div class="context-banner__details" id="ctx_details">—</div>
           </div>
 
-          <div class="support-box">
-            <strong>Soporte de Decisión (Criterios Delphi Global)</strong>
-            <p class="note" style="margin-top:4px; font-size:11.5px;">
-              Puntos de corte recomendados por consenso Delphi (2022-2025): Cese de clozapina si
-              <strong>ANC < 1.0 (Gral)</strong> o <strong>ANC < 0.5 (BEN)</strong>.
-            </p>
-          </div>
-          <p class="note">
-            Esto es un cuaderno digital local. No sustituye el criterio clínico ni los protocolos institucionales.
-            Evita capturar datos identificables si no es estrictamente necesario.
-          </p>
-          <div class="item" style="cursor:default">
-            <strong>Pasos de captura (orden recomendado)</strong>
-            <ol class="note" style="margin-top:6px">
-              <li>Fecha del laboratorio.</li>
-              <li>Marca BEN si corresponde.</li>
-              <li>Captura ANC y leucocitos.</li>
-              <li>Agrega plaquetas y eosinófilos.</li>
-              <li>Registra síntomas relevantes y notas breves.</li>
-              <li>Guarda y revisa alertas.</li>
-            </ol>
-          </div>
-          <div class="divider"></div>
+          <ol class="howto" aria-label="Cómo usar">
+            <li><b>1</b> Datos del control</li>
+            <li><b>2</b> Laboratorios</li>
+            <li><b>3</b> Síntomas</li>
+            <li><b>4</b> Guardar</li>
+          </ol>
+          <details class="inline-help">
+            <summary>Criterios de referencia y aviso de privacidad</summary>
+            <p class="note">Consenso Delphi (2022-2025): suspender clozapina si <strong>ANC &lt; 1.0</strong> (general) o <strong>ANC &lt; 0.5</strong> (BEN). Cuaderno digital local; evita capturar datos identificables.</p>
+          </details>
 
+          <h3 class="step-title"><span class="step-n">1</span> Datos del control</h3>
           <div class="row">
             <div>
               <label>Fecha</label>
               <input type="date" id="f_date" />
-              <div class="helper">1) Define la fecha del laboratorio.</div>
+              <div class="helper">Fecha del laboratorio.</div>
             </div>
             <div>
               <label>Semana (opcional)</label>
@@ -1905,13 +1975,13 @@
                 <option value="0">No / General</option>
                 <option value="1">Sí (Benign Ethnic Neutropenia)</option>
               </select>
-              <div class="helper">2) Selecciona BEN si corresponde.</div>
+              <div class="helper">Neutropenia étnica benigna.</div>
             </div>
           </div>
 
           <div class="row" style="margin-top:16px;">
             <div>
-              <label>Dosis Actual</label>
+              <label>Dosis actual</label>
               <div class="input-wrapper">
                 <input type="number" id="f_dose" placeholder="p.ej., 300" step="12.5" />
                 <span class="unit-suffix">mg/día</span>
@@ -1948,17 +2018,10 @@
             </div>
           </div>
 
-          <div class="divider"></div>
-
-          <h2>Laboratorios (en x10³/µL)</h2>
+          <h3 class="step-title"><span class="step-n">2</span> Laboratorios <small>x10³/µL</small></h3>
           <div class="support-box support-box--accent">
-            <strong>⚠️ Verificación de Unidades:</strong> Esta app usa <strong>x10³/µL</strong> (k/µL).
-            <p class="small" style="margin-top:4px; opacity:0.8;">
-              Si el laboratorio reporta en <strong>células/µL</strong> (p.ej., 2500), <strong>divide entre 1000</strong>
-              (p.ej., 2.5) antes de capturar.
-            </p>
+            <strong>⚠️ Unidades:</strong> si el laboratorio reporta en <strong>células/µL</strong> (p.ej. 2500), <strong>divide entre 1000</strong> (2.5).
           </div>
-          <p class="note">3) Captura primero ANC y leucocitos; luego plaquetas y eosinófilos.</p>
           <div class="row">
             <div>
               <label style="display:flex; justify-content:space-between; align-items:center;">
@@ -1999,12 +2062,10 @@
             </div>
           </div>
 
-          <div class="divider"></div>
-
-          <h2>Triage / Riesgo Inmediato</h2>
+          <h3 class="step-title"><span class="step-n">3</span> Síntomas y banderas rojas</h3>
           <div class="row">
             <div>
-              <label id="lbl_const">Estreñimiento (0–5)</label>
+              <label id="lbl_const">Estreñimiento (0 = nada, 5 = grave)</label>
               <div class="rating-group" data-input="f_const" role="radiogroup" aria-labelledby="lbl_const">
                 <button type="button" class="rating-opt" data-val="0" role="radio" aria-checked="true" aria-label="0 de 5">0</button>
                 <button type="button" class="rating-opt" data-val="1" role="radio" aria-checked="false" aria-label="1 de 5">1</button>
@@ -2036,7 +2097,7 @@
           </div>
 
           <div class="support-box support-box--warn-cv">
-            <strong>Banderas Rojas (CV/RESP):</strong>
+            <strong>Banderas rojas cardio-respiratorias</strong>
             <div class="row" style="margin-top:8px">
               <div class="checkbox-row"><input type="checkbox" id="f_chest" /><label for="f_chest" class="small" style="cursor:pointer; margin:0;">Dolor torácico</label></div>
               <div class="checkbox-row"><input type="checkbox" id="f_dyspnea" /><label for="f_dyspnea" class="small" style="cursor:pointer; margin:0;">Disnea</label></div>
@@ -2049,7 +2110,7 @@
 
           <div class="collapsible" id="colEffects">
             <div class="collapsible-trigger" onclick="this.parentElement.classList.toggle('open')">
-              <span>Síntomas Secundarios (0–5)</span>
+              <span>Más síntomas secundarios (opcional)</span>
             </div>
             <div class="collapsible-content" style="padding: 0 16px;">
               <div class="row" style="margin-top:12px">
@@ -2120,34 +2181,24 @@
             </div>
           </div>
 
-          <label>Notas clínicas (breves)</label>
+          <h3 class="step-title"><span class="step-n">4</span> Notas y guardar</h3>
+          <label for="f_notes">Notas clínicas (breves)</label>
           <textarea id="f_notes" placeholder="Libre. Evita datos identificables." style="min-height:80px"></textarea>
 
           <div class="action-bar-bottom">
-            <button class="primary" id="btnSave" style="flex:2">
-              Guardar / Actualizar
-            </button>
-            <button class="ghost" id="btnCopyClip" title="Copiar Nota Clínica">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            </button>
-            <button class="ghost" id="btnGuide" title="Guía">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-            </button>
-            <button class="ghost" id="btnClear" title="Limpiar">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21Z"></path><path d="m22 21H7"></path><path d="m5 11 9 9"></path></svg>
-            </button>
-            <button class="danger" id="btnDelete" disabled title="Borrar">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-            </button>
+            <button class="primary" id="btnSave">Guardar / actualizar</button>
+            <div class="action-secondary">
+              <button class="ghost" id="btnCopyClip" title="Copiar nota clínica"><span aria-hidden="true">📋</span> Copiar nota</button>
+              <button class="ghost" id="btnGuide" title="Guía rápida"><span aria-hidden="true">❓</span> Guía</button>
+              <button class="ghost" id="btnClear" title="Limpiar formulario"><span aria-hidden="true">🧹</span> Limpiar</button>
+              <button class="danger" id="btnDelete" disabled title="Borrar entrada"><span aria-hidden="true">🗑️</span> Borrar</button>
+            </div>
           </div>
         </div>
 
-        <div class="card">
-          <h2>Entradas</h2>
-          <div class="row">
-            <button class="ghost" id="btnNew">Nueva</button>
-          </div>
-          <div class="divider"></div>
+        <div class="card" id="cardList">
+          <h2>Historial y alertas</h2>
+          <button class="ghost" id="btnNew" style="margin-bottom:16px">＋ Nueva entrada</button>
 
           <div class="kpi">
             <div class="box">
@@ -3565,6 +3616,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
 
         save(true, true);
         clearForm();
+        if (window.setRegView) window.setRegView("list");
 
         // Critical Check
         const analysis = assess(entry);
@@ -3643,6 +3695,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             div.classList.add("selected");
             fillForm(e);
             setTab("registro");
+            if (window.setRegView) window.setRegView("form");
           });
 
           const shareBtn = document.createElement("button");
@@ -4171,7 +4224,23 @@ Notas: ${$("f_notes").value}
         });
       });
       $("btnClear").addEventListener("click", clearForm);
-      $("btnNew").addEventListener("click", () => { clearForm(); toast("Nueva entrada."); });
+      $("btnNew").addEventListener("click", () => { clearForm(); setRegView("form"); toast("Nueva entrada."); });
+      // ---- Registro: vista Nueva entrada / Historial (móvil) ----
+      const setRegView = (v) => {
+        const sec = $("tab-registro");
+        sec.dataset.view = v;
+        document.querySelectorAll("#regSeg .seg-btn").forEach(b => {
+          const on = b.dataset.view === v;
+          b.classList.toggle("active", on);
+          b.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        window.scrollTo({ top: 0 });
+      };
+      $("tab-registro").dataset.view = "form";
+      document.querySelectorAll("#regSeg .seg-btn").forEach(b =>
+        b.addEventListener("click", () => setRegView(b.dataset.view)));
+      window.setRegView = setRegView;
+
       $("btnDelete").addEventListener("click", deleteSelected);
 
       $("btnExportJson").addEventListener("click", exportJson);
