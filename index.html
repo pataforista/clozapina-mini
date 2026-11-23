@@ -1978,6 +1978,10 @@
     #tab-recursos .acc-list, #tab-graficas .chart-card { max-width: 760px; margin-left: auto; margin-right: auto; }
     #tab-graficas .chart-card { max-width: 900px; }
     .refs ol { padding-left: 20px; display: flex; flex-direction: column; gap: 10px; }
+  
+    .myo-hint { margin: 0 0 12px; padding: 12px 14px; border-radius: var(--radius-sm); font-size: 13.5px;
+      border: 1px solid var(--warn); border-left-width: 4px; background: color-mix(in srgb, var(--warn) 10%, var(--card)); }
+    .myo-hint strong { color: var(--warn); }
   </style>
 </head>
 
@@ -2197,6 +2201,36 @@
           </div>
 
           <div class="divider"></div>
+
+          <div class="myo-hint hidden" id="myoHint" role="status">
+            <strong>Datos sugestivos de miocarditis.</strong> Considera solicitar PCR y troponina, sobre todo en las semanas 2 a 8.
+          </div>
+          <details class="inline-help" id="myoDetails">
+            <summary>Estudios de miocarditis (opcional)</summary>
+            <p class="helper">Habitualmente no se piden. Solicítalos si hay fiebre, taquicardia, disnea o dolor torácico.</p>
+            <div class="row">
+              <div>
+                <label for="f_crp">PCR</label>
+                <div class="input-wrapper">
+                  <input type="number" step="0.1" min="0" id="f_crp" inputmode="decimal" placeholder="p.ej., 5" />
+                  <span class="unit-suffix">mg/L</span>
+                </div>
+              </div>
+              <div>
+                <label for="f_trop">Troponina</label>
+                <input type="number" step="any" min="0" id="f_trop" inputmode="decimal" placeholder="valor del laboratorio" />
+              </div>
+              <div>
+                <label for="f_trop_unit">Unidad de troponina</label>
+                <select id="f_trop_unit">
+                  <option value="ng/L">ng/L</option>
+                  <option value="ng/mL">ng/mL</option>
+                  <option value="µg/L">µg/L</option>
+                </select>
+              </div>
+            </div>
+            <p class="helper">Usa la unidad de tu laboratorio. La app solo registra estos valores; interprétalos con tu protocolo.</p>
+          </details>
 
           <div class="collapsible" id="colEffects">
             <div class="collapsible-trigger" onclick="this.parentElement.classList.toggle('open')">
@@ -3055,6 +3089,9 @@
             wbc_k: clamp(parseNum(e.labs?.wbc_k), 100),
             plt_k: clamp(parseNum(e.labs?.plt_k), 2000),
             eos_k: clamp(parseNum(e.labs?.eos_k), 15),
+            crp_mgl: clamp(parseNum(e.labs?.crp_mgl), 1000),
+            trop: clamp(parseNum(e.labs?.trop), 1000000),
+            trop_unit: ["ng/L", "ng/mL", "µg/L"].includes(e.labs?.trop_unit) ? e.labs.trop_unit : "ng/L",
           },
           dose_mg: clamp(parseNum(e.dose_mg), 2000),
           effects: {
@@ -3130,7 +3167,8 @@ Paciente: ${state.data.patient.label}
 ---
 LABORATORIOS (x10³/µL):
 ANC: ${e.labs.anc_k || "—"} | WBC: ${e.labs.wbc_k || "—"}
-PLT: ${e.labs.plt_k || "—"} | EOS: ${e.labs.eos_k || "—"}
+PLT: ${e.labs.plt_k || "—"} | EOS: ${e.labs.eos_k || "—"}${(e.labs.crp_mgl != null || e.labs.trop != null) ? `
+PCR: ${e.labs.crp_mgl ?? "—"} mg/L | Troponina: ${e.labs.trop ?? "—"} ${e.labs.trop_unit || ""}` : ""}
 Dosis: ${e.dose_mg ? e.dose_mg + " mg" : "—"}
 
 ALERTAS:
@@ -3205,8 +3243,14 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
           }
         }
 
+        const hasMyoLabs = parseNum(entry.labs?.crp_mgl) !== null || parseNum(entry.labs?.trop) !== null;
+        const wk = parseNum(entry.week);
+        const myoSuggest = hasMyoLabs
+          ? " PCR/troponina registradas: interprétalas con tu protocolo."
+          : " Considera solicitar PCR y troponina.";
         if (fever) {
-          alerts.push({ kind: "warn", tag: "FIEBRE", title: "Fiebre reportada", text: "Vigilar signos de infección, síndrome inflamatorio y otras banderas rojas (según protocolo)." });
+          const inWindow = wk !== null && wk >= 2 && wk <= 8;
+          alerts.push({ kind: "warn", tag: "FIEBRE", title: "Fiebre reportada", text: "Vigilar signos de infección, síndrome inflamatorio y otras banderas rojas (según protocolo)." + (inWindow && !earlyFlags ? " Estás en la ventana de miocarditis (semanas 2 a 8)." + myoSuggest : "") });
         }
         if (constipationRed || (constipationDays !== null && constipationDays >= 4)) {
           alerts.push({ kind: "bad", tag: "GI", title: "Riesgo de Íleo / Obstrucción", text: `Datos de alarma detectados (${constipationDays || 0} días sin evacuar). Requiere evaluación quirúrgica/clínica urgente.` });
@@ -3215,9 +3259,9 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         }
 
         if (earlyFlags) {
-          alerts.push({ kind: "warn", tag: "CV/RESP", title: "Signos Inflamatorios", text: "Banderas rojas (taquicardia, disnea, dolor torácico). Evaluar miocarditis (sem 2-8) o neumonía." });
+          alerts.push({ kind: "warn", tag: "CV/RESP", title: "Signos Inflamatorios", text: "Banderas rojas (taquicardia, disnea, dolor torácico). Evaluar miocarditis (sem 2-8) o neumonía." + myoSuggest });
           if (fever) {
-            alerts.push({ kind: "bad", tag: "CRÍTICO", title: "Riesgo Combinado", text: "Fiebre + signos cardiopulmonares. Descartar miocarditis o serositis de clozapina con urgencia." });
+            alerts.push({ kind: "bad", tag: "CRÍTICO", title: "Riesgo Combinado", text: "Fiebre + signos cardiopulmonares. Descartar miocarditis o serositis de clozapina con urgencia." + myoSuggest });
           }
         }
 
@@ -3410,6 +3454,11 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("f_week").value = "";
         $("f_ben").value = (state.data.patient.ben ? "1" : "0");
 
+        $("f_crp").value = "";
+        $("f_trop").value = "";
+        $("f_trop_unit").value = "ng/L";
+        $("myoDetails").open = false;
+
         ["anc", "wbc", "plt", "eos"].forEach(k => {
           const el = $("f_" + k);
           if (el) {
@@ -3465,6 +3514,10 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("f_wbc").value = e.labs?.wbc_k ?? "";
         $("f_plt").value = e.labs?.plt_k ?? "";
         $("f_eos").value = e.labs?.eos_k ?? "";
+        $("f_crp").value = e.labs?.crp_mgl ?? "";
+        $("f_trop").value = e.labs?.trop ?? "";
+        $("f_trop_unit").value = e.labs?.trop_unit || "ng/L";
+        if (e.labs?.crp_mgl != null || e.labs?.trop != null) $("myoDetails").open = true;
 
         $("f_sial").value = e.effects?.sialorrhea ?? "";
         $("f_const").value = e.effects?.constipation ?? "";
@@ -3544,6 +3597,9 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             wbc_k: $("f_wbc").value,
             plt_k: $("f_plt").value,
             eos_k: $("f_eos").value,
+            crp_mgl: $("f_crp").value,
+            trop: $("f_trop").value,
+            trop_unit: $("f_trop_unit").value,
           },
           effects: {
             sialorrhea: $("f_sial").value,
@@ -3585,6 +3641,10 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("f_wbc").value = e.labs?.wbc_k ?? "";
         $("f_plt").value = e.labs?.plt_k ?? "";
         $("f_eos").value = e.labs?.eos_k ?? "";
+        $("f_crp").value = e.labs?.crp_mgl ?? "";
+        $("f_trop").value = e.labs?.trop ?? "";
+        $("f_trop_unit").value = e.labs?.trop_unit || "ng/L";
+        if (e.labs?.crp_mgl != null || e.labs?.trop != null) $("myoDetails").open = true;
 
         $("f_sial").value = e.effects?.sialorrhea ?? "";
         $("f_const").value = e.effects?.constipation ?? "";
@@ -3660,6 +3720,9 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             wbc_k: parseNum($("f_wbc").value),
             plt_k: parseNum($("f_plt").value),
             eos_k: parseNum($("f_eos").value),
+            crp_mgl: parseNum($("f_crp").value),
+            trop: parseNum($("f_trop").value),
+            trop_unit: $("f_trop_unit").value,
           },
           effects: {
             sialorrhea: parseNum($("f_sial").value),
@@ -4135,12 +4198,13 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
       };
 
       const exportCsvLabs = () => {
-        const rows = [["date", "week", "ben", "anc_k", "wbc_k", "plt_k", "eos_k", "fever", "notes"]];
+        const rows = [["date", "week", "ben", "anc_k", "wbc_k", "plt_k", "eos_k", "crp_mgl", "trop", "trop_unit", "fever", "notes"]];
         const entries = [...state.data.entries].sort((a, b) => (a.date || "").localeCompare(b.date || ""));
         for (const e of entries) {
           rows.push([
             e.date || "", e.week ?? "", e.ben ? 1 : 0,
             e.labs?.anc_k ?? "", e.labs?.wbc_k ?? "", e.labs?.plt_k ?? "", e.labs?.eos_k ?? "",
+            e.labs?.crp_mgl ?? "", e.labs?.trop ?? "", e.labs?.trop_unit ?? "",
             e.effects?.fever ? 1 : 0,
             (e.notes || "").replaceAll("\n", " ").replaceAll("\r", " ")
           ]);
@@ -4179,7 +4243,20 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
       };
 
       // ---- Visual UX Helpers ----
+      const updateMyoHint = () => {
+        const flags = ["f_chest", "f_dyspnea", "f_tachy", "f_unwell"].some(id => $(id).checked) || $("f_fever").value === "1";
+        const hasLabs = $("f_crp").value !== "" || $("f_trop").value !== "";
+        const show = flags && !hasLabs;
+        const wasHidden = $("myoHint").classList.contains("hidden");
+        $("myoHint").classList.toggle("hidden", !show);
+        if (show && wasHidden) $("myoDetails").open = true; // deja los campos a la vista
+      };
+      ["f_chest", "f_dyspnea", "f_tachy", "f_unwell", "f_fever", "f_crp", "f_trop"].forEach(id => {
+        $(id).addEventListener("change", updateMyoHint);
+        $(id).addEventListener("input", updateMyoHint);
+      });
       const updateLikertVisuals = () => {
+        updateMyoHint();
         document.querySelectorAll(".rating-group").forEach(group => {
           const inputId = group.dataset.input;
           const el = $(inputId);
