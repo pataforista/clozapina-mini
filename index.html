@@ -2175,7 +2175,7 @@
               <label for="f_fever">Fiebre</label>
               <select id="f_fever">
                 <option value="0">No</option>
-                <option value="1">Sí / >38°C</option>
+                <option value="1">Sí / ≥38.5 °C</option>
               </select>
             </div>
             <div>
@@ -3250,7 +3250,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
           : " Considera solicitar PCR y troponina.";
         if (fever) {
           const inWindow = wk !== null && wk >= 2 && wk <= 8;
-          alerts.push({ kind: "warn", tag: "FIEBRE", title: "Fiebre reportada", text: "Vigilar signos de infección, síndrome inflamatorio y otras banderas rojas (según protocolo)." + (inWindow && !earlyFlags ? " Estás en la ventana de miocarditis (semanas 2 a 8)." + myoSuggest : "") });
+          alerts.push({ kind: "warn", tag: "FIEBRE", title: "Fiebre reportada", text: "Vigilar signos de infección, síndrome inflamatorio y otras banderas rojas (según protocolo). La ficha FDA indica solicitar un ANC y considerar interrumpir clozapina como medida de precaución con fiebre ≥38.5 °C." + (inWindow && !earlyFlags ? " Estás en la ventana de miocarditis (semanas 2 a 8)." + myoSuggest : "") });
         }
         if (constipationRed || (constipationDays !== null && constipationDays >= 4)) {
           alerts.push({ kind: "bad", tag: "GI", title: "Riesgo de Íleo / Obstrucción", text: `Datos de alarma detectados (${constipationDays || 0} días sin evacuar). Requiere evaluación quirúrgica/clínica urgente.` });
