@@ -73,7 +73,7 @@
       --nav-border: rgba(30, 28, 50, 0.08);
       --nav-indicator: rgba(61, 53, 168, 0.11);
       --nav-active-color: #3D35A8;
-      --nav-muted: #7A7790;
+      --nav-muted: #5F5C73;
       color-scheme: light;
     }
 
@@ -345,7 +345,6 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.6;
-      opacity: 0.9;
     }
 
     /* Form Elements */
@@ -1889,6 +1888,65 @@
       .nav-label { font-size: 11px; }
       .toast { bottom: 84px; max-width: calc(100vw - 32px); }
     }
+  
+    /* ═══ Ajustes en acordeones, semántica y accesibilidad ═══ */
+    .settings-intro { margin: 0 0 12px; }
+    .acc-list { display: flex; flex-direction: column; gap: 10px; max-width: 760px; margin: 0 auto; }
+    .acc { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+    .acc > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 14px 16px; min-height: 56px; border-radius: var(--radius); }
+    .acc > summary::-webkit-details-marker { display: none; }
+    .acc > summary::after { content: ""; width: 10px; height: 10px; border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .2s var(--ease); flex-shrink: 0; margin-right: 4px; }
+    .acc[open] > summary::after { transform: rotate(-135deg); }
+    .acc[open] > summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 1px solid var(--line); }
+    .acc > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+    .acc-t { display: flex; flex-direction: column; gap: 2px; font-weight: 700; font-size: 15px; min-width: 0; }
+    .acc-t small { font-weight: 400; font-size: 12.5px; color: var(--muted); }
+    .acc-body { padding: 16px; }
+    .sub-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 16px 0 10px; }
+    .save-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 4px 0 8px; }
+    .save-row .primary { flex: 1 1 200px; min-height: 48px; }
+    .save-row .ghost { flex: 1 1 200px; min-height: 48px; }
+    .save-row .helper { flex-basis: 100%; margin: 0; }
+    .danger-zone { margin-top: 24px; padding: 14px; border: 1px dashed var(--bad); border-radius: var(--radius-sm); }
+    .danger-zone strong { color: var(--bad); font-size: 13px; }
+
+    /* Registro: jerarquía y señales */
+    .howto li { padding: 0; }
+    .howto li a { display: flex; align-items: center; gap: 6px; padding: 8px 10px; color: inherit; text-decoration: none; min-height: 40px; width: 100%; }
+    .howto li a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 999px; }
+    .step-title { scroll-margin-top: 76px; }
+    .req { font-weight: 500; color: var(--muted); text-transform: none; letter-spacing: 0; font-size: 11px; margin-left: 4px; }
+    .lbl-group { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+    .action-danger { width: 100%; margin-top: 6px; padding: 8px; font-size: 12.5px; min-height: 40px; background: transparent; }
+    .action-secondary { grid-template-columns: repeat(3, 1fr); }
+    @media (max-width: 520px) { .action-secondary { grid-template-columns: repeat(3, 1fr); } .action-secondary button { padding: 10px 2px; font-size: 12px; } }
+    .ico { flex-shrink: 0; }
+
+    /* KPI: estado clínico (color + texto + símbolo) */
+    .kpi-state { margin-top: 6px; font-size: 12px; font-weight: 700; min-height: 16px; }
+    .box[data-state="ok"]   { border-left: 4px solid var(--ok); }
+    .box[data-state="warn"] { border-left: 4px solid var(--warn); background: color-mix(in srgb, var(--warn) 8%, var(--card)); }
+    .box[data-state="bad"]  { border-left: 4px solid var(--bad);  background: color-mix(in srgb, var(--bad) 10%, var(--card)); }
+    .box[data-state="ok"] .kpi-state   { color: var(--ok); }
+    .box[data-state="warn"] .kpi-state { color: var(--warn); }
+    .box[data-state="bad"] .kpi-state  { color: var(--bad); }
+    .box .lbl { font-size: 11px; }
+    .box .val { font-size: 22px; flex-wrap: wrap; }
+    .kpi { grid-template-columns: repeat(2, 1fr); }
+
+    /* Objetivos táctiles ≥ 40–44 px */
+    .icon-btn { width: 40px; height: 40px; }
+    .disclaimer-close { width: 40px; height: 40px; min-width: 40px; }
+    .btn-sm { min-height: 40px; }
+    .theme-select { min-height: 40px; }
+    .nav-item { min-height: 52px; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    /* Texto sobre acento claro (modo oscuro): oscuro para cumplir contraste 4.5:1 */
+    html[data-theme="dark"] button.primary, html[data-theme="dark"] .seg-btn.active,
+    html[data-theme="dark"] .step-n, html[data-theme="dark"] .howto li b,
+    html[data-theme="dark"] .btn-doc.primary, html[data-theme="dark"] .brand .logo { color: #0E0D15; }
   </style>
 </head>
 
@@ -1903,7 +1961,7 @@
   <div class="disclaimer-banner" id="disclaimerBanner">
     <div class="wrap">
       <details class="disclaimer-details">
-        <summary><span aria-hidden="true">⚠️</span> <strong>Apoyo a la decisión clínica, no sustituye tu juicio.</strong> <span class="disclaimer-more">Ver aviso completo</span></summary>
+        <summary><strong>Aviso:</strong> <span>Apoyo a la decisión clínica, no sustituye tu juicio.</span> <span class="disclaimer-more">Ver aviso completo</span></summary>
         <p>Esta aplicación es una herramienta de <u>apoyo a la decisión clínica</u> y registro personal. No es un dispositivo médico ni sustituye el juicio de un profesional de la salud. Las decisiones sobre el tratamiento con clozapina deben basarse en protocolos institucionales, la ficha técnica del medicamento y la evaluación clínica individual del paciente.</p>
       </details>
       <button class="ghost disclaimer-close" aria-label="Cerrar aviso"
@@ -1918,7 +1976,7 @@
       </div>
       <div class="header-actions">
         <div class="pill" title="Paciente activo (se cambia en Ajustes)">
-          <span aria-hidden="true">👤</span> <strong id="patientLabel">—</strong>
+          <svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-3.3 0-8 1.7-8 5v1h16v-1c0-3.3-4.7-5-8-5z"/></svg> <strong id="patientLabel">—</strong>
         </div>
         <select id="themeSelect" class="theme-select" aria-label="Tema">
           <option value="light">☀ Claro</option>
@@ -1933,8 +1991,8 @@
     <!-- Registro -->
     <section id="tab-registro">
       <div class="seg" id="regSeg" role="tablist" aria-label="Vista de registro">
-        <button type="button" class="seg-btn active" data-view="form" role="tab" aria-selected="true">✏️ Nueva entrada</button>
-        <button type="button" class="seg-btn" data-view="list" role="tab" aria-selected="false">📋 Historial y alertas</button>
+        <button type="button" class="seg-btn active" data-view="form" role="tab" aria-selected="true">Nueva entrada</button>
+        <button type="button" class="seg-btn" data-view="list" role="tab" aria-selected="false">Historial y alertas</button>
       </div>
       <div class="grid" data-view="form">
         <div class="card" id="cardForm">
@@ -1946,31 +2004,32 @@
             <div class="context-banner__details" id="ctx_details">—</div>
           </div>
 
-          <ol class="howto" aria-label="Cómo usar">
-            <li><b>1</b> Datos del control</li>
-            <li><b>2</b> Laboratorios</li>
-            <li><b>3</b> Síntomas</li>
-            <li><b>4</b> Guardar</li>
+          <ol class="howto" aria-label="Ir a un paso">
+            <li><a href="#step1"><b>1</b> Datos</a></li>
+            <li><a href="#step2"><b>2</b> Labs</a></li>
+            <li><a href="#step3"><b>3</b> Síntomas</a></li>
+            <li><a href="#step4"><b>4</b> Guardar</a></li>
           </ol>
+          <p class="helper" style="margin:-4px 0 8px">Solo la fecha es obligatoria. Captura lo que tengas; el resto puede quedar vacío.</p>
           <details class="inline-help">
             <summary>Criterios de referencia y aviso de privacidad</summary>
             <p class="note">Consenso Delphi (2022-2025): suspender clozapina si <strong>ANC &lt; 1.0</strong> (general) o <strong>ANC &lt; 0.5</strong> (BEN). Cuaderno digital local; evita capturar datos identificables.</p>
           </details>
 
-          <h3 class="step-title"><span class="step-n">1</span> Datos del control</h3>
+          <h3 class="step-title" id="step1"><span class="step-n">1</span> Datos del control</h3>
           <div class="row">
             <div>
-              <label>Fecha</label>
-              <input type="date" id="f_date" />
+              <label for="f_date">Fecha <span class="req">obligatoria</span></label>
+              <input type="date" id="f_date" required />
               <div class="helper">Fecha del laboratorio.</div>
             </div>
             <div>
-              <label>Semana (opcional)</label>
+              <label for="f_week">Semana (opcional)</label>
               <input type="number" id="f_week" min="1" max="99" placeholder="p.ej., 6" />
               <div class="helper">Opcional: semana de tratamiento si aplica.</div>
             </div>
             <div>
-              <label>¿BEN?</label>
+              <label for="f_ben">¿BEN?</label>
               <select id="f_ben">
                 <option value="0">No / General</option>
                 <option value="1">Sí (Benign Ethnic Neutropenia)</option>
@@ -1981,15 +2040,15 @@
 
           <div class="row" style="margin-top:16px;">
             <div>
-              <label>Dosis actual</label>
+              <label for="f_dose">Dosis actual</label>
               <div class="input-wrapper">
-                <input type="number" id="f_dose" placeholder="p.ej., 300" step="12.5" />
+                <input type="number" id="f_dose" inputmode="decimal" placeholder="p.ej., 300" step="12.5" />
                 <span class="unit-suffix">mg/día</span>
               </div>
               <div class="helper">Dosis total diaria (mg).</div>
             </div>
             <div>
-              <label>¿Interacciones (CYP1A2)?</label>
+              <span class="lbl-group">Interacciones (CYP1A2)</span>
               <div class="checkbox-group" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
                 <div class="checkbox-row">
                   <input type="checkbox" id="f_habit_smoke" />
@@ -2002,7 +2061,7 @@
               </div>
             </div>
             <div>
-              <label>Otros Factores</label>
+              <span class="lbl-group">Otros factores</span>
               <div class="checkbox-group" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
                 <div class="checkbox-row">
                   <input type="checkbox" id="f_habit_fluvox" />
@@ -2018,51 +2077,51 @@
             </div>
           </div>
 
-          <h3 class="step-title"><span class="step-n">2</span> Laboratorios <small>x10³/µL</small></h3>
+          <h3 class="step-title" id="step2"><span class="step-n">2</span> Laboratorios <small>x10³/µL</small></h3>
           <div class="support-box support-box--accent">
-            <strong>⚠️ Unidades:</strong> si el laboratorio reporta en <strong>células/µL</strong> (p.ej. 2500), <strong>divide entre 1000</strong> (2.5).
+            <strong>Unidades:</strong> si el laboratorio reporta en <strong>células/µL</strong> (p.ej. 2500), <strong>divide entre 1000</strong> (2.5).
           </div>
           <div class="row">
             <div>
-              <label style="display:flex; justify-content:space-between; align-items:center;">
+              <label for="f_anc" style="display:flex; justify-content:space-between; align-items:center;">
                 ANC / Neutrófilos <span id="badge_anc" class="feedback-badge"></span>
                 <span class="info-icon" style="cursor:help; font-size:14px;"
                   title="Verifica la unidad del laboratorio (x10³/µL vs células/µL). Si el dato está en células/µL, divide entre 1000.">ℹ️</span>
               </label>
               <div class="input-wrapper">
-                <input type="number" step="0.01" id="f_anc" placeholder="p.ej., 2.3" />
+                <input type="number" step="0.01" id="f_anc" inputmode="decimal" placeholder="p.ej., 2.3" />
                 <span class="unit-suffix">x10³/µL</span>
               </div>
               <div class="helper">Ficha: x10³/µL (k/µL).</div>
             </div>
             <div>
-              <label style="display:flex; justify-content:space-between; align-items:center;">
+              <label for="f_wbc" style="display:flex; justify-content:space-between; align-items:center;">
                 Leucocitos <span id="badge_wbc" class="feedback-badge"></span>
                 <span class="info-icon" style="cursor:help; font-size:14px;"
                   title="Verifica la unidad: si el valor es >100, probablemente falte dividir entre 1000.">ℹ️</span>
               </label>
               <div class="input-wrapper">
-                <input type="number" step="0.01" id="f_wbc" placeholder="p.ej., 6.5" />
+                <input type="number" step="0.01" id="f_wbc" inputmode="decimal" placeholder="p.ej., 6.5" />
                 <span class="unit-suffix">x10³/µL</span>
               </div>
             </div>
             <div>
-              <label>Plaquetas <span id="badge_plt" class="feedback-badge"></span></label>
+              <label for="f_plt">Plaquetas <span id="badge_plt" class="feedback-badge"></span></label>
               <div class="input-wrapper">
-                <input type="number" step="1" id="f_plt" placeholder="p.ej., 250" />
+                <input type="number" step="1" id="f_plt" inputmode="decimal" placeholder="p.ej., 250" />
                 <span class="unit-suffix">x10³/µL</span>
               </div>
             </div>
             <div>
-              <label>Eosinófilos <span id="badge_eos" class="feedback-badge"></span></label>
+              <label for="f_eos">Eosinófilos <span id="badge_eos" class="feedback-badge"></span></label>
               <div class="input-wrapper">
-                <input type="number" step="0.01" id="f_eos" placeholder="p.ej., 0.3" />
+                <input type="number" step="0.01" id="f_eos" inputmode="decimal" placeholder="p.ej., 0.3" />
                 <span class="unit-suffix">x10³/µL</span>
               </div>
             </div>
           </div>
 
-          <h3 class="step-title"><span class="step-n">3</span> Síntomas y banderas rojas</h3>
+          <h3 class="step-title" id="step3"><span class="step-n">3</span> Síntomas y banderas rojas</h3>
           <div class="row">
             <div>
               <label id="lbl_const">Estreñimiento (0 = nada, 5 = grave)</label>
@@ -2078,14 +2137,14 @@
               <div class="helper">Red flag: días sin evacuar y dolor.</div>
             </div>
             <div>
-              <label>Fiebre</label>
+              <label for="f_fever">Fiebre</label>
               <select id="f_fever">
                 <option value="0">No</option>
                 <option value="1">Sí / >38°C</option>
               </select>
             </div>
             <div>
-              <label>Días sin evacuar</label>
+              <label for="f_const_days">Días sin evacuar</label>
               <input type="number" min="0" max="14" step="1" id="f_const_days" placeholder="p.ej., 3" />
             </div>
             <div style="display:flex; align-items:flex-end; padding-bottom:12px">
@@ -2176,23 +2235,23 @@
                   </div>
                   <input type="hidden" id="f_app" value="0">
                 </div>
-                <div><label>Otros</label><input type="text" id="f_other" placeholder="p.ej., cefalea" /></div>
+                <div><label for="f_other">Otros</label><input type="text" id="f_other" placeholder="p.ej., cefalea" /></div>
               </div>
             </div>
           </div>
 
-          <h3 class="step-title"><span class="step-n">4</span> Notas y guardar</h3>
+          <h3 class="step-title" id="step4"><span class="step-n">4</span> Notas y guardar</h3>
           <label for="f_notes">Notas clínicas (breves)</label>
           <textarea id="f_notes" placeholder="Libre. Evita datos identificables." style="min-height:80px"></textarea>
 
           <div class="action-bar-bottom">
             <button class="primary" id="btnSave">Guardar / actualizar</button>
             <div class="action-secondary">
-              <button class="ghost" id="btnCopyClip" title="Copiar nota clínica"><span aria-hidden="true">📋</span> Copiar nota</button>
-              <button class="ghost" id="btnGuide" title="Guía rápida"><span aria-hidden="true">❓</span> Guía</button>
-              <button class="ghost" id="btnClear" title="Limpiar formulario"><span aria-hidden="true">🧹</span> Limpiar</button>
-              <button class="danger" id="btnDelete" disabled title="Borrar entrada"><span aria-hidden="true">🗑️</span> Borrar</button>
+              <button class="ghost" id="btnCopyClip" title="Copiar nota clínica">Copiar nota</button>
+              <button class="ghost" id="btnGuide" title="Guía rápida">Guía</button>
+              <button class="ghost" id="btnClear" title="Limpiar formulario">Limpiar</button>
             </div>
+            <button class="danger action-danger" id="btnDelete" disabled title="Borrar la entrada seleccionada">Borrar entrada seleccionada</button>
           </div>
         </div>
 
@@ -2200,29 +2259,30 @@
           <h2>Historial y alertas</h2>
           <button class="ghost" id="btnNew" style="margin-bottom:16px">＋ Nueva entrada</button>
 
+          <div id="alerts"></div>
+
           <div class="kpi">
-            <div class="box">
-              <div class="lbl">📅 Última fecha</div>
-              <div class="val" id="k_last">—</div>
-            </div>
-            <div class="box">
-              <div class="lbl">🔬 ANC (k/µL)</div>
+            <div class="box" id="box_anc">
+              <div class="lbl">ANC (x10³/µL)</div>
               <div class="val" id="k_anc">—</div>
+              <div class="kpi-state" id="k_anc_state"></div>
             </div>
-            <div class="box">
-              <div class="lbl">🩸 PLT (k/µL)</div>
+            <div class="box" id="box_plt">
+              <div class="lbl">Plaquetas (x10³/µL)</div>
               <div class="val" id="k_plt">—</div>
+              <div class="kpi-state" id="k_plt_state"></div>
             </div>
             <div class="box">
-              <div class="lbl">🗓️ Próximo Lab</div>
-              <div class="val" id="k_next"><small style="font-size:10px">Configura inicio</small></div>
+              <div class="lbl">Próximo laboratorio</div>
+              <div class="val" id="k_next"><small style="font-size:12px">Configura el inicio en Ajustes</small></div>
+            </div>
+            <div class="box">
+              <div class="lbl">Último control</div>
+              <div class="val" id="k_last">—</div>
             </div>
           </div>
 
-          <div class="divider"></div>
-          <div id="alerts"></div>
-
-          <div class="divider"></div>
+          <h3 class="sub-title" style="margin-top:24px">Entradas guardadas</h3>
           <div class="list" id="entryList" aria-label="Listado de entradas"></div>
         </div>
       </div>
@@ -2232,12 +2292,12 @@
     <section id="tab-graficas" class="hidden">
       <div class="card">
         <h2>Tendencias (x10³/µL)</h2>
-        <p class="note">Gráfica simple (sin librerías externas). Si no hay datos suficientes, no se dibuja.</p>
+        <p class="note">Elige qué parámetro ver y cuántos controles mostrar. Se necesitan al menos 2 entradas con ese dato.</p>
         <canvas id="chart"></canvas>
         <div class="divider"></div>
         <div class="row">
           <div>
-            <label>Serie</label>
+            <label for="chartSeries">Serie</label>
             <select id="chartSeries">
               <option value="anc_k">ANC</option>
               <option value="wbc_k">Leucocitos</option>
@@ -2246,7 +2306,7 @@
             </select>
           </div>
           <div>
-            <label>Ventana</label>
+            <label for="chartWindow">Ventana</label>
             <select id="chartWindow">
               <option value="all">Todo</option>
               <option value="8">Últimas 8</option>
@@ -2261,60 +2321,101 @@
 
     <!-- Ajustes -->
     <section id="tab-ajustes" class="hidden">
-      <div class="grid">
-        <div class="card">
-          <h2>Paciente / configuración</h2>
-          <div class="row">
-            <div>
-              <label>Etiqueta (apodo)</label>
-              <input id="s_label" placeholder="p.ej., Paciente A" />
-            </div>
-            <div>
-              <label>Fecha de inicio de clozapina</label>
-              <input type="date" id="s_start" />
-            </div>
-            <div>
-              <label>BEN por defecto</label>
-              <select id="s_ben">
-                <option value="0">No / General</option>
-                <option value="1">Sí</option>
-              </select>
+      <p class="note settings-intro">Toca una sección para abrirla. Lo más usado está primero; lo delicado, al final.</p>
+      <div class="acc-list">
+
+        <details class="acc" open>
+          <summary><span class="acc-t">Paciente<small>Etiqueta, inicio de clozapina y BEN</small></span></summary>
+          <div class="acc-body">
+            <div class="row">
+              <div>
+                <label for="s_label">Etiqueta (apodo)</label>
+                <input id="s_label" placeholder="p.ej., Paciente A" autocomplete="off" />
+                <div class="helper">No uses nombre real.</div>
+              </div>
+              <div>
+                <label for="s_start">Inicio de clozapina</label>
+                <input type="date" id="s_start" />
+                <div class="helper">Define el calendario de laboratorios.</div>
+              </div>
+              <div>
+                <label for="s_ben">BEN por defecto</label>
+                <select id="s_ben">
+                  <option value="0">No / General</option>
+                  <option value="1">Sí</option>
+                </select>
+              </div>
             </div>
           </div>
-          <div class="divider"></div>
-          <h2>Umbrales (editables; unidades x10³/µL)</h2>
-          <p class="note">
-            Valores por defecto basados en ficha técnica/guías: ANC general (1.5/1.0/0.5), BEN (1.0/0.5),
-            eosinófilos &gt;3.0 para suspensión, plaquetas &lt;50 para suspensión.
-          </p>
+        </details>
+
+        <details class="acc">
+          <summary><span class="acc-t">Umbrales de alerta<small>Cambia solo si tu protocolo lo exige</small></span></summary>
+          <div class="acc-body">
+            <div class="support-box support-box--warn-cv">
+              <strong>Atención:</strong> estos valores disparan las alertas clínicas. Los predeterminados siguen ficha técnica y consenso Delphi. Unidades: x10³/µL.
+            </div>
+            <h3 class="sub-title">Neutrófilos (ANC)</h3>
           <div class="row">
-            <div><label>ANC normal (general) ≥</label><input type="number" step="0.01" id="t_anc_norm" /></div>
-            <div><label>ANC normal (BEN) ≥</label><input type="number" step="0.01" id="t_anc_norm_ben" /></div>
-            <div><label>ANC interrumpir (general) &lt;</label><input type="number" step="0.01" id="t_anc_int" /></div>
-            <div><label>ANC grave (def. &lt;)</label><input type="number" step="0.01" id="t_anc_sev" /></div>
-            <div><label>ANC interrumpir (BEN) &lt;</label><input type="number" step="0.01" id="t_anc_int_ben" /></div>
+            <div><label for="t_anc_norm">ANC normal (general) ≥</label><input type="number" step="0.01" id="t_anc_norm" /></div>
+            <div><label for="t_anc_norm_ben">ANC normal (BEN) ≥</label><input type="number" step="0.01" id="t_anc_norm_ben" /></div>
+            <div><label for="t_anc_int">ANC interrumpir (general) &lt;</label><input type="number" step="0.01" id="t_anc_int" /></div>
+            <div><label for="t_anc_sev">ANC grave (def. &lt;)</label><input type="number" step="0.01" id="t_anc_sev" /></div>
+            <div><label for="t_anc_int_ben">ANC interrumpir (BEN) &lt;</label><input type="number" step="0.01" id="t_anc_int_ben" /></div>
           </div>
+          <h3 class="sub-title">Otras células y calendario</h3>
           <div class="row">
-            <div><label>Eosinófilos suspender &gt;</label><input type="number" step="0.01" id="t_eos_stop" /></div>
-            <div><label>Plaquetas suspender &lt;</label><input type="number" step="1" id="t_plt_stop" /></div>
-            <div><label>Meses para pasar a c/2 sem</label><input type="number" step="1" id="t_mo_2w" /></div>
-            <div><label>Meses para pasar a mensual</label><input type="number" step="1" id="t_mo_4w" /></div>
+            <div><label for="t_eos_stop">Eosinófilos suspender &gt;</label><input type="number" step="0.01" id="t_eos_stop" /></div>
+            <div><label for="t_plt_stop">Plaquetas suspender &lt;</label><input type="number" step="1" id="t_plt_stop" /></div>
+            <div><label for="t_mo_2w">Meses para pasar a c/2 sem</label><input type="number" step="1" id="t_mo_2w" /></div>
+            <div><label for="t_mo_4w">Meses para pasar a mensual</label><input type="number" step="1" id="t_mo_4w" /></div>
           </div>
 
-          <div style="margin-top: 16px; background: var(--input-bg, rgba(0,0,0,0.04)); padding: 14px; border-radius: 10px; border: 1px solid var(--line);">
+          </div>
+        </details>
+
+        <details class="acc">
+          <summary><span class="acc-t">Apariencia y rendimiento<small>Modo ahorro de batería</small></span></summary>
+          <div class="acc-body">
             <div class="checkbox-row">
               <input type="checkbox" id="s_low_power">
-              <label for="s_low_power" style="margin: 0; font-weight: 500; cursor: pointer;">Modo Ahorro (Desactivar fondo animado)</label>
+              <label for="s_low_power" style="margin:0; font-weight:500; cursor:pointer;">Modo ahorro (sin fondo animado)</label>
             </div>
-            <p class="helper" style="margin: 6px 0 0 24px;">Actívalo si sientes lentitud en la aplicación.</p>
+            <p class="helper">Actívalo si notas lentitud. El tema claro/oscuro se cambia arriba.</p>
           </div>
-          <div class="divider"></div>
-          <div class="row">
-            <button class="primary" id="btnSaveSettings">Guardar ajustes</button>
-            <button class="ghost" id="btnResetSettings">Restaurar defaults</button>
+        </details>
+
+        <div class="save-row">
+          <button class="primary" id="btnSaveSettings">Guardar ajustes</button>
+          <button class="ghost" id="btnResetSettings">Restaurar valores originales</button>
+          <p class="helper">Guarda Paciente, Umbrales y Apariencia.</p>
+        </div>
+
+        <details class="acc">
+          <summary><span class="acc-t">Respaldo de datos<small>Exportar, importar y borrar</small></span></summary>
+          <div class="acc-body">
+            <p class="note">Tus datos viven solo en este navegador. Exporta un respaldo con regularidad.</p>
+            <div class="row" style="margin-top:12px">
+              <button class="primary" id="btnExportJson">Exportar JSON</button>
+              <button class="ghost" id="btnExportCsv">Exportar CSV (labs)</button>
+            </div>
+            <label for="importFile" style="margin-top:16px">Importar respaldo (.json)</label>
+            <input type="file" id="importFile" accept="application/json" style="padding:8px;" />
+            <div class="danger-zone">
+              <strong>Zona de riesgo</strong>
+              <div class="row" style="margin-top:10px">
+                <button class="ghost" id="btnLoadDemoManual">Cargar datos de demo</button>
+                <button class="danger" id="btnWipe">Borrar todo (local)</button>
+              </div>
+              <p class="helper">Borrar todo no se puede deshacer. Exporta antes.</p>
+            </div>
           </div>
-          <div class="divider"></div>
-          <div class="support-box">
+        </details>
+
+        <details class="acc">
+          <summary><span class="acc-t">Criterios clínicos de referencia<small>FDA vs. Delphi, REMS y tabaco</small></span></summary>
+          <div class="acc-body">
+            <div class="support-box">
             <strong>Comparativa de Criterios (ANC x10³/µL)</strong>
             <table style="margin-top:8px;">
               <thead>
@@ -2343,66 +2444,44 @@
               </tbody>
             </table>
             <p class="note" style="margin-top:8px;">
-              🆕 <strong>Actualización FDA (2025):</strong> El programa REMS de clozapina fue eliminado (vigente desde el
+              <strong>Actualización FDA (2025):</strong> El programa REMS de clozapina fue eliminado (vigente desde el
               13 de junio de 2025). Ya no es obligatorio reportar el ANC para dispensar, pero el <strong>monitoreo de ANC
                 sigue recomendado</strong> según la información de prescripción.
             </p>
             <p class="note" style="margin-top:8px;">
-              ⚠️ <strong>Metabolismo y Tabaco:</strong> Los hidrocarburos del humo inducen la enzima CYP1A2. Iniciar o
+              <strong>Metabolismo y Tabaco:</strong> Los hidrocarburos del humo inducen la enzima CYP1A2. Iniciar o
               suspender el hábito tabáquico puede alterar drásticamente los niveles de clozapina, requiriendo ajuste de
               dosis.
             </p>
-          </div>
-        </div>
-
-        <div style="display:flex; flex-direction:column; gap:20px;">
-          <div class="card">
-            <h2>Exportar e Importar Datos</h2>
-            <p class="note">Descarga o sube un archivo <span class="mono">.json</span> para respaldo o migración.</p>
-            <div class="row" style="margin-top:12px">
-              <button class="primary" id="btnExportJson">Exportar JSON</button>
-              <button class="ghost" id="btnExportCsv">Exportar CSV (labs)</button>
-            </div>
-            <div class="divider"></div>
-            <label>Importar archivo de respaldo (.json)</label>
-            <input type="file" id="importFile" accept="application/json" style="padding:8px;" />
-            <div class="divider"></div>
-            <div class="row">
-              <button class="ghost" id="btnLoadDemoManual" style="flex:1;">Cargar Demo</button>
-              <button class="danger" id="btnWipe" style="flex:1;">Borrar todo (local)</button>
             </div>
           </div>
+        </details>
 
-          <div class="card">
-            <h2>Privacidad operacional</h2>
+        <details class="acc">
+          <summary><span class="acc-t">Privacidad<small>Qué se guarda y qué no capturar</small></span></summary>
+          <div class="acc-body">
             <ul class="note">
-              <li>No hay backend; todo se guarda localmente en este navegador.</li>
-              <li>Si borras datos del navegador, se perderá el registro.</li>
-              <li>Para respaldo, exporta JSON periódicamente.</li>
-              <li>No capturar: nombre, CURP, NSS, teléfono, dirección, etc.</li>
+              <li>No hay servidor: todo se guarda localmente en este navegador.</li>
+              <li>Si borras los datos del navegador, se pierde el registro.</li>
+              <li>No captures nombre, CURP, NSS, teléfono ni dirección.</li>
             </ul>
           </div>
+        </details>
 
-          <div class="card">
-            <h2>App / Actualizaciones</h2>
-          <p class="note">
-            Versión instalada: <strong id="appVersion">—</strong>
-          </p>
-          <p class="note">
-            La app funciona sin conexión. Las nuevas versiones se instalan y aplican de forma
-            automática; también puedes comprobarlo manualmente.
-          </p>
-          <div class="divider"></div>
-          <div class="upd-check-row">
-            <button class="primary" id="btnCheckUpdate" type="button">Buscar actualizaciones</button>
-            <span class="upd-status" id="updCheckStatus">
-              <span class="upd-status-dot" aria-hidden="true"></span> Listo
-            </span>
+        <details class="acc">
+          <summary><span class="acc-t">App y actualizaciones<small>Versión <span id="appVersion">—</span></small></span></summary>
+          <div class="acc-body">
+            <p class="note">Funciona sin conexión. Las nuevas versiones se aplican solas; también puedes comprobarlo aquí.</p>
+            <div class="upd-check-row" style="margin-top:12px">
+              <button class="primary" id="btnCheckUpdate" type="button">Buscar actualizaciones</button>
+              <span class="upd-status" id="updCheckStatus">
+                <span class="upd-status-dot" aria-hidden="true"></span> Listo
+              </span>
+            </div>
           </div>
-        </div>
+        </details>
       </div>
-    </div>
-  </section>
+    </section>
 
     <!-- Recursos -->
     <section id="tab-recursos" class="hidden">
@@ -2775,7 +2854,7 @@
 
           const fBox = $("modalFormula");
           if (formula) {
-            fBox.innerHTML = `<strong>Lógica/Fórmula:</strong><br><code style="font-size:11px">${formula}</code>`;
+            fBox.innerHTML = `<strong>Criterio aplicado:</strong><br><code style="font-size:11px">${formula}</code>`;
             fBox.style.display = "block";
           } else {
             fBox.style.display = "none";
@@ -3730,6 +3809,21 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("k_last").textContent = latest ? fmtDate(latest.date) : "—";
         $("k_anc").textContent = latest?.labs?.anc_k ?? "—";
         $("k_plt").textContent = latest?.labs?.plt_k ?? "—";
+        // Estado clínico con color + texto + símbolo (no solo color)
+        const setKpiState = (key, tag) => {
+          const box = $("box_" + key), lab = $("k_" + key + "_state");
+          const val = latest?.labs?.[key + "_k"];
+          let st = "none", txt = "";
+          if (latest && val != null) {
+            const al = assess(latest).alerts.find(x => x.tag === tag);
+            st = al ? al.kind : "ok";
+            txt = ({ bad: "✕ Crítico", warn: "! Precaución", ok: "✓ Normal", info: "i Informativo" })[st] || "";
+          }
+          box.dataset.state = st;
+          lab.textContent = txt;
+        };
+        setKpiState("anc", "ANC");
+        setKpiState("plt", "PLT");
 
         const next = nextLabDate();
         if (latest) {
@@ -3783,7 +3877,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
               "Contacta a hematología/psiquiatría o referencia urgente si aplica.",
               "Documenta decisiones y plan de seguimiento."
             ],
-            formula: "Assess(latest).worst === 'bad'"
+            formula: "ANC < 1.0 (General) | ANC < 0.5 (BEN) | PLT < 50 | EOS > 3.0 | Banderas rojas"
           });
           state.lastAlertKey = latestKey;
         } else if (shouldShowModal && worst === "warn") {
@@ -3795,7 +3889,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
               "Aumenta frecuencia de control según guía local.",
               "Registra síntomas acompañantes y evolución clínica."
             ],
-            formula: "Assess(latest).worst === 'warn'"
+            formula: "ANC entre umbral de interrupción y normal | PLT o EOS cerca del límite"
           });
           state.lastAlertKey = latestKey;
         }
