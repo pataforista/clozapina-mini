@@ -2443,13 +2443,25 @@
             <div><label for="t_anc_sev">ANC grave (def. &lt;)</label><input type="number" step="0.01" id="t_anc_sev" /></div>
             <div><label for="t_anc_int_ben">ANC interrumpir (BEN) &lt;</label><input type="number" step="0.01" id="t_anc_int_ben" /></div>
           </div>
+          <h3 class="sub-title">Calendario de ANC</h3>
+          <div class="row">
+            <div>
+              <label for="s_schedule">Esquema de monitoreo</label>
+              <select id="s_schedule">
+                <option value="fda">Ficha FDA: semanal 6 meses, quincenal hasta el año, mensual</option>
+                <option value="ema">EMA 2025: semanal 18 sem, mensual hasta el año, c/12 sem y anual si no hubo neutropenia</option>
+                <option value="delphi">Delphi 2025: semanal 18 sem, c/4 sem hasta 2 años, luego sin ANC de rutina</option>
+              </select>
+              <div class="helper">Solo cambia la fecha sugerida del próximo laboratorio. Elige el esquema que siga tu protocolo.</div>
+            </div>
+          </div>
           <h3 class="sub-title">Otras células y calendario</h3>
           <div class="row">
             <div><label for="t_eos_watch">Eosinófilos: vigilar &gt;</label><input type="number" step="0.01" id="t_eos_watch" /><div class="helper">Ficha FDA: eosinofilia &gt; 0.7.</div></div>
             <div><label for="t_eos_stop">Eosinófilos: alerta alta &gt;</label><input type="number" step="0.01" id="t_eos_stop" /><div class="helper">Monografía canadiense (3.0); no figura en la ficha FDA.</div></div>
             <div><label for="t_plt_stop">Plaquetas: alerta alta &lt;</label><input type="number" step="1" id="t_plt_stop" /><div class="helper">Monografía canadiense (50); no figura en la ficha FDA.</div></div>
-            <div><label for="t_mo_2w">Meses para pasar a c/2 sem</label><input type="number" step="1" id="t_mo_2w" /></div>
-            <div><label for="t_mo_4w">Meses para pasar a mensual</label><input type="number" step="1" id="t_mo_4w" /></div>
+            <div><label for="t_mo_2w">Meses para pasar a c/2 sem (esquema FDA)</label><input type="number" step="1" id="t_mo_2w" /></div>
+            <div><label for="t_mo_4w">Meses para pasar a mensual (esquema FDA)</label><input type="number" step="1" id="t_mo_4w" /></div>
           </div>
 
           </div>
@@ -2654,6 +2666,9 @@
                     de 50 respectivamente. Se mantienen como umbrales <em>configurables</em>; no figuran en la ficha FDA. Una síntesis de
                     literatura (Consensus, 2026) coincide en que la eosinofilia o trombocitopenia aisladas, sin daño de órganos, suelen
                     ser benignas y permiten continuar con vigilancia.</li>
+                  <li><strong>EMA / PRAC, comunicado DHPC sobre clozapina (julio de 2025)</strong>. Revisa el monitoreo hematológico:
+                    se elimina el requisito de leucocitos (basta el ANC); suspender con ANC &lt;1.0 (&lt;0.5 en BEN); ANC semanal
+                    18 semanas, mensual hasta el año y, sin neutropenia previa, cada 12 semanas y luego anual tras 2 años.</li>
                   <li><strong>Wagner et al., 2026 (Br J Psychiatry 228:348-356, Delphi de miocarditis)</strong>. Respalda hs-troponina y
                     PCR como cribado en las primeras 4 a 8 semanas; considera la taquicardia sola de bajo valor diagnóstico y la
                     eosinofilia un marcador tardío. Las guías difieren en si el cribado es obligatorio o solo ante sospecha.</li>
@@ -2811,7 +2826,7 @@
       const THEME_KEY = "clz_mini_pwa_theme";
       const DEFAULTS = {
         version: "1.5.0",
-        patient: { label: "—", ben: false, start_date: "" },
+        patient: { label: "—", ben: false, start_date: "", schedule: "fda" },
         thresholds: {
           // Criterios Default: Delphi Global Consensus (Siskind et al., Lancet Psychiatry 2025)
           anc_norm: 1.5,        // general normal >= 1.5
@@ -3259,7 +3274,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         const wbc = parseNum(entry.labs?.wbc_k);
         if (wbc !== null) {
           if (wbc < 3.0) {
-            alerts.push({ kind: "warn", tag: "WBC", title: "Leucopenia leve", text: `WBC ${wbc} (<3.0). Vigilar tendencia si el ANC es normal.` });
+            alerts.push({ kind: "info", tag: "WBC", title: "Leucocitos bajos (informativo)", text: `WBC ${wbc} (<3.0). Informativo: desde 2025 la EMA eliminó el monitoreo de leucocitos y basta el ANC. Interprétalo junto con el ANC y tu juicio clínico.` });
           }
         }
 
@@ -3346,27 +3361,43 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         const diffDays = Math.floor((lastD - startD) / (1000 * 60 * 60 * 24));
         const weeks = diffDays / 7;
 
-        let intervalDays = 7;
+        const schedule = state.data.patient.schedule || "fda";
+        const th = state.data.thresholds;
+        // ¿Hubo alguna neutropenia (ANC bajo el rango normal)? Relevante para el esquema EMA
+        const hadNeutropenia = state.data.entries.some(en => {
+          const v = parseNum(en.labs?.anc_k);
+          if (v === null) return false;
+          const ben = en.ben ?? state.data.patient.ben;
+          return v < (ben ? th.anc_norm_ben : th.anc_norm);
+        });
 
-        // Protocol logic: Weekly for 1st 18 weeks, then c/2w or monthly
-        // We use weeks for precision in the early phase
-        if (weeks >= 18) {
-          // Check if patient reached a monthly milestone (e.g. 6 months or 1 year)
-          // 4.345 weeks per month average
+        let intervalDays = 7;
+        if (schedule === "ema") {
+          // EMA/PRAC 2025: semanal 18 sem; mensual hasta la sem 52; luego c/12 sem y anual si no hubo neutropenia
+          if (weeks < 18) intervalDays = 7;
+          else if (weeks < 52 || hadNeutropenia) intervalDays = 28;
+          else if (weeks < 104) intervalDays = 84;
+          else intervalDays = 365;
+        } else if (schedule === "delphi") {
+          // Delphi 2025: semanal 18 sem; c/4 sem hasta 2 años; luego sin ANC de rutina
+          if (weeks < 18) intervalDays = 7;
+          else if (weeks < 104) intervalDays = 28;
+          else intervalDays = null;
+        } else if (weeks >= 18) {
+          // Ficha FDA: semanal hasta 6 meses, quincenal hasta 12, mensual después (configurable)
           const months = weeks / 4.345;
-          if (months >= (state.data.thresholds.months_to_4w || 12)) intervalDays = 28;
-          else if (months >= (state.data.thresholds.months_to_2w || 6)) intervalDays = 14;
+          if (months >= (th.months_to_4w || 12)) intervalDays = 28;
+          else if (months >= (th.months_to_2w || 6)) intervalDays = 14;
           else intervalDays = 7;
-        } else {
-          intervalDays = 7;
         }
 
-        // Clinical overriding: if ANC is warning/bad, protocol often dictates more frequent checks
+        // Si el ANC está en vigilancia o crítico, se sugiere control más frecuente en cualquier esquema
         const a = assess(latest);
         const ancAlert = a.alerts.find(x => x.tag === "ANC");
         if (ancAlert && (ancAlert.kind === "warn" || ancAlert.kind === "bad")) {
-          intervalDays = 3; // Suggest 2-3 times per week
+          intervalDays = 3;
         }
+        if (intervalDays === null) return null;
 
         const next = new Date(lastD.getTime() + intervalDays * 24 * 60 * 60 * 1000);
         return next.toISOString().slice(0, 10);
@@ -3964,12 +3995,15 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         setKpiState("anc", "ANC");
         setKpiState("plt", "PLT");
 
-        // Nota informativa tras 2 años de tratamiento (consenso Delphi); la frecuencia mostrada sigue la ficha FDA
+        // Nota informativa tras 2 años de tratamiento, según el esquema elegido
         const sd = state.data.patient.start_date;
+        const schedule = state.data.patient.schedule || "fda";
         const monthsOn = sd ? (Date.now() - new Date(sd + "T00:00:00").getTime()) / (30.44 * 86400000) : 0;
-        $("k_next_note").textContent = monthsOn >= 24
-          ? "Tras 2 años, el consenso Delphi permite dejar el ANC de rutina y revisar efectos adversos cada 3 meses. La ficha FDA no lo contempla; decide con tu criterio."
-          : "";
+        const noRoutine = schedule === "delphi" && monthsOn >= 24;
+        $("k_next_note").textContent = monthsOn < 24 ? ""
+          : schedule === "fda" ? "Los esquemas EMA 2025 y Delphi 2025 reducen o suspenden el ANC de rutina tras 2 años sin neutropenia; la ficha FDA no. Puedes cambiar el esquema en Ajustes."
+          : schedule === "ema" ? "Esquema EMA 2025: tras 2 años sin neutropenia, ANC una vez al año."
+          : "Esquema Delphi 2025: sin ANC de rutina tras 2 años; revisa efectos adversos cada 3 meses.";
 
         const next = nextLabDate();
         if (latest) {
@@ -3981,6 +4015,8 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         }
         if (next) {
           $("k_next").textContent = fmtDate(next);
+        } else if (latest && noRoutine) {
+          $("k_next").textContent = "Sin ANC de rutina";
         } else if (latest) {
           $("k_next").textContent = "Según protocolo";
         } else {
@@ -4045,6 +4081,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("s_label").value = state.data.patient.label || "";
         $("s_start").value = state.data.patient.start_date || "";
         $("s_ben").value = state.data.patient.ben ? "1" : "0";
+        $("s_schedule").value = state.data.patient.schedule || "fda";
 
         const th = state.data.thresholds;
         $("t_anc_norm").value = th.anc_norm;
@@ -4411,6 +4448,16 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             return;
           }
 
+          // Leucocitos: solo informativo (el monitoreo se basa en el ANC)
+          if (id === "f_wbc") {
+            if (val < 4.0) {
+              badge.textContent = "INFO";
+              badge.style.color = "var(--info)";
+              badge.classList.add("visible");
+            }
+            return;
+          }
+
           // Logic for others
           if (id === "f_eos") {
             if (val > th.eos_stop) {
@@ -4633,6 +4680,7 @@ Notas: ${$("f_notes").value}
         state.data.patient.label = $("s_label").value || "—";
         state.data.patient.start_date = $("s_start").value || "";
         state.data.patient.ben = $("s_ben").value === "1";
+        state.data.patient.schedule = ["fda", "ema", "delphi"].includes($("s_schedule").value) ? $("s_schedule").value : "fda";
 
         updateContextBanner(); /* Refresh banner on save settings */
 
