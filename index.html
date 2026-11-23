@@ -1947,6 +1947,37 @@
     html[data-theme="dark"] button.primary, html[data-theme="dark"] .seg-btn.active,
     html[data-theme="dark"] .step-n, html[data-theme="dark"] .howto li b,
     html[data-theme="dark"] .btn-doc.primary, html[data-theme="dark"] .brand .logo { color: #0E0D15; }
+  
+    /* ═══ Gráficas y Recursos ═══ */
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .seg-wrap { flex-wrap: wrap; }
+    .seg-wrap .seg-btn { flex: 1 1 calc(50% - 4px); }
+    @media (min-width: 520px) { .seg-wrap .seg-btn { flex: 1 1 0; } }
+    #serieSeg { display: flex !important; }
+    .chart-card canvas { margin-top: 8px; height: 280px; }
+    .chart-summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin: 4px 0 8px; min-height: 28px; }
+    .cs-val { font-family: var(--mono); font-size: 20px; font-weight: 700; }
+    .cs-state { font-size: 13px; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
+    .cs-state[data-state="ok"] { color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); }
+    .cs-state[data-state="warn"] { color: var(--warn); background: color-mix(in srgb, var(--warn) 14%, transparent); }
+    .cs-state[data-state="bad"] { color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, transparent); }
+    .cs-trend { font-size: 13px; color: var(--muted); }
+    .chart-legend { margin-top: 10px; font-size: 12.5px; color: var(--muted); min-height: 18px; display: flex; align-items: center; gap: 8px; }
+    .lg-line { display: inline-block; width: 24px; border-top: 2px dashed var(--bad); }
+    .chart-controls { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+    .chart-controls label { margin: 0; white-space: nowrap; }
+    .chart-controls select { max-width: 260px; min-height: 44px; }
+    .chart-empty { text-align: center; padding: 40px 16px; border: 1px dashed var(--line); border-radius: var(--radius); margin-top: 8px; }
+    .chart-empty .primary { margin-top: 8px; min-height: 44px; }
+    .chart-table { width: 100%; margin-top: 8px; font-size: 13px; }
+    .chart-table th, .chart-table td { text-align: left !important; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+    .ref-search { margin-bottom: 4px; }
+    .ref-search input { min-height: 48px; }
+    .ref-search .helper { min-height: 16px; }
+    .doc-item .meta-actions .btn-doc { min-height: 44px; }
+    #tab-recursos .acc-list, #tab-graficas .chart-card { max-width: 760px; margin-left: auto; margin-right: auto; }
+    #tab-graficas .chart-card { max-width: 900px; }
+    .refs ol { padding-left: 20px; display: flex; flex-direction: column; gap: 10px; }
   </style>
 </head>
 
@@ -2290,34 +2321,42 @@
 
     <!-- Gráficas -->
     <section id="tab-graficas" class="hidden">
-      <div class="card">
-        <h2>Tendencias (x10³/µL)</h2>
-        <p class="note">Elige qué parámetro ver y cuántos controles mostrar. Se necesitan al menos 2 entradas con ese dato.</p>
-        <canvas id="chart"></canvas>
-        <div class="divider"></div>
-        <div class="row">
-          <div>
-            <label for="chartSeries">Serie</label>
-            <select id="chartSeries">
-              <option value="anc_k">ANC</option>
-              <option value="wbc_k">Leucocitos</option>
-              <option value="plt_k">Plaquetas</option>
-              <option value="eos_k">Eosinófilos</option>
-            </select>
-          </div>
-          <div>
-            <label for="chartWindow">Ventana</label>
-            <select id="chartWindow">
-              <option value="all">Todo</option>
-              <option value="8">Últimas 8</option>
-              <option value="16">Últimas 16</option>
-            </select>
-          </div>
+      <div class="card chart-card">
+        <h2>Tendencia</h2>
+        <div class="seg seg-wrap" id="serieSeg" role="radiogroup" aria-label="Parámetro a graficar">
+          <button type="button" class="seg-btn active" data-serie="anc_k" role="radio" aria-checked="true">ANC</button>
+          <button type="button" class="seg-btn" data-serie="plt_k" role="radio" aria-checked="false">Plaquetas</button>
+          <button type="button" class="seg-btn" data-serie="eos_k" role="radio" aria-checked="false">Eosinófilos</button>
+          <button type="button" class="seg-btn" data-serie="wbc_k" role="radio" aria-checked="false">Leucocitos</button>
         </div>
+        <select id="chartSeries" class="visually-hidden" tabindex="-1" aria-hidden="true">
+          <option value="anc_k">ANC</option>
+          <option value="wbc_k">Leucocitos</option>
+          <option value="plt_k">Plaquetas</option>
+          <option value="eos_k">Eosinófilos</option>
+        </select>
+        <div class="chart-summary" id="chartSummary" aria-live="polite"></div>
+        <canvas id="chart" role="img" aria-label="Gráfica de tendencia"></canvas>
+        <div class="chart-empty hidden" id="chartEmpty">
+          <strong>Aún no hay suficientes datos</strong>
+          <p class="note">Se necesitan al menos 2 controles con este parámetro para dibujar la tendencia.</p>
+          <button class="primary" id="btnChartGoRegistro" type="button">Ir a Registro</button>
+        </div>
+        <div class="chart-legend" id="chartLegend"></div>
+        <div class="chart-controls">
+          <label for="chartWindow">Mostrar</label>
+          <select id="chartWindow">
+            <option value="all">Todos los controles</option>
+            <option value="8">Últimos 8</option>
+            <option value="16">Últimos 16</option>
+          </select>
+        </div>
+        <details class="inline-help">
+          <summary>Ver los datos en tabla</summary>
+          <table class="chart-table"><thead><tr><th>Fecha</th><th>Valor (x10³/µL)</th></tr></thead><tbody id="chartTable"></tbody></table>
+        </details>
       </div>
     </section>
-
-
 
     <!-- Ajustes -->
     <section id="tab-ajustes" class="hidden">
@@ -2485,19 +2524,22 @@
 
     <!-- Recursos -->
     <section id="tab-recursos" class="hidden">
-      <div class="grid">
-        <div class="card">
-          <h2>Documentos y Recursos</h2>
-          <p class="note" style="margin-bottom: 20px;">
-            Guías y formatos oficiales para tu práctica clínica. Usa <strong>Ver</strong> para abrir el PDF o
-            <strong>Descargar</strong> para guardarlo en tu dispositivo (también funciona sin conexión una vez abierto).
-          </p>
+      <div class="acc-list">
+        <div class="ref-search" id="refSearchCard">
+          <label for="refSearch">Buscar en esta sección</label>
+          <input type="search" id="refSearch" placeholder="p.ej., delphi, REMS, consentimiento" autocomplete="off" />
+          <p class="helper" id="refCount" aria-live="polite"></p>
+        </div>
 
-          <div class="list">
+        <details class="acc ref-block" open>
+          <summary><span class="acc-t">Documentos<small>PDF para la consulta (funcionan sin conexión)</small></span></summary>
+          <div class="acc-body">
+            <p class="note" style="margin-bottom:14px">«Ver» abre el PDF en otra pestaña; «Descargar» lo guarda en el dispositivo.</p>
+            <div class="list">
             <div class="item doc-item">
               <div class="meta">
                 <div class="meta-main">
-                  <strong><span class="doc-icon">📊</span> Infografía de Seguridad</strong>
+                  <strong>Infografía de Seguridad</strong>
                   <div class="note">Resumen visual de umbrales de ANC y banderas rojas de la clozapina.</div>
                   <div class="date">PDF • 425 KB</div>
                 </div>
@@ -2513,7 +2555,7 @@
             <div class="item doc-item">
               <div class="meta">
                 <div class="meta-main">
-                  <strong><span class="doc-icon">📝</span> Consentimiento Informado 2026</strong>
+                  <strong>Consentimiento Informado 2026</strong>
                   <div class="note">Formato para la firma del paciente antes de iniciar el tratamiento.</div>
                   <div class="date">PDF • 1.0 MB</div>
                 </div>
@@ -2529,7 +2571,7 @@
             <div class="item doc-item">
               <div class="meta">
                 <div class="meta-main">
-                  <strong><span class="doc-icon">📋</span> Escala de Efectos Secundarios</strong>
+                  <strong>Escala de Efectos Secundarios</strong>
                   <div class="note">Instrumento para evaluar y registrar los efectos adversos del paciente.</div>
                   <div class="date">PDF • 546 KB</div>
                 </div>
@@ -2541,48 +2583,15 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div style="display:flex; flex-direction:column; gap:20px;">
-          <div class="card">
-            <h2>Buscador Clínico / Info</h2>
-            <div style="margin-bottom: 20px;" id="refSearchCard">
-              <input type="text" id="refSearch" placeholder="Busca síntomas o guías (ej. 'fiebre', 'delphi')"
-                style="width:100%" />
             </div>
-            <div id="refResults">
-              <div class="card">
-                <h2>Funcionalidad incluida</h2>
-                <ul class="note">
-                  <li>Registro local de laboratorios (ANC, leucocitos, plaquetas, eosinófilos) y síntomas.</li>
-                  <li>Alertas informativas según umbrales configurables y condición BEN.</li>
-                  <li>Gráficas simples sin librerías externas, con selección de serie y ventana.</li>
-                  <li>Importación y exportación de datos (JSON y CSV).</li>
-                  <li>Modo offline con Service Worker y almacenamiento local.</li>
-                </ul>
-              </div>
-              <div class="card">
-                <h2>Avisos y autoría</h2>
-                <ul class="note">
-                  <li>Esta PWA es una herramienta de registro y visualización. No es un dispositivo médico ni sustituye el
-                    juicio clínico.</li>
-                  <li>El usuario es responsable de validar datos, interpretar resultados y seguir protocolos institucionales
-                    vigentes.</li>
-                  <li>En caso de urgencias o signos de alarma, priorizar la evaluación clínica y los servicios de
-                    emergencia.
-                  </li>
-                  <li>Evita capturar datos identificables; la información se guarda solo en este navegador.</li>
-                </ul>
-                <p class="note"><strong>Autoría:</strong> Cesar Celada / Mauricio Rosel.</p>
-              </div>
-              <div class="card refs">
-                <h2>Referencias (para los umbrales por defecto)</h2>
-                <p class="note">
-                  Estas referencias se incluyen para transparencia de los defaults. Los protocolos locales/institucionales
-                  pueden diferir.
-                </p>
-                <div class="divider"></div>
+          </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Referencias de los umbrales<small>FDA, Delphi 2025, ficha técnica</small></span></summary>
+          <div class="acc-body refs">
+            <p class="note">Respaldan los valores predeterminados. Tu protocolo institucional puede diferir.</p>
                 <ol class="note">
                   <li><strong>FDA – Eliminación del REMS de clozapina (2025)</strong>. Desde el 24 de febrero de 2025 la FDA
                     dejó de exigir la participación en el programa REMS, y lo retiró formalmente el 13 de junio de 2025. Las
@@ -2601,12 +2610,34 @@
                   <li><strong>Sultan et al., 2017</strong>. Describe el cambio en la guía FDA que elimina umbrales por
                     leucocitos totales (WBC) del algoritmo de monitoreo.</li>
                 </ol>
-                <p class="small">Esta PWA es una herramienta de registro/visualización. No constituye consejo médico ni un
-                  dispositivo médico.</p>
-              </div>
-            </div>
           </div>
-        </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Avisos y autoría<small>Alcance y responsabilidad de uso</small></span></summary>
+          <div class="acc-body">
+            <ul class="note">
+              <li>Herramienta de registro y visualización. No es un dispositivo médico ni sustituye el juicio clínico.</li>
+              <li>Tú validas los datos, interpretas los resultados y sigues los protocolos institucionales vigentes.</li>
+              <li>Ante urgencias o signos de alarma, prioriza la evaluación clínica y los servicios de emergencia.</li>
+              <li>Evita datos identificables; la información se guarda solo en este navegador.</li>
+            </ul>
+            <p class="note"><strong>Autoría:</strong> Cesar Celada / Mauricio Rosel.</p>
+          </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Qué incluye la app<small>Resumen de funciones</small></span></summary>
+          <div class="acc-body">
+            <ul class="note">
+              <li>Registro de laboratorios (ANC, leucocitos, plaquetas, eosinófilos) y síntomas.</li>
+              <li>Alertas con umbrales configurables y condición BEN.</li>
+              <li>Gráficas de tendencia con el límite de suspensión.</li>
+              <li>Exportación e importación de datos (JSON y CSV).</li>
+              <li>Funciona sin conexión; los datos quedan en este dispositivo.</li>
+            </ul>
+          </div>
+        </details>
       </div>
     </section>
   </main>
@@ -3943,6 +3974,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
       // ---- chart ----
       const drawChart = () => {
         const canvas = $("chart");
+        canvas.classList.remove("hidden"); // debe ser visible para medir su tamaño
         const ctx = canvas.getContext("2d");
         const W = canvas.width = canvas.clientWidth * devicePixelRatio;
         const H = canvas.height = canvas.clientHeight * devicePixelRatio;
@@ -3965,18 +3997,45 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
 
         const isDark = document.documentElement.getAttribute("data-theme") === "dark";
 
-        if (pts.length < 2) {
-          ctx.font = `${14 * devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
-          ctx.fillStyle = isDark ? "rgba(233, 238, 247, 0.75)" : "rgba(31, 41, 55, 0.75)";
-          ctx.fillText("No hay datos suficientes para graficar.", 16 * devicePixelRatio, 32 * devicePixelRatio);
-          return;
+        const serieName = { anc_k: "ANC", wbc_k: "Leucocitos", plt_k: "Plaquetas", eos_k: "Eosinófilos" }[seriesKey];
+        const tagOf = { anc_k: "ANC", wbc_k: "WBC", plt_k: "PLT", eos_k: "EOS" }[seriesKey];
+        const thr = state.data.thresholds;
+        const ref = (() => {
+          if (seriesKey === "anc_k") {
+            const ben = !!state.data.patient.ben;
+            return { v: ben ? thr.anc_interrupt_ben : thr.anc_interrupt, txt: "Límite de suspensión" };
+          }
+          if (seriesKey === "plt_k") return { v: thr.plt_stop, txt: "Límite de suspensión" };
+          if (seriesKey === "eos_k") return { v: thr.eos_stop, txt: "Límite de suspensión" };
+          return null;
+        })();
+        const tbody = $("chartTable");
+        tbody.innerHTML = pts.slice().reverse().map(p => `<tr><td>${fmtDate(p.x)}</td><td>${p.y}</td></tr>`).join("") || '<tr><td colspan="2">Sin datos</td></tr>';
+        const empty = pts.length < 2;
+        $("chartEmpty").classList.toggle("hidden", !empty);
+        canvas.classList.toggle("hidden", empty);
+        $("chartLegend").textContent = "";
+        if (pts.length) {
+          const lastE = [...entries].reverse().find(e => parseNum(e.labs?.[seriesKey]) !== null);
+          const al = lastE ? assess(lastE).alerts.find(x => x.tag === tagOf) : null;
+          const st = al ? al.kind : "ok";
+          const lab = { bad: "✕ Crítico", warn: "! Precaución", ok: "✓ Normal", info: "i Informativo" }[st] || "";
+          const prev = pts.length > 1 ? pts[pts.length - 2].y : null;
+          const cur = pts[pts.length - 1].y;
+          const trend = prev === null ? "" : (cur > prev ? "▲ sube" : cur < prev ? "▼ baja" : "= estable");
+          $("chartSummary").innerHTML = `<span class="cs-val">${serieName} ${cur}</span> <span class="cs-state" data-state="${st}">${lab}</span> <span class="cs-trend">${trend}${prev !== null ? " vs. " + prev : ""}</span>`;
+        } else {
+          $("chartSummary").textContent = "";
         }
+        canvas.setAttribute("aria-label", `Tendencia de ${serieName}: ${pts.map(p => p.y).join(", ")}`);
+        if (empty) return;
 
         const ys = pts.map(p => p.y);
         const ymin = Math.min(...ys);
         const ymax = Math.max(...ys);
-        const pad = (ymax - ymin) * 0.12 || 1;
-        const y0 = ymin - pad, y1 = ymax + pad;
+        const lo = ref ? Math.min(ymin, ref.v) : ymin, hi = ymax;
+        const pad = (hi - lo) * 0.12 || 1;
+        const y0 = lo - pad, y1 = hi + pad;
 
         const left = 54 * devicePixelRatio, right = 16 * devicePixelRatio, top = 14 * devicePixelRatio, bottom = 44 * devicePixelRatio;
         const plotW = W - left - right, plotH = H - top - bottom;
@@ -3987,6 +4046,18 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         for (let i = 0; i <= 4; i++) {
           const y = top + (plotH * i / 4);
           ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(W - right, y); ctx.stroke();
+        }
+
+        // línea de referencia clínica (umbral de suspensión)
+        if (ref && ref.v >= y0 && ref.v <= y1) {
+          const yr = top + plotH * (1 - ((ref.v - y0) / (y1 - y0)));
+          const badC = getComputedStyle(document.documentElement).getPropertyValue("--bad").trim() || "#c00";
+          ctx.save();
+          ctx.setLineDash([6 * devicePixelRatio, 5 * devicePixelRatio]);
+          ctx.strokeStyle = badC; ctx.lineWidth = 2 * devicePixelRatio;
+          ctx.beginPath(); ctx.moveTo(left, yr); ctx.lineTo(W - right, yr); ctx.stroke();
+          ctx.restore();
+          $("chartLegend").innerHTML = `<span class="lg-line"></span> ${ref.txt}: ${ref.v} x10³/µL`;
         }
 
         // axes labels
@@ -4330,6 +4401,14 @@ Notas: ${$("f_notes").value}
         });
         window.scrollTo({ top: 0 });
       };
+      document.querySelectorAll("#serieSeg .seg-btn").forEach(b => b.addEventListener("click", () => {
+        $("chartSeries").value = b.dataset.serie;
+        document.querySelectorAll("#serieSeg .seg-btn").forEach(x => {
+          const on = x === b; x.classList.toggle("active", on); x.setAttribute("aria-checked", on ? "true" : "false");
+        });
+        drawChart();
+      }));
+      $("btnChartGoRegistro").addEventListener("click", () => setTab("registro"));
       $("tab-registro").dataset.view = "form";
       document.querySelectorAll("#regSeg .seg-btn").forEach(b =>
         b.addEventListener("click", () => setRegView(b.dataset.view)));
@@ -4386,24 +4465,24 @@ Notas: ${$("f_notes").value}
 
       const filterRefs = () => {
         const q = $("refSearch").value.toLowerCase().trim();
-        const cards = document.querySelectorAll("#tab-recursos .card");
+        const blocks = document.querySelectorAll("#tab-recursos .ref-block");
         if (!q) {
-          cards.forEach(c => c.style.display = "block");
+          blocks.forEach(c => { c.style.display = ""; });
+          $("refCount").textContent = "";
           return;
         }
-
-        // Expanded query with synonyms
         const expanded = [q];
         for (const k in SYNONYMS) {
           if (k.includes(q) || q.includes(k)) expanded.push(...SYNONYMS[k]);
         }
-
-        cards.forEach(c => {
-          if (c.id === "refSearchCard") return; // keep search box visible
+        let n = 0;
+        blocks.forEach(c => {
           const text = c.textContent.toLowerCase();
           const match = expanded.some(term => text.includes(term));
-          c.style.display = match ? "block" : "none";
+          c.style.display = match ? "" : "none";
+          if (match) { c.open = true; n++; }
         });
+        $("refCount").textContent = n ? `${n} sección(es) con resultados.` : "Sin resultados. Prueba otra palabra.";
       };
 
       $("refSearch").addEventListener("input", filterRefs);
