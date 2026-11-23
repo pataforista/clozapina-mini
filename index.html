@@ -1841,8 +1841,8 @@
     .seg-btn { flex: 1; padding: 10px 8px; font-size: 13px; border-radius: 8px; background: transparent;
       color: var(--muted); border: 0; min-height: 44px; }
     .seg-btn.active { background: var(--accent); color: #fff; }
-    @media (min-width: 940px) { .seg { display: none; } }
-    @media (max-width: 939px) {
+    @media (min-width: 768px) { .seg { display: none; } }
+    @media (max-width: 767px) {
       #tab-registro[data-view="form"] #cardList,
       #tab-registro[data-view="list"] #cardForm { display: none; }
     }
@@ -2041,6 +2041,44 @@
   
     .icon-btn { flex-shrink: 0; min-width: 44px; }
     input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select { min-height: 44px; }
+  
+    /* ═══ Tabletas: formulario y resultados lado a lado ═══ */
+    @media (min-width: 768px) {
+      .grid { grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+      .wrap { padding-left: max(24px, env(safe-area-inset-left)); padding-right: max(24px, env(safe-area-inset-right)); }
+      body { font-size: 16px; }
+      /* Alertas e historial visibles mientras se captura, como el panel de resultados de una calculadora */
+      #cardList { position: sticky; top: 84px; max-height: calc(100vh - 190px); max-height: calc(100dvh - 190px); overflow-y: auto; }
+      .chart-card canvas { height: 380px; }
+      .card { padding: 28px; }
+      .action-bar-bottom { margin: 24px -28px -28px; padding: 18px 28px; }
+    }
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .kpi { grid-template-columns: repeat(2, 1fr); }
+      .row > * { flex: 1 1 200px; }
+      main { padding-bottom: 130px; }
+    }
+    @media (min-width: 1024px) { .grid { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } }
+
+    /* Aviso de unidad y calculadora de ANC */
+    .unit-hint { margin-top: 6px; padding: 8px 10px; border-radius: var(--radius-sm); font-size: 13px;
+      border: 1px solid var(--warn); background: color-mix(in srgb, var(--warn) 10%, var(--card)); }
+    .link-btn { display: inline; min-height: 0; padding: 0 2px; background: none; border: 0; color: var(--accent);
+      font-weight: 700; text-decoration: underline; font-size: inherit; cursor: pointer; }
+    .anc-calc-out { display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; }
+    .anc-calc-out .helper { margin: 0; font-family: var(--mono); }
+
+    /* Monografía rápida */
+    .monograph ul { margin: 0 0 12px 18px; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+    .monograph table { width: 100%; font-size: 13px; border-collapse: collapse; margin-bottom: 12px; }
+    .monograph th, .monograph td { text-align: left !important; vertical-align: top; padding: 8px; border-bottom: 1px solid var(--line); }
+    .monograph th { color: var(--muted); font-size: 12px; }
+    @media (max-width: 520px) { .monograph table, .monograph thead, .monograph tbody, .monograph tr, .monograph td { display: block; }
+      .monograph thead { display: none; } .monograph tr { padding: 8px 0; border-bottom: 1px solid var(--line); }
+      .monograph td { border: 0; padding: 2px 0; } .monograph td:first-child { font-weight: 700; } }
+  
+    /* Las mayúsculas convertirían µ (micro) en M: las unidades se muestran tal cual */
+    .u { text-transform: none !important; letter-spacing: 0; }
   </style>
 </head>
 
@@ -2170,14 +2208,14 @@
             </div>
           </div>
 
-          <h3 class="step-title" id="step2"><span class="step-n">2</span> Laboratorios <small>x10³/µL</small></h3>
+          <h3 class="step-title" id="step2"><span class="step-n">2</span> Laboratorios <small>biometría hemática, x10³/µL</small></h3>
           <div class="support-box support-box--accent">
             <strong>Unidades:</strong> si el laboratorio reporta en <strong>células/µL</strong> (p.ej. 2500), <strong>divide entre 1000</strong> (2.5).
           </div>
           <div class="row">
             <div>
               <label for="f_anc" style="display:flex; justify-content:space-between; align-items:center;">
-                ANC / Neutrófilos <span id="badge_anc" class="feedback-badge"></span>
+                Neutrófilos absolutos (ANC) <span id="badge_anc" class="feedback-badge"></span>
                 <span class="info-icon" style="cursor:help; font-size:14px;"
                   title="Verifica la unidad del laboratorio (x10³/µL vs células/µL). Si el dato está en células/µL, divide entre 1000.">ℹ️</span>
               </label>
@@ -2185,6 +2223,7 @@
                 <input type="number" step="0.01" id="f_anc" inputmode="decimal" placeholder="p.ej., 2.3" />
                 <span class="unit-suffix">x10³/µL</span>
               </div>
+              <div class="unit-hint hidden" id="uh_f_anc" role="status"></div>
               <div class="helper">Ficha: x10³/µL (k/µL).</div>
             </div>
             <div>
@@ -2197,6 +2236,7 @@
                 <input type="number" step="0.01" id="f_wbc" inputmode="decimal" placeholder="p.ej., 6.5" />
                 <span class="unit-suffix">x10³/µL</span>
               </div>
+              <div class="unit-hint hidden" id="uh_f_wbc" role="status"></div>
             </div>
             <div>
               <label for="f_plt">Plaquetas <span id="badge_plt" class="feedback-badge"></span></label>
@@ -2204,6 +2244,7 @@
                 <input type="number" step="1" id="f_plt" inputmode="decimal" placeholder="p.ej., 250" />
                 <span class="unit-suffix">x10³/µL</span>
               </div>
+              <div class="unit-hint hidden" id="uh_f_plt" role="status"></div>
             </div>
             <div>
               <label for="f_eos">Eosinófilos <span id="badge_eos" class="feedback-badge"></span></label>
@@ -2211,8 +2252,27 @@
                 <input type="number" step="0.01" id="f_eos" inputmode="decimal" placeholder="p.ej., 0.3" />
                 <span class="unit-suffix">x10³/µL</span>
               </div>
+              <div class="unit-hint hidden" id="uh_f_eos" role="status"></div>
             </div>
           </div>
+
+          <details class="inline-help" id="ancCalc">
+            <summary>¿Tienes % de neutrófilos? Calcula el ANC</summary>
+            <div class="row">
+              <div>
+                <label for="f_neut_pct">% de neutrófilos (segmentados + bandas)</label>
+                <div class="input-wrapper">
+                  <input type="number" step="0.1" min="0" max="100" id="f_neut_pct" inputmode="decimal" placeholder="p.ej., 58" />
+                  <span class="unit-suffix">%</span>
+                </div>
+              </div>
+              <div class="anc-calc-out">
+                <div class="helper" id="ancCalcOut">Captura los leucocitos y el porcentaje.</div>
+                <button type="button" class="ghost" id="btnUseAnc" disabled>Usar como ANC</button>
+              </div>
+            </div>
+            <p class="helper">Fórmula de la ficha FDA: ANC = leucocitos totales × % de neutrófilos (segmentados + bandas). No se guarda el porcentaje.</p>
+          </details>
 
           <h3 class="step-title" id="step3"><span class="step-n">3</span> Síntomas y banderas rojas</h3>
           <div class="row">
@@ -2389,12 +2449,12 @@
 
           <div class="kpi">
             <div class="box" id="box_anc">
-              <div class="lbl">ANC (x10³/µL)</div>
+              <div class="lbl">ANC <span class="u">(x10³/µL)</span></div>
               <div class="val" id="k_anc">—</div>
               <div class="kpi-state" id="k_anc_state"></div>
             </div>
             <div class="box" id="box_plt">
-              <div class="lbl">Plaquetas (x10³/µL)</div>
+              <div class="lbl">Plaquetas <span class="u">(x10³/µL)</span></div>
               <div class="val" id="k_plt">—</div>
               <div class="kpi-state" id="k_plt_state"></div>
             </div>
@@ -2449,7 +2509,7 @@
         </div>
         <details class="inline-help">
           <summary>Ver los datos en tabla</summary>
-          <table class="chart-table"><thead><tr><th>Fecha</th><th>Valor (x10³/µL)</th></tr></thead><tbody id="chartTable"></tbody></table>
+          <table class="chart-table"><thead><tr><th>Fecha</th><th>Valor <span class="u">(x10³/µL)</span></th></tr></thead><tbody id="chartTable"></tbody></table>
         </details>
       </div>
     </section>
@@ -2525,21 +2585,10 @@
           </div>
         </details>
 
-        <details class="acc">
-          <summary><span class="acc-t">Apariencia y rendimiento<small>Modo ahorro de batería</small></span></summary>
-          <div class="acc-body">
-            <div class="checkbox-row">
-              <input type="checkbox" id="s_low_power">
-              <label for="s_low_power" style="margin:0; font-weight:500; cursor:pointer;">Modo ahorro (sin fondo animado)</label>
-            </div>
-            <p class="helper">Actívalo si notas lentitud. El tema claro/oscuro se cambia arriba.</p>
-          </div>
-        </details>
-
         <div class="save-row">
           <button class="primary" id="btnSaveSettings">Guardar ajustes</button>
           <button class="ghost" id="btnResetSettings">Restaurar valores originales</button>
-          <p class="helper">Guarda Paciente, Umbrales y Apariencia.</p>
+          <p class="helper">Guarda Paciente y Umbrales. El tema claro u oscuro se cambia arriba.</p>
         </div>
 
         <details class="acc">
@@ -2705,6 +2754,87 @@
         </details>
 
         <details class="acc ref-block">
+          <summary><span class="acc-t">Monografía rápida: advertencias<small>Recuadro de la ficha FDA, resumido</small></span></summary>
+          <div class="acc-body monograph">
+            <ul>
+              <li><strong>Neutropenia grave</strong> (ANC &lt; 500/µL): puede causar infecciones graves y la muerte. ANC basal ≥ 1500/µL (≥ 1000/µL si BEN documentada) y monitoreo regular durante el tratamiento.</li>
+              <li><strong>Hipotensión ortostática, bradicardia y síncope</strong>: el riesgo es mayor al iniciar o reiniciar tras una interrupción, aun breve. Iniciar con 12.5 mg y titular despacio.</li>
+              <li><strong>Convulsiones</strong>: riesgo dependiente de la dosis; precaución con antecedentes o factores de riesgo.</li>
+              <li><strong>Miocarditis, pericarditis y miocardiopatía</strong>: pueden ser mortales. Ante sospecha, suspender y obtener evaluación cardíaca. Considerar si hay dolor torácico, taquicardia, palpitaciones, disnea, fiebre, síntomas gripales, hipotensión o cambios en el ECG.</li>
+              <li><strong>Mortalidad aumentada</strong> en ancianos con psicosis relacionada con demencia: no aprobada para ese uso.</li>
+            </ul>
+            <p class="helper">Fuente: ficha FDA de Clozaril, revisión 1/2025. Resumen en español; consulta la ficha para el texto íntegro.</p>
+          </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Monografía rápida: dosificación<small>Inicio, titulación y reinicio</small></span></summary>
+          <div class="acc-body monograph">
+            <ul>
+              <li><strong>Inicio</strong>: 12.5 mg una o dos veces al día.</li>
+              <li><strong>Titulación</strong>: subir 25 a 50 mg al día si se tolera, hasta 300–450 mg al día (dosis divididas) al final de 2 semanas; después, aumentos de hasta 100 mg una o dos veces por semana.</li>
+              <li><strong>Máximo</strong>: 900 mg al día.</li>
+              <li><strong>Reinicio tras interrupción</strong>: si se omitió 1 día, reanudar con 40–50 % de la dosis establecida; si fueron 2 días, alrededor del 25 %; si fue más tiempo, empezar de nuevo con 12.5 mg una o dos veces al día.</li>
+              <li><strong>Suspensión planeada</strong> sin neutropenia: reducir gradualmente en 1 a 2 semanas y vigilar síntomas de rebote colinérgico (sudoración, cefalea, náusea, vómito, diarrea).</li>
+            </ul>
+            <p class="helper">Fuente: ficha FDA de Clozaril, rev. 1/2025, secciones 2.2 a 2.5. El consenso Delphi de miocarditis (2026) propone titulaciones más lentas para reducir el riesgo; decide con tu protocolo.</p>
+          </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Monografía rápida: monitoreo de ANC<small>Tablas 2 y 3 de la ficha FDA</small></span></summary>
+          <div class="acc-body monograph">
+            <table>
+              <thead><tr><th>ANC <span class="u">(/µL)</span></th><th>Conducta según la ficha</th><th>Monitoreo</th></tr></thead>
+              <tbody>
+                <tr><td>≥ 1500 (BEN ≥ 1000)</td><td>Continuar</td><td>Semanal hasta 6 meses; cada 2 semanas de 6 a 12 meses; mensual después</td></tr>
+                <tr><td>1000–1499 (leve)</td><td>Continuar</td><td>3 veces por semana hasta ≥ 1500</td></tr>
+                <tr><td>500–999 (moderada)</td><td>Hematología; interrumpir si se sospecha causa por clozapina; reanudar con ≥ 1000</td><td>Diario hasta ≥ 1000; luego 3 veces por semana hasta ≥ 1500</td></tr>
+                <tr><td>&lt; 500 (grave)</td><td>Hematología; interrumpir; no reexponer salvo que el beneficio supere el riesgo</td><td>Diario hasta ≥ 1000; luego 3 veces por semana</td></tr>
+                <tr><td>BEN 500–999</td><td>Hematología; continuar</td><td>3 veces por semana hasta ≥ 1000 o su basal</td></tr>
+                <tr><td>BEN &lt; 500</td><td>Hematología; interrumpir</td><td>Diario hasta ≥ 500</td></tr>
+              </tbody>
+            </table>
+            <ul>
+              <li>Confirmar con un segundo ANC en 24 horas todo primer resultado &lt; 1500/µL.</li>
+              <li><strong>Fiebre</strong> ≥ 38.5 °C: la ficha indica interrumpir como precaución y solicitar un ANC.</li>
+              <li>Estos umbrales son los de la ficha FDA. El consenso Delphi 2025 y la EMA 2025 proponen suspender con ANC &lt; 1.0 (0.5 en BEN/DARC-null) y otros calendarios; el selector de Ajustes cambia solo la fecha sugerida.</li>
+            </ul>
+            <p class="helper">Fuente: ficha FDA de Clozaril, rev. 1/2025, sección 5.1.</p>
+          </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Monografía rápida: interacciones<small>Ajuste de dosis, Tabla 1 de la ficha FDA</small></span></summary>
+          <div class="acc-body monograph">
+            <table>
+              <thead><tr><th>Fármaco o factor</th><th>Al iniciar o agregar</th><th>Al suspender</th></tr></thead>
+              <tbody>
+                <tr><td>Inhibidores fuertes de CYP1A2 (fluvoxamina, ciprofloxacino, enoxacino)</td><td>Usar un tercio de la dosis</td><td>Aumentar según respuesta clínica</td></tr>
+                <tr><td>Inhibidores moderados o débiles de CYP1A2 (anticonceptivos orales, cafeína); inhibidores de CYP2D6 o CYP3A4</td><td>Vigilar reacciones adversas; considerar reducir</td><td>Vigilar falta de efecto; considerar aumentar</td></tr>
+                <tr><td>Inductores fuertes de CYP3A4 (fenitoína, carbamazepina, hierba de San Juan, rifampicina)</td><td>No se recomienda; si es necesario, puede requerir más dosis</td><td>Reducir según respuesta clínica</td></tr>
+                <tr><td>Inductores moderados o débiles de CYP1A2 o CYP3A4 (tabaquismo)</td><td>Vigilar falta de efecto; considerar aumentar</td><td>Vigilar reacciones adversas; considerar reducir (p. ej., al dejar de fumar)</td></tr>
+              </tbody>
+            </table>
+            <p class="helper">Fuente: ficha FDA de Clozaril, rev. 1/2025, sección 2.6. La app avisa de tabaquismo, fluvoxamina y cafeína al capturar la entrada.</p>
+          </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Monografía rápida: reacciones frecuentes<small>≥ 5 % en los ensayos clínicos</small></span></summary>
+          <div class="acc-body monograph">
+            <ul>
+              <li><strong>Sistema nervioso</strong>: sedación, mareo o vértigo, cefalea, temblor.</li>
+              <li><strong>Cardiovasculares</strong>: taquicardia, hipotensión, síncope.</li>
+              <li><strong>Autonómicas</strong>: hipersalivación, sudoración, boca seca, alteraciones visuales.</li>
+              <li><strong>Gastrointestinales</strong>: estreñimiento, náusea. El estreñimiento puede avanzar a hipomotilidad grave: pregunta por él en cada control.</li>
+              <li><strong>Otras</strong>: fiebre.</li>
+            </ul>
+            <p class="helper">Fuente: ficha FDA de Clozaril, rev. 1/2025, resumen de reacciones adversas.</p>
+          </div>
+        </details>
+
+        <details class="acc ref-block">
           <summary><span class="acc-t">Referencias de los umbrales<small>FDA, Delphi 2025 y 2026, ficha técnica</small></span></summary>
           <div class="acc-body refs">
             <p class="note">Respaldan los valores predeterminados. Son referencias internacionales: no se identificó una norma mexicana específica sobre el monitoreo hematológico de clozapina, así que prevalece el protocolo de tu institución.</p>
@@ -2759,6 +2889,8 @@
             <ul class="note">
               <li>Registro de laboratorios (ANC, leucocitos, plaquetas, eosinófilos) y síntomas.</li>
               <li>Alertas con umbrales configurables y condición BEN.</li>
+              <li>Aviso y conversión de unidades (células/µL a x10³/µL) y cálculo del ANC con el % de neutrófilos.</li>
+              <li>Monografía rápida de clozapina: advertencias, dosificación, monitoreo, interacciones y reacciones frecuentes.</li>
               <li>Gráficas de tendencia con el límite de suspensión.</li>
               <li>Exportación e importación de datos (JSON y CSV).</li>
               <li>Funciona sin conexión; los datos quedan en este dispositivo.</li>
@@ -2843,48 +2975,8 @@
   <script type="module">
     import { analyzeANC, auditSideEffects, checkInteractions } from './engine.js';
 
-    // Defer Galaxy loading to ensure main UI is interactive first
-    let galaxyCleanup = null;
-
-    const loadGalaxy = async () => {
-      // Check Low Power Mode
-      const isLowPower = localStorage.getItem("clz_mini_pwa_low_power") === "true";
-      const prefersReduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const saveData = navigator.connection && navigator.connection.saveData;
-      if (isLowPower || prefersReduced || saveData) return;
-
-      try {
-        const { initGalaxy } = await import('./galaxy.js');
-        const container = document.body;
-        // visual fade-in
-        galaxyCleanup = initGalaxy(container, {
-          hueShift: 260,
-          starSpeed: 0.05,
-          density: 0.4,
-          transparent: true,
-          glowIntensity: 0.2,
-          speed: 0.5
-        });
-
-        // Find the canvas and animate opacity for smooth entry
-        const canvas = container.querySelector('canvas:last-child');
-        if (canvas) {
-          canvas.style.opacity = '0';
-          canvas.style.transition = 'opacity 1.5s ease';
-          requestAnimationFrame(() => canvas.style.opacity = '1');
-        }
-      } catch (e) {
-        console.warn("Galaxy BG failed to load", e);
-      }
-    };
-
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => {
-        setTimeout(loadGalaxy, 200); // Slight extra buffer
-      });
-    } else {
-      setTimeout(loadGalaxy, 1500); // Fallback
-    }
+    // Limpieza: se eliminó el fondo animado y su ajuste de ahorro
+    try { localStorage.removeItem("clz_mini_pwa_low_power"); } catch (e) { /* sin almacenamiento */ }
 
     (() => {
       const STORAGE_KEY = "clz_mini_pwa_v1";
@@ -3594,6 +3686,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("f_week").value = "";
         $("f_ben").value = (state.data.patient.ben ? "1" : "0");
 
+        $("f_neut_pct").value = "";
         $("f_crp").value = "";
         $("f_trop").value = "";
         $("f_trop_unit").value = "ng/L";
@@ -4170,28 +4263,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("t_plt_stop").value = th.plt_stop;
         $("t_mo_2w").value = th.months_to_2w;
         $("t_mo_4w").value = th.months_to_4w;
-
-        // Low Power Mode
-        const isLowPower = localStorage.getItem("clz_mini_pwa_low_power") === "true";
-        $("s_low_power").checked = isLowPower;
       };
-
-      // Low Power Toggle Handler
-      $("s_low_power").addEventListener("change", (e) => {
-        const isLowPower = e.target.checked;
-        localStorage.setItem("clz_mini_pwa_low_power", isLowPower);
-
-        if (isLowPower) {
-          if (galaxyCleanup) {
-            galaxyCleanup();
-            galaxyCleanup = null;
-          }
-          toast("Modo Ahorro activado.");
-        } else {
-          loadGalaxy();
-          toast("Animación activada.");
-        }
-      });
 
       const renderAll = () => {
         renderKPIs();
@@ -4421,8 +4493,55 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $(id).addEventListener("change", updateMyoHint);
         $(id).addEventListener("input", updateMyoHint);
       });
+      // Unidades: si el valor parece venir en células/µL, ofrece convertirlo con un toque
+      const UNIT_LIMITS = { f_anc: 25, f_wbc: 100, f_eos: 15, f_plt: 2000 };
+      const checkUnits = () => {
+        for (const id of Object.keys(UNIT_LIMITS)) {
+          const hint = $("uh_" + id);
+          const v = parseNum($(id).value);
+          if (v !== null && v > UNIT_LIMITS[id]) {
+            const conv = Math.round(v / 1000 * 100) / 100;
+            hint.innerHTML = `Parece estar en células/µL. <button type="button" class="link-btn" data-conv="${id}" data-val="${conv}">Convertir a ${conv} x10³/µL</button>`;
+            hint.classList.remove("hidden");
+          } else {
+            hint.classList.add("hidden");
+            hint.textContent = "";
+          }
+        }
+      };
+      document.addEventListener("click", (ev) => {
+        const b = ev.target.closest && ev.target.closest(".link-btn[data-conv]");
+        if (!b) return;
+        const el = $(b.dataset.conv);
+        el.value = b.dataset.val;
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+        checkUnits(); updateAncCalc();
+      });
+      Object.keys(UNIT_LIMITS).forEach(id => $(id).addEventListener("input", checkUnits));
+
+      // Calculadora de ANC a partir de leucocitos y % de neutrófilos
+      const updateAncCalc = () => {
+        const wbc = parseNum($("f_wbc").value), pct = parseNum($("f_neut_pct").value);
+        const out = $("ancCalcOut"), btn = $("btnUseAnc");
+        btn.disabled = true; btn.dataset.val = "";
+        if (wbc === null || pct === null) { out.textContent = "Captura los leucocitos y el porcentaje."; return; }
+        if (wbc > UNIT_LIMITS.f_wbc) { out.textContent = "Convierte primero los leucocitos a x10³/µL."; return; }
+        if (pct < 0 || pct > 100) { out.textContent = "El porcentaje debe estar entre 0 y 100."; return; }
+        const anc = Math.round(wbc * pct) / 100;
+        out.textContent = `ANC = ${wbc} × ${pct} % ÷ 100 = ${anc} x10³/µL`;
+        btn.dataset.val = String(anc); btn.disabled = false;
+      };
+      ["f_wbc", "f_neut_pct"].forEach(id => $(id).addEventListener("input", updateAncCalc));
+      $("btnUseAnc").addEventListener("click", () => {
+        const v = $("btnUseAnc").dataset.val; if (!v) return;
+        $("f_anc").value = v; $("f_anc").dispatchEvent(new Event("input", { bubbles: true }));
+        toast("ANC capturado desde el cálculo.");
+      });
+
       const updateLikertVisuals = () => {
         updateMyoHint();
+        checkUnits();
+        updateAncCalc();
         document.querySelectorAll(".rating-group").forEach(group => {
           const inputId = group.dataset.input;
           const el = $(inputId);
