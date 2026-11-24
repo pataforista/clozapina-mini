@@ -2134,6 +2134,30 @@
     .inline-help summary::-webkit-details-marker { display: none; }
     .inline-help summary::before { content: ""; width: 8px; height: 8px; flex-shrink: 0; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(-45deg); transition: transform .2s var(--ease); }
     .inline-help[open] > summary::before { transform: rotate(45deg); }
+  
+    /* ═══ Menos a la vez: divulgación progresiva ═══ */
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .units-line { margin: -4px 0 12px; font-size: 13px; }
+    .count { color: var(--muted); font-weight: 500; font-size: 13px; }
+    .check-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 16px; margin: 4px 0 8px; align-items: center; }
+    .check-grid .checkbox-row label { margin: 0; cursor: pointer; }
+    @media (max-width: 420px) { .check-grid { grid-template-columns: 1fr; } }
+    /* Banderas rojas en dos columnas en vez de una lista larga */
+    .support-box--warn-cv .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 12px; }
+    .support-box--warn-cv .row > * { flex: none; }
+    /* Aviso de paciente en una sola línea */
+    .context-banner { padding: 8px 12px; margin-bottom: 12px; font-size: 13.5px; }
+    .context-banner__title { display: none; }
+    .context-banner__label, .context-banner__details { display: inline; font-size: 13.5px; }
+    .context-banner__label { margin-right: 8px; }
+    /* Alertas: el detalle se abre a demanda */
+    .alert-more { margin-top: 10px; }
+    .alert-more > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 700; font-size: 14px; color: var(--c); }
+    .alert-more > summary::-webkit-details-marker { display: none; }
+    .alert-more > summary::before { content: ""; width: 8px; height: 8px; border-right: 2px solid var(--c); border-bottom: 2px solid var(--c); transform: rotate(-45deg); transition: transform .2s var(--ease); }
+    .alert-more[open] > summary::before { transform: rotate(45deg); }
+    .alert-more > .alert-steps { margin-top: 4px; }
+    .list-more { width: 100%; margin-top: 4px; }
   </style>
 </head>
 
@@ -2197,22 +2221,15 @@
             <li><a href="#step4"><b>4</b> Guardar</a></li>
           </ol>
           <p class="helper" style="margin:-4px 0 8px">Solo la fecha es obligatoria. Captura lo que tengas; el resto puede quedar vacío.</p>
-          <details class="inline-help">
-            <summary>Criterios de referencia y aviso de privacidad</summary>
-            <p class="note">Consenso Delphi (Siskind et al., 2025): considerar suspender clozapina si <strong>ANC &lt; 1.0</strong> (general) o <strong>ANC &lt; 0.5</strong> (BEN / DARC-null). Cuaderno digital local; evita capturar datos identificables.</p>
-          </details>
-
           <h3 class="step-title" id="step1"><span class="step-n">1</span> Datos del control</h3>
           <div class="row">
             <div>
               <label for="f_date">Fecha <span class="req">obligatoria</span></label>
               <input type="date" id="f_date" required />
-              <div class="helper">Fecha del laboratorio.</div>
             </div>
             <div>
-              <label for="f_week">Semana (opcional)</label>
+              <label for="f_week">Semana de tratamiento <span class="req">opcional</span></label>
               <input type="number" id="f_week" min="1" max="99" placeholder="p.ej., 6" />
-              <div class="helper">Opcional: semana de tratamiento si aplica.</div>
             </div>
             <div>
               <label for="f_ben">¿BEN / DARC-null?</label>
@@ -2220,7 +2237,6 @@
                 <option value="0">No / General</option>
                 <option value="1">Sí (BEN / DARC-null)</option>
               </select>
-              <div class="helper">Neutropenia étnica benigna (DARC-null).</div>
             </div>
           </div>
 
@@ -2231,55 +2247,37 @@
                 <input type="number" id="f_dose" inputmode="decimal" placeholder="p.ej., 300" step="12.5" />
                 <span class="unit-suffix">mg/día</span>
               </div>
-              <div class="helper">Dosis total diaria (mg).</div>
-            </div>
-            <div>
-              <span class="lbl-group">Interacciones (CYP1A2)</span>
-              <div class="checkbox-group" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
-                <div class="checkbox-row">
-                  <input type="checkbox" id="f_habit_smoke" />
-                  <label for="f_habit_smoke" class="small" style="cursor:pointer; margin:0;">Fumador activo</label>
-                </div>
-                <div class="checkbox-row">
-                  <input type="checkbox" id="f_habit_quit" />
-                  <label for="f_habit_quit" class="small" style="cursor:pointer; margin:0;">Dejó de fumar (últimos 14 días)</label>
-                </div>
-              </div>
-            </div>
-            <div>
-              <span class="lbl-group">Otros factores</span>
-              <div class="checkbox-group" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
-                <div class="checkbox-row">
-                  <input type="checkbox" id="f_habit_fluvox" />
-                  <label for="f_habit_fluvox" class="small" style="cursor:pointer; margin:0;">+ Fluvoxamina</label>
-                </div>
-                <div class="checkbox-row">
-                  <select id="f_habit_caffeine">
-                    <option value="0">Cafeína: Normal/Baja</option>
-                    <option value="4">Cafeína: >3 tazas/día</option>
-                  </select>
-                </div>
-              </div>
             </div>
           </div>
 
+          <details class="inline-help" id="habitsDetails">
+            <summary>Hábitos e interacciones (CYP1A2) <span class="count" id="habitsCount"></span></summary>
+            <div class="check-grid">
+              <div class="checkbox-row"><input type="checkbox" id="f_habit_smoke" /><label for="f_habit_smoke" class="small">Fumador activo</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="f_habit_quit" /><label for="f_habit_quit" class="small">Dejó de fumar (últimos 14 días)</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="f_habit_fluvox" /><label for="f_habit_fluvox" class="small">Toma fluvoxamina</label></div>
+              <div>
+                <label for="f_habit_caffeine" class="sr-only">Consumo de cafeína</label>
+                <select id="f_habit_caffeine">
+                  <option value="0">Cafeína: normal o baja</option>
+                  <option value="4">Cafeína: más de 3 tazas al día</option>
+                </select>
+              </div>
+            </div>
+          </details>
+
           <h3 class="step-title" id="step2"><span class="step-n">2</span> Laboratorios <small>biometría hemática, x10³/µL</small></h3>
-          <div class="support-box support-box--accent">
-            <strong>Unidades:</strong> si el laboratorio reporta en <strong>células/µL</strong> (p.ej. 2500), <strong>divide entre 1000</strong> (2.5).
-          </div>
+          <p class="helper units-line">Valores en x10³/µL. Si tu laboratorio reporta células/µL, la app te ofrece convertirlos.</p>
           <div class="row">
             <div>
               <label for="f_anc" style="display:flex; justify-content:space-between; align-items:center;">
                 Neutrófilos absolutos (ANC) <span id="badge_anc" class="feedback-badge"></span>
-                <span class="info-icon" style="cursor:help; font-size:14px;"
-                  title="Verifica la unidad del laboratorio (x10³/µL vs células/µL). Si el dato está en células/µL, divide entre 1000.">ℹ️</span>
               </label>
               <div class="input-wrapper">
                 <input type="number" step="0.01" id="f_anc" inputmode="decimal" placeholder="p.ej., 2.3" />
                 <span class="unit-suffix">x10³/µL</span>
               </div>
               <div class="unit-hint hidden" id="uh_f_anc" role="status"></div>
-              <div class="helper">Ficha: x10³/µL (k/µL).</div>
             </div>
             <div>
               <label for="f_wbc" style="display:flex; justify-content:space-between; align-items:center;">
@@ -3525,8 +3523,9 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         const myoStep = hasMyoLabs
           ? "PCR y troponina registradas: interprétalas con los límites de tu laboratorio."
           : "Considera solicitar PCR y troponina (cribado respaldado por el consenso Delphi 2026).";
-        if (fever) {
-          const inWindow = wk !== null && wk >= 1 && wk <= 8;
+        const inWindow = wk !== null && wk >= 1 && wk <= 8;
+        const combined = fever && earlyFlags; // fiebre + signos cardiovasculares: una sola alerta, sin repetir
+        if (fever && !combined) {
           add("warn", "FIEBRE", "Fiebre reportada", "Fiebre durante el tratamiento.",
             ["Vigila signos de infección, síndrome inflamatorio y otras banderas rojas.",
               "Descarta infección neutropénica o miocarditis. Solicita un ANC y considera interrumpir clozapina como precaución si la fiebre es ≥ 38.5 °C.",
@@ -3543,7 +3542,14 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         }
 
         if (earlyFlags) {
-          if (strongCardiac) {
+          if (combined) {
+            add("bad", "CRÍTICO", "Fiebre con signos cardiovasculares", "Fiebre más signos cardiovasculares o respiratorios.",
+              ["Considera descartar miocarditis o serositis. La ficha FDA indica suspender clozapina y obtener evaluación cardíaca ante sospecha.",
+                "Solicita un ANC y descarta infección neutropénica; con fiebre ≥ 38.5 °C la ficha indica considerar interrumpir como precaución.",
+                inWindow ? "Estás en las primeras 8 semanas, cuando es más frecuente la miocarditis." : "",
+                myoStep],
+              "Ficha FDA 5.1 y 5.6; consenso Delphi de miocarditis (2026).");
+          } else if (strongCardiac) {
             add("warn", "CV/RESP", "Datos sugestivos de miocarditis", "Hay banderas rojas cardiovasculares o respiratorias.",
               ["Ante sospecha de miocarditis, la ficha FDA indica suspender clozapina y obtener evaluación cardíaca.", myoStep],
               "Ficha FDA 5.6; consenso Delphi de miocarditis (2026).");
@@ -3551,11 +3557,6 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             add("warn", "CV/RESP", "Taquicardia a vigilar", "Taquicardia aislada.",
               ["Es frecuente al titular y, por sí sola, de bajo valor diagnóstico.", "Vigila fiebre, dolor torácico, disnea o síntomas gripales."],
               "Consenso Delphi de miocarditis (2026).");
-          }
-          if (fever) {
-            add("bad", "CRÍTICO", "Riesgo combinado", "Fiebre más signos cardiovasculares.",
-              ["Considera descartar miocarditis o serositis.", "La ficha FDA indica suspender y evaluar el corazón ante sospecha.", myoStep],
-              "Ficha FDA 5.6.");
           }
         }
 
@@ -4147,7 +4148,10 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
           return;
         }
         sortEntries();
-        for (const e of [...state.data.entries].reverse()) {
+        const allEntries = [...state.data.entries].reverse();
+        const LIMIT = 5;
+        const visibleEntries = state.showAllEntries ? allEntries : allEntries.slice(0, LIMIT);
+        for (const e of visibleEntries) {
           const a = assess(e);
           const anc = e.labs?.anc_k;
           const plt = e.labs?.plt_k;
@@ -4213,6 +4217,13 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
 
           root.appendChild(div);
           registerAnimatedItem(div);
+        }
+        if (allEntries.length > LIMIT) {
+          const more = document.createElement("button");
+          more.type = "button"; more.className = "ghost list-more";
+          more.textContent = state.showAllEntries ? `Mostrar solo las últimas ${LIMIT}` : `Ver todas las entradas (${allEntries.length})`;
+          more.addEventListener("click", () => { state.showAllEntries = !state.showAllEntries; renderList(); });
+          root.appendChild(more);
         }
       };
 
@@ -4289,14 +4300,20 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
           count("info") ? `<span class="chip info">i ${count("info")} ${count("info") === 1 ? "informativa" : "informativas"}</span>` : "",
           count("ok") && !count("bad") && !count("warn") ? `<span class="chip ok">✓ Sin alertas, en rango</span>` : ""
         ].join("");
-        const cards = sorted.map(a => {
+        const hasProblems = res.alerts.some(a => a.kind !== "ok");
+        const cards = sorted.filter(a => !(a.kind === "ok" && hasProblems)).map(a => {
           const kind = KIND[a.kind] ? a.kind : "info";
-          const steps = (a.steps && a.steps.length) ? `<ul class="alert-steps">${a.steps.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : "";
-          const src = a.source ? `<div class="alert-src"><strong>Fuente:</strong> ${esc(a.source)}</div>` : "";
+          const nSteps = (a.steps || []).length;
+          const stepsHtml = nSteps ? `<ul class="alert-steps">${a.steps.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : "";
+          const srcHtml = a.source ? `<div class="alert-src"><strong>Fuente:</strong> ${esc(a.source)}</div>` : "";
+          // Lo crítico se muestra completo; lo demás, solo el hallazgo y un acceso a los pasos
+          const more = (nSteps || a.source)
+            ? `<details class="alert-more"${kind === "bad" ? " open" : ""}><summary>${nSteps ? `Qué considerar (${nSteps})` : "Fuente"}</summary>${stepsHtml}${srcHtml}</details>`
+            : "";
           return `<article class="alert-card ${kind}" role="group" aria-label="${KIND[kind][0]}: ${esc(a.title)}">
         <header class="alert-head"><span class="tag ${kind}">${esc(a.tag)}</span><span class="alert-level ${kind}">${KIND[kind][1]} ${KIND[kind][0]}</span></header>
         <h4 class="alert-title">${esc(a.title)}</h4>
-        <p class="alert-lead">${esc(a.text)}</p>${steps}${src}
+        <p class="alert-lead">${esc(a.text)}</p>${more}
       </article>`;
         }).join("");
         const blocks = cards ? `<div class="alert-summary" role="status">${chips}</div><div class="alert-list">${cards}</div>` : "";
@@ -4628,7 +4645,14 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         toast("ANC capturado desde el cálculo.");
       });
 
+      const updateHabits = (autoOpen) => {
+        const n = ["f_habit_smoke", "f_habit_quit", "f_habit_fluvox"].filter(id => $(id).checked).length + ($("f_habit_caffeine").value !== "0" ? 1 : 0);
+        $("habitsCount").textContent = n ? `(${n} marcado${n === 1 ? "" : "s"})` : "";
+        if (autoOpen) $("habitsDetails").open = n > 0;
+      };
+      ["f_habit_smoke", "f_habit_quit", "f_habit_fluvox", "f_habit_caffeine"].forEach(id => $(id).addEventListener("change", () => updateHabits(false)));
       const updateLikertVisuals = () => {
+        updateHabits(true);
         updateMyoHint();
         checkUnits();
         updateAncCalc();
