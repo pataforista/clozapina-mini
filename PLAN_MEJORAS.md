@@ -9,6 +9,45 @@
 
 ---
 
+## Estado actual (actualizado el 24 de noviembre de 2026)
+
+> El backlog vigente está en [`docs/BACKLOG.md`](docs/BACKLOG.md). Este plan se conserva como historial de la primera
+> revisión. Los estados se confirmaron buscando evidencia en el código y en las pruebas de `tests/`.
+> ✅ resuelto · ◐ parcial · ⬜ pendiente · ❔ no verificado en esta revisión.
+
+| Punto | Estado | Evidencia o nota |
+|---|---|---|
+| 1.1 Labs vacíos a `0` | ✅ | `clamp` conserva `null` (`index.html`, sanitización de entradas) |
+| 1.2 Botón de cierre del modal | ✅ | Sin `cloneNode`; el modal se cubre en `tests/e2e/smoke.js` |
+| 1.3 Gráfica en tema claro | ✅ | Cuadrícula según tema; el estado vacío es HTML |
+| 1.4 Force-update y borrador | ✅ | Existe el borrador `clz_mini_pwa_draft` y su recuperación al iniciar |
+| 1.5 Serie de la gráfica | ✅ | El selector de serie redibuja; ahora es un control segmentado |
+| 1.6 Umbral de ANC grave | ✅ | `analyzeANC` usa `anc_severe` |
+| 1.7 Fallback del service worker | ✅ | Solo las navegaciones reciben `index.html`; el resto devuelve error |
+| 1.8 Portapapeles sin guarda | ✅ | Guarda `navigator.clipboard` presente |
+| 1.9 `clearForm` y los likert | ✅ | Se restablecen a `"0"` |
+| 1.10 Triple render por guardado | ❔ | Ver `BL-14` |
+| 2.1 Eliminar `anime.js` | ✅ | Sin referencias |
+| 2.2 CSS muerto de `.update-banner` | ✅ | Sin referencias |
+| 2.3 Código muerto en JS | ❔ | Ver `BL-14` |
+| 2.4 Estado vacío duplicado | ✅ | `renderList` deja el contenedor vacío |
+| 2.5 Consolidar el CSS | ⬜ | Peor que al inicio: se agregaron capas de ajustes. Ver `BL-11` |
+| 2.6 Identidad de versión | ◐ | SW y estado en 1.7.0; quedan `DEFAULTS.version` y un valor de respaldo. Ver `BL-12` |
+| 2.7 Higiene del repositorio | ◐ | Ya no está `clozapina.zip`; falta optimizar `icon-512.png`. Ver `BL-13` |
+| 3.1 Likert con teclado | ✅ | Son botones con rol `radio` |
+| 3.2 Foco en el modal | ✅ | Foco atrapado y devuelto; fondo inerte (humo) |
+| 3.3 Checkboxes con `<label>` | ✅ | Etiquetas con `for`; informe de accesibilidad sin controles sin nombre |
+| 3.4 `aria-labelledby` de los paneles | ✅ | `setTab` lo asigna |
+| 3.5 Zoom automático en iOS | ✅ | Campos a 16 px en pantallas táctiles |
+| 3.6 `theme-color` dinámico | ✅ | Se actualiza al cambiar el tema |
+| 4.x Estética y acabado | ❔ | Parcialmente superado por la revisión de usabilidad. Ver `BL-14` y `BL-11` |
+
+**Añadido desde este plan** (no estaba aquí): selector de esquema de monitoreo, calculadora de ANC, conversión de unidades,
+monografía rápida, alertas con jerarquía, tabletas, eliminación del fondo animado, pruebas automáticas y documentación
+para agentes (`AGENTS.md`, `docs/CLINICAL_SOURCES.md`, `docs/BACKLOG.md`).
+
+---
+
 ## Fase 1 — Corrección de bugs (prioridad máxima)
 
 ### 1.1 🔴 Labs vacíos se convierten en `0` al recargar → falsa alerta de agranulocitosis

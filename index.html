@@ -7,12 +7,6 @@
   <meta name="theme-color" content="#0D0C12" />
   <title>CLZ Mini PWA</title>
   <link rel="icon" href="icon-192.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://esm.sh" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap"
-    rel="stylesheet">
 
   <style>
     /* Privacy Overlay */
@@ -40,8 +34,8 @@
     :root {
       --radius: 14px;
       --radius-sm: 8px;
-      --sans: 'Inter', system-ui, -apple-system, sans-serif;
-      --mono: 'JetBrains Mono', monospace;
+      --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
       /* Transitions */
       --ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -73,7 +67,7 @@
       --nav-border: rgba(30, 28, 50, 0.08);
       --nav-indicator: rgba(61, 53, 168, 0.11);
       --nav-active-color: #3D35A8;
-      --nav-muted: #7A7790;
+      --nav-muted: #5F5C73;
       color-scheme: light;
     }
 
@@ -345,7 +339,6 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.6;
-      opacity: 0.9;
     }
 
     /* Form Elements */
@@ -1806,6 +1799,396 @@
       transition: border-color 0.25s var(--ease), background 0.25s var(--ease), transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
     }
 
+  
+    /* ═══ Revisión de usabilidad: orden, pasos y navegación ═══ */
+    .disclaimer-banner { padding: 6px 0; font-size: 12.5px; }
+    .disclaimer-banner .wrap { display: flex; align-items: flex-start; gap: 8px; }
+    .disclaimer-details { flex: 1; min-width: 0; }
+    .disclaimer-details summary { cursor: pointer; list-style: none; line-height: 1.4; padding: 4px 0; }
+    .disclaimer-details summary::-webkit-details-marker { display: none; }
+    .disclaimer-more { text-decoration: underline; opacity: .75; white-space: nowrap; }
+    .disclaimer-details[open] .disclaimer-more { display: none; }
+    .disclaimer-details p { margin: 4px 0 6px; }
+    .disclaimer-close { padding: 0; width: 32px; height: 32px; min-width: 32px; flex-shrink: 0; font-size: 14px; }
+
+    .site-header { margin-bottom: 16px; padding: 10px 0; }
+    .site-header .wrap { gap: 10px; }
+    .brand { min-width: 0; }
+    .brand h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-actions { flex-shrink: 0; gap: 8px; }
+    .header-actions .pill { max-width: 120px; }
+    .header-actions .pill strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    @media (max-width: 520px) {
+      .brand .logo { display: none; }
+      .brand h1 { font-size: 15px; }
+      .header-actions .pill { max-width: 96px; }
+    }
+
+    main { padding: 8px 0 120px; }
+    .card:hover { transform: none; }
+    .box:hover, .item:hover { transform: none; }
+
+    /* Selector de vista (Nueva entrada / Historial) */
+    .seg { display: flex; gap: 4px; padding: 4px; margin-bottom: 16px; background: var(--card);
+      border: 1px solid var(--line); border-radius: var(--radius-sm); }
+    .seg-btn { flex: 1; padding: 10px 8px; font-size: 13px; border-radius: 8px; background: transparent;
+      color: var(--muted); border: 0; min-height: 44px; }
+    .seg-btn.active { background: var(--accent); color: #fff; }
+    @media (min-width: 768px) { .seg { display: none; } }
+    @media (max-width: 767px) {
+      #tab-registro[data-view="form"] #cardList,
+      #tab-registro[data-view="list"] #cardForm { display: none; }
+    }
+
+    /* Guía de pasos y títulos de paso */
+    .howto { list-style: none; display: flex; gap: 6px; padding: 0; margin: 0 0 12px; flex-wrap: wrap; }
+    .howto li { flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: 6px; font-size: 11.5px;
+      color: var(--muted); padding: 6px 8px; border: 1px solid var(--line); border-radius: 999px; white-space: nowrap; }
+    .howto li b { display: inline-flex; width: 18px; height: 18px; flex: 0 0 18px; align-items: center;
+      justify-content: center; border-radius: 50%; background: var(--accent); color: #fff; font-size: 11px; }
+    @media (max-width: 520px) { .howto li { flex: 1 1 calc(50% - 6px); } }
+    .inline-help { margin-bottom: 8px; font-size: 12.5px; }
+    .inline-help summary { cursor: pointer; color: var(--muted); padding: 4px 0; }
+    .step-title { display: flex; align-items: center; gap: 10px; margin: 28px 0 14px; padding-top: 20px;
+      border-top: 1px solid var(--line); font-size: 16px; font-weight: 700; }
+    .step-title small { font-weight: 500; color: var(--muted); font-size: 12px; }
+    .step-title:first-of-type { border-top: 0; padding-top: 0; margin-top: 16px; }
+    .step-n { display: inline-flex; width: 26px; height: 26px; align-items: center; justify-content: center;
+      border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; flex-shrink: 0; }
+
+    /* Campos y botones: tamaño táctil, sin cortes */
+    .row > * { flex: 1 1 150px; min-width: 0; }
+    .rating-opt { min-height: 40px; }
+    .checkbox-row input[type="checkbox"] { width: 20px; height: 20px; }
+    .checkbox-row { min-height: 36px; }
+    .checkbox-row label { text-transform: none; }
+    .support-box--warn-cv .row { gap: 4px 16px; }
+    .support-box--warn-cv .checkbox-row { flex: 1 1 140px; }
+
+    .action-bar-bottom { flex-direction: column; gap: 10px; padding: 16px 24px; position: static; margin: 24px -24px -24px; }
+    .action-bar-bottom .primary { width: 100%; min-height: 48px; font-size: 15px; }
+    .action-secondary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .action-secondary button { padding: 10px 6px; font-size: 12.5px; gap: 4px; min-width: 0; white-space: nowrap; }
+    @media (max-width: 520px) { .action-secondary { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .card { padding: 18px 16px; } .action-bar-bottom { margin: 24px -16px -18px; padding: 14px 16px; } }
+
+    /* Menú inferior: barra fija a ancho completo en móvil (no tapa contenido) */
+    @media (max-width: 620px) {
+      .floating-nav { left: 0; right: 0; bottom: 0 !important; transform: none; max-width: none; width: 100%;
+        border-radius: 16px 16px 0 0; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); }
+      .nav-item { flex: 1; min-width: 0; padding: 6px 2px; }
+      .nav-label { font-size: 11px; }
+      .toast { bottom: 84px; max-width: calc(100vw - 32px); }
+    }
+  
+    /* ═══ Ajustes en acordeones, semántica y accesibilidad ═══ */
+    .settings-intro { margin: 0 0 12px; }
+    .acc-list { display: flex; flex-direction: column; gap: 10px; max-width: 760px; margin: 0 auto; }
+    .acc { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); }
+    .acc > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 14px 16px; min-height: 56px; border-radius: var(--radius); }
+    .acc > summary::-webkit-details-marker { display: none; }
+    .acc > summary::after { content: ""; width: 10px; height: 10px; border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .2s var(--ease); flex-shrink: 0; margin-right: 4px; }
+    .acc[open] > summary::after { transform: rotate(-135deg); }
+    .acc[open] > summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 1px solid var(--line); }
+    .acc > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+    .acc-t { display: flex; flex-direction: column; gap: 2px; font-weight: 700; font-size: 15px; min-width: 0; }
+    .acc-t small { font-weight: 400; font-size: 12.5px; color: var(--muted); }
+    .acc-body { padding: 16px; }
+    .sub-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 16px 0 10px; }
+    .save-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 4px 0 8px; }
+    .save-row .primary { flex: 1 1 200px; min-height: 48px; }
+    .save-row .ghost { flex: 1 1 200px; min-height: 48px; }
+    .save-row .helper { flex-basis: 100%; margin: 0; }
+    .danger-zone { margin-top: 24px; padding: 14px; border: 1px dashed var(--bad); border-radius: var(--radius-sm); }
+    .danger-zone strong { color: var(--bad); font-size: 13px; }
+
+    /* Registro: jerarquía y señales */
+    .howto li { padding: 0; }
+    .howto li a { display: flex; align-items: center; gap: 6px; padding: 8px 10px; color: inherit; text-decoration: none; min-height: 40px; width: 100%; }
+    .howto li a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 999px; }
+    .step-title { scroll-margin-top: 76px; }
+    .req { font-weight: 500; color: var(--muted); text-transform: none; letter-spacing: 0; font-size: 11px; margin-left: 4px; }
+    .lbl-group { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+    .action-danger { width: 100%; margin-top: 6px; padding: 8px; font-size: 12.5px; min-height: 40px; background: transparent; }
+    .action-secondary { grid-template-columns: repeat(3, 1fr); }
+    @media (max-width: 520px) { .action-secondary { grid-template-columns: repeat(3, 1fr); } .action-secondary button { padding: 10px 2px; font-size: 12px; } }
+    .ico { flex-shrink: 0; }
+
+    /* KPI: estado clínico (color + texto + símbolo) */
+    .kpi-state { margin-top: 6px; font-size: 12px; font-weight: 700; min-height: 16px; }
+    .box[data-state="ok"]   { border-left: 4px solid var(--ok); }
+    .box[data-state="warn"] { border-left: 4px solid var(--warn); background: color-mix(in srgb, var(--warn) 8%, var(--card)); }
+    .box[data-state="bad"]  { border-left: 4px solid var(--bad);  background: color-mix(in srgb, var(--bad) 10%, var(--card)); }
+    .box[data-state="ok"] .kpi-state   { color: var(--ok); }
+    .box[data-state="warn"] .kpi-state { color: var(--warn); }
+    .box[data-state="bad"] .kpi-state  { color: var(--bad); }
+    .box .lbl { font-size: 11px; }
+    .box .val { font-size: 22px; flex-wrap: wrap; }
+    .kpi { grid-template-columns: repeat(2, 1fr); }
+
+    /* Objetivos táctiles ≥ 40–44 px */
+    .icon-btn { width: 40px; height: 40px; }
+    .disclaimer-close { width: 40px; height: 40px; min-width: 40px; }
+    .btn-sm { min-height: 40px; }
+    .theme-select { min-height: 40px; }
+    .nav-item { min-height: 52px; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    /* Texto sobre acento claro (modo oscuro): oscuro para cumplir contraste 4.5:1 */
+    html[data-theme="dark"] button.primary, html[data-theme="dark"] .seg-btn.active,
+    html[data-theme="dark"] .step-n, html[data-theme="dark"] .howto li b,
+    html[data-theme="dark"] .btn-doc.primary, html[data-theme="dark"] .brand .logo { color: #0E0D15; }
+  
+    /* ═══ Gráficas y Recursos ═══ */
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .seg-wrap { flex-wrap: wrap; }
+    .seg-wrap .seg-btn { flex: 1 1 calc(50% - 4px); }
+    @media (min-width: 520px) { .seg-wrap .seg-btn { flex: 1 1 0; } }
+    #serieSeg { display: flex !important; }
+    .chart-card canvas { margin-top: 8px; height: 280px; }
+    .chart-summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin: 4px 0 8px; min-height: 28px; }
+    .cs-val { font-family: var(--mono); font-size: 20px; font-weight: 700; }
+    .cs-state { font-size: 13px; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
+    .cs-state[data-state="ok"] { color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); }
+    .cs-state[data-state="warn"] { color: var(--warn); background: color-mix(in srgb, var(--warn) 14%, transparent); }
+    .cs-state[data-state="bad"] { color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, transparent); }
+    .cs-trend { font-size: 13px; color: var(--muted); }
+    .chart-legend { margin-top: 10px; font-size: 12.5px; color: var(--muted); min-height: 18px; display: flex; align-items: center; gap: 8px; }
+    .lg-line { display: inline-block; width: 24px; border-top: 2px dashed var(--bad); }
+    .chart-controls { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+    .chart-controls label { margin: 0; white-space: nowrap; }
+    .chart-controls select { max-width: 260px; min-height: 44px; }
+    .chart-empty { text-align: center; padding: 40px 16px; border: 1px dashed var(--line); border-radius: var(--radius); margin-top: 8px; }
+    .chart-empty .primary { margin-top: 8px; min-height: 44px; }
+    .chart-table { width: 100%; margin-top: 8px; font-size: 13px; }
+    .chart-table th, .chart-table td { text-align: left !important; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+    .ref-search { margin-bottom: 4px; }
+    .ref-search input { min-height: 48px; }
+    .ref-search .helper { min-height: 16px; }
+    .doc-item .meta-actions .btn-doc { min-height: 44px; }
+    #tab-recursos .acc-list, #tab-graficas .chart-card { max-width: 760px; margin-left: auto; margin-right: auto; }
+    #tab-graficas .chart-card { max-width: 900px; }
+    .refs ol { padding-left: 20px; display: flex; flex-direction: column; gap: 10px; }
+  
+    .myo-hint { margin: 0 0 12px; padding: 12px 14px; border-radius: var(--radius-sm); font-size: 13.5px;
+      border: 1px solid var(--warn); border-left-width: 4px; background: color-mix(in srgb, var(--warn) 10%, var(--card)); }
+    .myo-hint strong { color: var(--warn); }
+  
+    .kpi-note { margin-top: 6px; font-size: 11.5px; line-height: 1.4; color: var(--muted); }
+    .kpi-note:empty { display: none; }
+  
+    /* ═══ Modales, color y adaptabilidad (revisión) ═══ */
+    .modal-backdrop { z-index: 1500; padding: 16px; padding-bottom: max(16px, env(safe-area-inset-bottom)); overscroll-behavior: contain; }
+    .modal { display: flex; flex-direction: column; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px);
+      padding: 24px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--glass-border, var(--line)); }
+    .modal h3 { margin: 0 0 12px; flex-shrink: 0; }
+    .modal-body { overflow-y: auto; min-height: 0; flex: 1 1 auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+    .modal-body ul { margin: 12px 0 0 20px; padding: 0; }
+    #modalFormula { margin-top: 16px; padding: 10px; background: color-mix(in srgb, var(--text) 5%, transparent); border-radius: 8px; display: none; font-family: var(--mono); }
+    .modal-actions { flex-shrink: 0; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; gap: 10px; }
+    .modal-actions button { min-height: 48px; min-width: 140px; }
+    @media (max-width: 520px) { .modal { padding: 20px; } .modal-actions button { flex: 1; } }
+    .modal.critical h3::before { content: "!"; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 24px; height: 24px; border-radius: 50%; background: var(--bad); color: #fff; font-size: 15px; font-weight: 800; }
+    html[data-theme="dark"] .modal.critical h3::before { color: #1a0a0c; }
+
+    /* Contraste: sin opacidad que reste legibilidad al texto */
+    .small { opacity: 1; color: var(--muted); }
+    .helper { opacity: 1; }
+    footer { opacity: 1; color: var(--muted); }
+    .checkbox-row label, .checkbox-row .small { color: var(--text); font-weight: 500; text-transform: none; letter-spacing: 0; }
+    html[data-theme="light"] { --muted: #625F70; }
+
+    /* Objetivos táctiles de 44 px */
+    .action-secondary button { min-height: 44px; }
+    .rating-opt { min-height: 44px; }
+    .icon-btn { width: 44px; height: 44px; }
+    .theme-select, .btn-sm { min-height: 44px; }
+    .inline-help summary { min-height: 44px; display: flex; align-items: center; }
+    #f_habit_caffeine { padding: 10px 32px 10px 12px; font-size: 13px; min-height: 44px; }
+
+    /* Rendimiento: el desenfoque de fondo no aporta con tarjetas opacas */
+    .card, .site-header { backdrop-filter: none; -webkit-backdrop-filter: none; }
+    body { min-height: 100vh; min-height: 100dvh; }
+
+    /* Muescas y bordes redondeados en horizontal */
+    .wrap { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+
+    /* Móvil en horizontal: poca altura, así que cabecera y menú compactos */
+    @media (max-height: 480px) and (orientation: landscape) {
+      .site-header { position: static; margin-bottom: 8px; }
+      .floating-nav { left: 50%; right: auto; bottom: 8px !important; width: auto; transform: translateX(-50%); border-radius: 28px; padding: 3px; }
+      .floating-nav .nav-brand { display: none; }
+      .nav-item { flex-direction: row; gap: 6px; min-height: 44px; padding: 4px 14px; min-width: 0; }
+      .nav-label { font-size: 12px; display: block; }
+      main { padding-bottom: 76px; }
+      .toast { bottom: 64px; }
+      .modal { max-height: calc(100dvh - 16px); }
+      .modal-backdrop { padding: 8px; }
+    }
+  
+    button, .btn-doc { min-height: 44px; }
+    .disclaimer-close { width: 44px; height: 44px; min-width: 44px; }
+    .action-danger { min-height: 44px; }
+  
+    .icon-btn { flex-shrink: 0; min-width: 44px; }
+    input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), select { min-height: 44px; }
+  
+    /* ═══ Tabletas: formulario y resultados lado a lado ═══ */
+    @media (min-width: 768px) {
+      .grid { grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+      .wrap { padding-left: max(24px, env(safe-area-inset-left)); padding-right: max(24px, env(safe-area-inset-right)); }
+      body { font-size: 16px; }
+      /* Alertas e historial visibles mientras se captura, como el panel de resultados de una calculadora */
+      #cardList { position: sticky; top: 84px; max-height: calc(100vh - 190px); max-height: calc(100dvh - 190px); overflow-y: auto; }
+      .chart-card canvas { height: 380px; }
+      .card { padding: 28px; }
+      .action-bar-bottom { margin: 24px -28px -28px; padding: 18px 28px; }
+    }
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .kpi { grid-template-columns: repeat(2, 1fr); }
+      .row > * { flex: 1 1 200px; }
+      main { padding-bottom: 130px; }
+    }
+    @media (min-width: 1024px) { .grid { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } }
+
+    /* Aviso de unidad y calculadora de ANC */
+    .unit-hint { margin-top: 6px; padding: 8px 10px; border-radius: var(--radius-sm); font-size: 13px;
+      border: 1px solid var(--warn); background: color-mix(in srgb, var(--warn) 10%, var(--card)); }
+    .link-btn { display: inline; min-height: 0; padding: 0 2px; background: none; border: 0; color: var(--accent);
+      font-weight: 700; text-decoration: underline; font-size: inherit; cursor: pointer; }
+    .anc-calc-out { display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; }
+    .anc-calc-out .helper { margin: 0; font-family: var(--mono); }
+
+    /* Monografía rápida */
+    .monograph ul { margin: 0 0 12px 18px; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+    .monograph table { width: 100%; font-size: 13px; border-collapse: collapse; margin-bottom: 12px; }
+    .monograph th, .monograph td { text-align: left !important; vertical-align: top; padding: 8px; border-bottom: 1px solid var(--line); }
+    .monograph th { color: var(--muted); font-size: 12px; }
+    @media (max-width: 520px) { .monograph table, .monograph thead, .monograph tbody, .monograph tr, .monograph td { display: block; }
+      .monograph thead { display: none; } .monograph tr { padding: 8px 0; border-bottom: 1px solid var(--line); }
+      .monograph td { border: 0; padding: 2px 0; } .monograph td:first-child { font-weight: 700; } }
+  
+    /* Las mayúsculas convertirían µ (micro) en M: las unidades se muestran tal cual */
+    .u { text-transform: none !important; letter-spacing: 0; }
+  
+    /* ═══ Legibilidad: jerarquía, líneas y contraste ═══ */
+    html[data-theme="light"] { --line-mid: #C9C5D2; --line-strong: #85828F; }
+    html[data-theme="dark"] { --line-mid: rgba(255, 255, 255, 0.18); --line-strong: rgba(255, 255, 255, 0.36); }
+    /* Bordes de campos y controles con contraste de 3:1 (WCAG 1.4.11); separadores visibles */
+    input, select, textarea, .rating-group, button.ghost { border-color: var(--line-strong); }
+    .card, .acc, .item, .box, .seg, .collapsible, .support-box { border-color: var(--line-mid); }
+    .divider, .step-title, .modal-actions, table th, table td { border-color: var(--line-mid); }
+    .divider { background: var(--line-mid); }
+    .step-title { border-top-color: var(--line-mid); }
+
+    /* Alertas: severidad clara, hallazgo, pasos y fuente */
+    .alert-summary { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; border: 1px solid; }
+    .chip.bad { color: var(--bad); border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--card)); }
+    .chip.warn { color: var(--warn); border-color: var(--warn); background: color-mix(in srgb, var(--warn) 12%, var(--card)); }
+    .chip.info { color: var(--info); border-color: var(--info); background: color-mix(in srgb, var(--info) 12%, var(--card)); }
+    .chip.ok { color: var(--ok); border-color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, var(--card)); }
+    .alert-list { display: flex; flex-direction: column; gap: 14px; }
+    .alert-card { --c: var(--info); padding: 16px 16px 14px; border-radius: var(--radius-sm); border: 1px solid color-mix(in srgb, var(--c) 45%, var(--line-mid));
+      border-left: 6px solid var(--c); background: color-mix(in srgb, var(--c) 9%, var(--card)); }
+    .alert-card.bad { --c: var(--bad); } .alert-card.warn { --c: var(--warn); } .alert-card.ok { --c: var(--ok); } .alert-card.info { --c: var(--info); }
+    .alert-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+    .alert-level { font-size: 12.5px; font-weight: 800; color: var(--c); letter-spacing: .02em; text-transform: uppercase; }
+    .alert-title { margin: 0 0 6px; font-size: 17px; line-height: 1.3; font-weight: 700; color: var(--text); }
+    .alert-lead { margin: 0; font-size: 15px; line-height: 1.55; color: var(--text); }
+    .alert-steps { list-style: none; margin: 12px 0 0; padding: 12px 0 0; border-top: 1px solid var(--line-mid); display: flex; flex-direction: column; gap: 8px; }
+    .alert-steps li { position: relative; padding-left: 20px; font-size: 14.5px; line-height: 1.5; color: var(--text); }
+    .alert-steps li::before { content: ""; position: absolute; left: 4px; top: .6em; width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+    .alert-src { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line-mid); font-size: 12.5px; line-height: 1.45; color: var(--muted); }
+    .alert-src strong { color: var(--text); font-weight: 700; }
+
+    /* KPI: textos largos con tipografía de texto, no de cifra */
+    .box .val.is-text { font-family: var(--sans); font-size: 15px; font-weight: 700; line-height: 1.3; margin-top: 8px; }
+
+    /* Modal: bloques separados por líneas */
+    .modal-body > p { margin: 0 0 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line-mid); color: var(--text); font-size: 15px; }
+    .modal-body ul { list-style: none; margin: 0; padding: 0; }
+    .modal-body li { padding: 12px 0; border-bottom: 1px solid var(--line-mid); font-size: 14.5px; line-height: 1.5; color: var(--text); }
+    .modal-body li:last-child { border-bottom: 0; }
+    .modal-body li strong { display: inline-block; margin-right: 6px; padding: 1px 8px; border-radius: 6px; font-size: 12px; background: color-mix(in srgb, var(--text) 10%, transparent); }
+    .modal.critical .modal-body li strong { background: color-mix(in srgb, var(--bad) 18%, transparent); color: var(--bad); }
+    #modalFormula { border: 1px solid var(--line-mid); }
+  
+    /* Etiquetas de severidad legibles en tema claro */
+    html[data-theme="light"] .tag.bad { color: color-mix(in srgb, var(--bad) 80%, #000); }
+    html[data-theme="light"] .tag.warn { color: color-mix(in srgb, var(--warn) 78%, #000); }
+    html[data-theme="light"] .tag.info { color: color-mix(in srgb, var(--info) 85%, #000); }
+    html[data-theme="light"] .tag.ok { color: color-mix(in srgb, var(--ok) 82%, #000); }
+
+    /* Flecha en los bloques plegables pequeños: indica que se abren */
+    .inline-help summary { list-style: none; gap: 8px; }
+    .inline-help summary::-webkit-details-marker { display: none; }
+    .inline-help summary::before { content: ""; width: 8px; height: 8px; flex-shrink: 0; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(-45deg); transition: transform .2s var(--ease); }
+    .inline-help[open] > summary::before { transform: rotate(45deg); }
+  
+    /* ═══ Menos a la vez: divulgación progresiva ═══ */
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .units-line { margin: -4px 0 12px; font-size: 13px; }
+    .count { color: var(--muted); font-weight: 500; font-size: 13px; }
+    .check-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 16px; margin: 4px 0 8px; align-items: center; }
+    .check-grid .checkbox-row label { margin: 0; cursor: pointer; }
+    @media (max-width: 420px) { .check-grid { grid-template-columns: 1fr; } }
+    /* Banderas rojas en dos columnas en vez de una lista larga */
+    .support-box--warn-cv .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 12px; }
+    .support-box--warn-cv .row > * { flex: none; }
+    /* Aviso de paciente en una sola línea */
+    .context-banner { padding: 8px 12px; margin-bottom: 12px; font-size: 13.5px; }
+    .context-banner__title { display: none; }
+    .context-banner__label, .context-banner__details { display: inline; font-size: 13.5px; }
+    .context-banner__label { margin-right: 8px; }
+    /* Alertas: el detalle se abre a demanda */
+    .alert-more { margin-top: 10px; }
+    .alert-more > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 700; font-size: 14px; color: var(--c); }
+    .alert-more > summary::-webkit-details-marker { display: none; }
+    .alert-more > summary::before { content: ""; width: 8px; height: 8px; border-right: 2px solid var(--c); border-bottom: 2px solid var(--c); transform: rotate(-45deg); transition: transform .2s var(--ease); }
+    .alert-more[open] > summary::before { transform: rotate(45deg); }
+    .alert-more > .alert-steps { margin-top: 4px; }
+    .list-more { width: 100%; margin-top: 4px; }
+  
+    .skip-link { position: fixed; left: 12px; top: -64px; z-index: 5000; padding: 12px 18px; border-radius: 8px; background: var(--accent); color: #fff; font-weight: 700; text-decoration: none; transition: top .15s; }
+    .skip-link:focus { top: 12px; }
+    html[data-theme="dark"] .skip-link { color: #0E0D15; }
+    #mainContent:focus { outline: none; }
+  
+    /* iOS amplía la pantalla al enfocar campos de menos de 16 px: en pantallas táctiles se evita */
+    @media (pointer: coarse) {
+      input:not([type="checkbox"]):not([type="radio"]), select, textarea, #f_habit_caffeine { font-size: 16px; }
+    }
+  
+    /* ═══ Tipografía legible: fuentes del sistema, sin mayúsculas sostenidas, tamaños cómodos ═══ */
+    body { font-size: 16px; line-height: 1.55; text-rendering: optimizeLegibility; -webkit-text-size-adjust: 100%; }
+    label, .lbl-group { font-size: 14px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--text); margin-bottom: 6px; }
+    .req { font-size: 12.5px; }
+    .note { font-size: 14.5px; }
+    .helper, .small, .count, .alert-src, .kpi-note { font-size: 13px; }
+    .box .lbl { font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--muted); }
+    .sub-title { font-size: 15px; letter-spacing: 0; text-transform: none; color: var(--text); }
+    table th, .monograph th, .chart-table th { font-size: 13px; letter-spacing: 0; text-transform: none; }
+    .alert-level { font-size: 13px; letter-spacing: 0; text-transform: none; }
+    .tag { font-size: 12px; letter-spacing: .02em; }
+    .modal.critical h3 { text-transform: none; letter-spacing: 0; font-size: 20px; }
+    .kpi-state { font-size: 13.5px; }
+    .nav-label { font-size: 12px; }
+    .step-title { font-size: 17px; }
+    .acc-t { font-size: 16px; }
+    .acc-t small { font-size: 13.5px; }
+    button, .btn-doc { font-size: 15px; }
+    input, select, textarea { font-size: 16px; }
+    #f_habit_caffeine { font-size: 16px; }
+    /* Cifras con la misma tipografía y alineadas; el espaciado fijo solo para código y fórmulas */
+    .box .val, .cs-val, .meta .date, .pill strong, .chart-table td { font-family: var(--sans); font-variant-numeric: tabular-nums; }
+    .box .val { font-size: 24px; font-weight: 700; letter-spacing: 0; }
+    .box .val.is-text { font-size: 16px; }
+    .meta .date { font-size: 13.5px; }
+    #modalFormula, .anc-calc-out .helper { font-family: var(--mono); font-size: 13px; }
   </style>
 </head>
 
@@ -1817,19 +2200,15 @@
     <button class="primary" onclick="unlockApp()">Desbloquear</button>
   </div>
 
+  <a class="skip-link" href="#mainContent">Saltar al contenido</a>
   <div class="disclaimer-banner" id="disclaimerBanner">
     <div class="wrap">
-      <div style="display:flex; gap:12px; align-items:flex-start;">
-        <span style="font-size:20px;">⚠️</span>
-        <div style="flex:1;">
-          <strong>AVISO MÉDICO CRÍTICO:</strong> Esta aplicación es una herramienta de <u>apoyo a la decisión
-            clínica</u> y registro personal. No es un dispositivo médico ni sustituye el juicio de un profesional de la
-          salud. Las decisiones sobre el tratamiento con clozapina deben basarse en protocolos institucionales, la ficha
-          técnica del medicamento y la evaluación clínica individual del paciente.
-        </div>
-        <button class="ghost" style="padding:4px 8px; font-size:12px;"
-          onclick="document.getElementById('disclaimerBanner').style.display='none'">Cerrar</button>
-      </div>
+      <details class="disclaimer-details">
+        <summary><strong>Aviso:</strong> <span>Apoyo a la decisión clínica, no sustituye tu juicio.</span> <span class="disclaimer-more">Ver aviso completo</span></summary>
+        <p>Esta aplicación es una herramienta de <u>apoyo a la decisión clínica</u> y registro personal. No es un dispositivo médico ni sustituye el juicio de un profesional de la salud. Las decisiones sobre el tratamiento con clozapina deben basarse en protocolos institucionales, la ficha técnica del medicamento y la evaluación clínica individual del paciente.</p>
+      </details>
+      <button class="ghost disclaimer-close" aria-label="Cerrar aviso"
+        onclick="document.getElementById('disclaimerBanner').style.display='none'">✕</button>
     </div>
   </div>
   <header class="site-header">
@@ -1839,24 +2218,27 @@
         <h1 id="appHeaderTitle">Registro</h1>
       </div>
       <div class="header-actions">
-        <div class="pill" title="Paciente Activo" style="display: inline-flex; align-items: center; gap: 4px;">
-          <span>👤</span> <strong id="patientLabel">—</strong>
+        <div class="pill" title="Paciente activo (se cambia en Ajustes)">
+          <svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-3.3 0-8 1.7-8 5v1h16v-1c0-3.3-4.7-5-8-5z"/></svg> <strong id="patientLabel">—</strong>
         </div>
-        <select id="themeSelect" class="theme-select">
+        <select id="themeSelect" class="theme-select" aria-label="Tema">
           <option value="light">☀ Claro</option>
           <option value="dark">🌙 Oscuro</option>
         </select>
-        <button class="ghost" id="btnInstall" style="padding:6px 12px; font-size:12px;" disabled>Instalar</button>
       </div>
     </div>
   </header>
 
-  <main class="wrap">
+  <main class="wrap" id="mainContent" tabindex="-1">
     <!-- Registro -->
     <section id="tab-registro">
-      <div class="grid">
-        <div class="card">
-          <h2>Entrada</h2>
+      <div class="seg" id="regSeg" role="tablist" aria-label="Vista de registro">
+        <button type="button" class="seg-btn active" data-view="form" role="tab" aria-selected="true">Nueva entrada</button>
+        <button type="button" class="seg-btn" data-view="list" role="tab" aria-selected="false">Historial y alertas</button>
+      </div>
+      <div class="grid" data-view="form">
+        <div class="card" id="cardForm">
+          <h2>Nueva entrada</h2>
           <!-- Patient Context Banner inside Card for Context -->
           <div id="patientContextBanner" class="context-banner">
             <div class="context-banner__title">Paciente Activo:</div>
@@ -1864,147 +2246,123 @@
             <div class="context-banner__details" id="ctx_details">—</div>
           </div>
 
-          <div class="support-box">
-            <strong>Soporte de Decisión (Criterios Delphi Global)</strong>
-            <p class="note" style="margin-top:4px; font-size:11.5px;">
-              Puntos de corte recomendados por consenso Delphi (2022-2025): Cese de clozapina si
-              <strong>ANC < 1.0 (Gral)</strong> o <strong>ANC < 0.5 (BEN)</strong>.
-            </p>
-          </div>
-          <p class="note">
-            Esto es un cuaderno digital local. No sustituye el criterio clínico ni los protocolos institucionales.
-            Evita capturar datos identificables si no es estrictamente necesario.
-          </p>
-          <div class="item" style="cursor:default">
-            <strong>Pasos de captura (orden recomendado)</strong>
-            <ol class="note" style="margin-top:6px">
-              <li>Fecha del laboratorio.</li>
-              <li>Marca BEN si corresponde.</li>
-              <li>Captura ANC y leucocitos.</li>
-              <li>Agrega plaquetas y eosinófilos.</li>
-              <li>Registra síntomas relevantes y notas breves.</li>
-              <li>Guarda y revisa alertas.</li>
-            </ol>
-          </div>
-          <div class="divider"></div>
-
+          <ol class="howto" aria-label="Ir a un paso">
+            <li><a href="#step1"><b>1</b> Datos</a></li>
+            <li><a href="#step2"><b>2</b> Labs</a></li>
+            <li><a href="#step3"><b>3</b> Síntomas</a></li>
+            <li><a href="#step4"><b>4</b> Guardar</a></li>
+          </ol>
+          <p class="helper" style="margin:-4px 0 8px">Solo la fecha es obligatoria. Captura lo que tengas; el resto puede quedar vacío.</p>
+          <h3 class="step-title" id="step1"><span class="step-n">1</span> Datos del control</h3>
           <div class="row">
             <div>
-              <label>Fecha</label>
-              <input type="date" id="f_date" />
-              <div class="helper">1) Define la fecha del laboratorio.</div>
+              <label for="f_date">Fecha <span class="req">obligatoria</span></label>
+              <input type="date" id="f_date" required />
             </div>
             <div>
-              <label>Semana (opcional)</label>
+              <label for="f_week">Semana de tratamiento <span class="req">opcional</span></label>
               <input type="number" id="f_week" min="1" max="99" placeholder="p.ej., 6" />
-              <div class="helper">Opcional: semana de tratamiento si aplica.</div>
             </div>
             <div>
-              <label>¿BEN?</label>
+              <label for="f_ben">¿BEN / DARC-null?</label>
               <select id="f_ben">
                 <option value="0">No / General</option>
-                <option value="1">Sí (Benign Ethnic Neutropenia)</option>
+                <option value="1">Sí (BEN / DARC-null)</option>
               </select>
-              <div class="helper">2) Selecciona BEN si corresponde.</div>
             </div>
           </div>
 
           <div class="row" style="margin-top:16px;">
             <div>
-              <label>Dosis Actual</label>
+              <label for="f_dose">Dosis actual</label>
               <div class="input-wrapper">
-                <input type="number" id="f_dose" placeholder="p.ej., 300" step="12.5" />
+                <input type="number" id="f_dose" inputmode="decimal" placeholder="p.ej., 300" step="12.5" />
                 <span class="unit-suffix">mg/día</span>
               </div>
-              <div class="helper">Dosis total diaria (mg).</div>
-            </div>
-            <div>
-              <label>¿Interacciones (CYP1A2)?</label>
-              <div class="checkbox-group" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
-                <div class="checkbox-row">
-                  <input type="checkbox" id="f_habit_smoke" />
-                  <label for="f_habit_smoke" class="small" style="cursor:pointer; margin:0;">Fumador activo</label>
-                </div>
-                <div class="checkbox-row">
-                  <input type="checkbox" id="f_habit_quit" />
-                  <label for="f_habit_quit" class="small" style="cursor:pointer; margin:0;">Dejó de fumar (últimos 14 días)</label>
-                </div>
-              </div>
-            </div>
-            <div>
-              <label>Otros Factores</label>
-              <div class="checkbox-group" style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
-                <div class="checkbox-row">
-                  <input type="checkbox" id="f_habit_fluvox" />
-                  <label for="f_habit_fluvox" class="small" style="cursor:pointer; margin:0;">+ Fluvoxamina</label>
-                </div>
-                <div class="checkbox-row">
-                  <select id="f_habit_caffeine" style="padding:6px 28px 6px 8px; font-size:11px;">
-                    <option value="0">Cafeína: Normal/Baja</option>
-                    <option value="4">Cafeína: >3 tazas/día</option>
-                  </select>
-                </div>
-              </div>
             </div>
           </div>
 
-          <div class="divider"></div>
+          <details class="inline-help" id="habitsDetails">
+            <summary>Hábitos e interacciones (CYP1A2) <span class="count" id="habitsCount"></span></summary>
+            <div class="check-grid">
+              <div class="checkbox-row"><input type="checkbox" id="f_habit_smoke" /><label for="f_habit_smoke" class="small">Fumador activo</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="f_habit_quit" /><label for="f_habit_quit" class="small">Dejó de fumar (últimos 14 días)</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="f_habit_fluvox" /><label for="f_habit_fluvox" class="small">Toma fluvoxamina</label></div>
+              <div>
+                <label for="f_habit_caffeine" class="sr-only">Consumo de cafeína</label>
+                <select id="f_habit_caffeine">
+                  <option value="0">Cafeína: normal o baja</option>
+                  <option value="4">Cafeína: más de 3 tazas al día</option>
+                </select>
+              </div>
+            </div>
+          </details>
 
-          <h2>Laboratorios (en x10³/µL)</h2>
-          <div class="support-box support-box--accent">
-            <strong>⚠️ Verificación de Unidades:</strong> Esta app usa <strong>x10³/µL</strong> (k/µL).
-            <p class="small" style="margin-top:4px; opacity:0.8;">
-              Si el laboratorio reporta en <strong>células/µL</strong> (p.ej., 2500), <strong>divide entre 1000</strong>
-              (p.ej., 2.5) antes de capturar.
-            </p>
-          </div>
-          <p class="note">3) Captura primero ANC y leucocitos; luego plaquetas y eosinófilos.</p>
+          <h3 class="step-title" id="step2"><span class="step-n">2</span> Laboratorios <small>biometría hemática, x10³/µL</small></h3>
+          <p class="helper units-line">Valores en x10³/µL. Si tu laboratorio reporta células/µL, la app te ofrece convertirlos.</p>
           <div class="row">
             <div>
-              <label style="display:flex; justify-content:space-between; align-items:center;">
-                ANC / Neutrófilos <span id="badge_anc" class="feedback-badge"></span>
-                <span class="info-icon" style="cursor:help; font-size:14px;"
-                  title="Verifica la unidad del laboratorio (x10³/µL vs células/µL). Si el dato está en células/µL, divide entre 1000.">ℹ️</span>
+              <label for="f_anc" style="display:flex; justify-content:space-between; align-items:center;">
+                Neutrófilos absolutos (ANC) <span id="badge_anc" class="feedback-badge"></span>
               </label>
               <div class="input-wrapper">
-                <input type="number" step="0.01" id="f_anc" placeholder="p.ej., 2.3" />
+                <input type="number" step="0.01" id="f_anc" inputmode="decimal" placeholder="p.ej., 2.3" />
                 <span class="unit-suffix">x10³/µL</span>
               </div>
-              <div class="helper">Ficha: x10³/µL (k/µL).</div>
+              <div class="unit-hint hidden" id="uh_f_anc" role="status"></div>
             </div>
             <div>
-              <label style="display:flex; justify-content:space-between; align-items:center;">
+              <label for="f_wbc" style="display:flex; justify-content:space-between; align-items:center;">
                 Leucocitos <span id="badge_wbc" class="feedback-badge"></span>
                 <span class="info-icon" style="cursor:help; font-size:14px;"
                   title="Verifica la unidad: si el valor es >100, probablemente falte dividir entre 1000.">ℹ️</span>
               </label>
               <div class="input-wrapper">
-                <input type="number" step="0.01" id="f_wbc" placeholder="p.ej., 6.5" />
+                <input type="number" step="0.01" id="f_wbc" inputmode="decimal" placeholder="p.ej., 6.5" />
                 <span class="unit-suffix">x10³/µL</span>
               </div>
+              <div class="unit-hint hidden" id="uh_f_wbc" role="status"></div>
             </div>
             <div>
-              <label>Plaquetas <span id="badge_plt" class="feedback-badge"></span></label>
+              <label for="f_plt">Plaquetas <span id="badge_plt" class="feedback-badge"></span></label>
               <div class="input-wrapper">
-                <input type="number" step="1" id="f_plt" placeholder="p.ej., 250" />
+                <input type="number" step="1" id="f_plt" inputmode="decimal" placeholder="p.ej., 250" />
                 <span class="unit-suffix">x10³/µL</span>
               </div>
+              <div class="unit-hint hidden" id="uh_f_plt" role="status"></div>
             </div>
             <div>
-              <label>Eosinófilos <span id="badge_eos" class="feedback-badge"></span></label>
+              <label for="f_eos">Eosinófilos <span id="badge_eos" class="feedback-badge"></span></label>
               <div class="input-wrapper">
-                <input type="number" step="0.01" id="f_eos" placeholder="p.ej., 0.3" />
+                <input type="number" step="0.01" id="f_eos" inputmode="decimal" placeholder="p.ej., 0.3" />
                 <span class="unit-suffix">x10³/µL</span>
               </div>
+              <div class="unit-hint hidden" id="uh_f_eos" role="status"></div>
             </div>
           </div>
 
-          <div class="divider"></div>
+          <details class="inline-help" id="ancCalc">
+            <summary>¿Tienes % de neutrófilos? Calcula el ANC</summary>
+            <div class="row">
+              <div>
+                <label for="f_neut_pct">% de neutrófilos (segmentados + bandas)</label>
+                <div class="input-wrapper">
+                  <input type="number" step="0.1" min="0" max="100" id="f_neut_pct" inputmode="decimal" placeholder="p.ej., 58" />
+                  <span class="unit-suffix">%</span>
+                </div>
+              </div>
+              <div class="anc-calc-out">
+                <div class="helper" id="ancCalcOut">Captura los leucocitos y el porcentaje.</div>
+                <button type="button" class="ghost" id="btnUseAnc" disabled>Usar como ANC</button>
+              </div>
+            </div>
+            <p class="helper">Fórmula de la ficha FDA: ANC = leucocitos totales × % de neutrófilos (segmentados + bandas). No se guarda el porcentaje.</p>
+          </details>
 
-          <h2>Triage / Riesgo Inmediato</h2>
+          <h3 class="step-title" id="step3"><span class="step-n">3</span> Síntomas y banderas rojas</h3>
           <div class="row">
             <div>
-              <label id="lbl_const">Estreñimiento (0–5)</label>
+              <label id="lbl_const">Estreñimiento (0 = nada, 5 = grave)</label>
               <div class="rating-group" data-input="f_const" role="radiogroup" aria-labelledby="lbl_const">
                 <button type="button" class="rating-opt" data-val="0" role="radio" aria-checked="true" aria-label="0 de 5">0</button>
                 <button type="button" class="rating-opt" data-val="1" role="radio" aria-checked="false" aria-label="1 de 5">1</button>
@@ -2017,14 +2375,14 @@
               <div class="helper">Red flag: días sin evacuar y dolor.</div>
             </div>
             <div>
-              <label>Fiebre</label>
+              <label for="f_fever">Fiebre</label>
               <select id="f_fever">
                 <option value="0">No</option>
-                <option value="1">Sí / >38°C</option>
+                <option value="1">Sí / ≥38.5 °C</option>
               </select>
             </div>
             <div>
-              <label>Días sin evacuar</label>
+              <label for="f_const_days">Días sin evacuar</label>
               <input type="number" min="0" max="14" step="1" id="f_const_days" placeholder="p.ej., 3" />
             </div>
             <div style="display:flex; align-items:flex-end; padding-bottom:12px">
@@ -2036,20 +2394,52 @@
           </div>
 
           <div class="support-box support-box--warn-cv">
-            <strong>Banderas Rojas (CV/RESP):</strong>
+            <strong>Banderas rojas cardio-respiratorias</strong>
             <div class="row" style="margin-top:8px">
               <div class="checkbox-row"><input type="checkbox" id="f_chest" /><label for="f_chest" class="small" style="cursor:pointer; margin:0;">Dolor torácico</label></div>
               <div class="checkbox-row"><input type="checkbox" id="f_dyspnea" /><label for="f_dyspnea" class="small" style="cursor:pointer; margin:0;">Disnea</label></div>
               <div class="checkbox-row"><input type="checkbox" id="f_tachy" /><label for="f_tachy" class="small" style="cursor:pointer; margin:0;">Taquicardia</label></div>
               <div class="checkbox-row"><input type="checkbox" id="f_unwell" /><label for="f_unwell" class="small" style="cursor:pointer; margin:0;">Mal estado</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="f_palp" /><label for="f_palp" class="small" style="cursor:pointer; margin:0;">Palpitaciones</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="f_flu" /><label for="f_flu" class="small" style="cursor:pointer; margin:0;">Síntomas gripales</label></div>
             </div>
           </div>
 
           <div class="divider"></div>
 
+          <div class="myo-hint hidden" id="myoHint" role="status">
+            <strong>Datos sugestivos de miocarditis.</strong> Considera solicitar PCR y troponina, sobre todo en las primeras 8 semanas (más frecuente el primer mes).
+          </div>
+          <details class="inline-help" id="myoDetails">
+            <summary>Estudios de miocarditis (opcional)</summary>
+            <p class="helper">Su uso varía entre protocolos: algunos piden hs-troponina y PCR cada semana en las primeras 4 semanas; otros, solo ante sospecha. Considera pedirlos si hay fiebre, dolor torácico, disnea o síntomas gripales. La taquicardia sola no activa el aviso.</p>
+            <div class="row">
+              <div>
+                <label for="f_crp">PCR</label>
+                <div class="input-wrapper">
+                  <input type="number" step="0.1" min="0" id="f_crp" inputmode="decimal" placeholder="p.ej., 5" />
+                  <span class="unit-suffix">mg/L</span>
+                </div>
+              </div>
+              <div>
+                <label for="f_trop">Troponina</label>
+                <input type="number" step="any" min="0" id="f_trop" inputmode="decimal" placeholder="valor del laboratorio" />
+              </div>
+              <div>
+                <label for="f_trop_unit">Unidad de troponina</label>
+                <select id="f_trop_unit">
+                  <option value="ng/L">ng/L</option>
+                  <option value="ng/mL">ng/mL</option>
+                  <option value="µg/L">µg/L</option>
+                </select>
+              </div>
+            </div>
+            <p class="helper">Usa la unidad de tu laboratorio. La app solo registra estos valores: interprétalos con los límites de tu laboratorio (el consenso insiste en los puntos de corte locales) y con tu juicio clínico.</p>
+          </details>
+
           <div class="collapsible" id="colEffects">
             <div class="collapsible-trigger" onclick="this.parentElement.classList.toggle('open')">
-              <span>Síntomas Secundarios (0–5)</span>
+              <span>Más síntomas secundarios (opcional)</span>
             </div>
             <div class="collapsible-content" style="padding: 0 16px;">
               <div class="row" style="margin-top:12px">
@@ -2115,63 +2505,56 @@
                   </div>
                   <input type="hidden" id="f_app" value="0">
                 </div>
-                <div><label>Otros</label><input type="text" id="f_other" placeholder="p.ej., cefalea" /></div>
+                <div><label for="f_other">Otros</label><input type="text" id="f_other" placeholder="p.ej., cefalea" /></div>
               </div>
             </div>
           </div>
 
-          <label>Notas clínicas (breves)</label>
+          <h3 class="step-title" id="step4"><span class="step-n">4</span> Notas y guardar</h3>
+          <label for="f_notes">Notas clínicas (breves)</label>
           <textarea id="f_notes" placeholder="Libre. Evita datos identificables." style="min-height:80px"></textarea>
 
           <div class="action-bar-bottom">
-            <button class="primary" id="btnSave" style="flex:2">
-              Guardar / Actualizar
-            </button>
-            <button class="ghost" id="btnCopyClip" title="Copiar Nota Clínica">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            </button>
-            <button class="ghost" id="btnGuide" title="Guía">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-            </button>
-            <button class="ghost" id="btnClear" title="Limpiar">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21Z"></path><path d="m22 21H7"></path><path d="m5 11 9 9"></path></svg>
-            </button>
-            <button class="danger" id="btnDelete" disabled title="Borrar">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-            </button>
+            <button class="primary" id="btnSave">Guardar / actualizar</button>
+            <div class="action-secondary">
+              <button class="ghost" id="btnCopyClip" title="Copiar nota clínica">Copiar nota</button>
+              <button class="ghost" id="btnGuide" title="Guía rápida">Guía</button>
+              <button class="ghost" id="btnClear" title="Limpiar formulario">Limpiar</button>
+            </div>
+            <button class="danger action-danger" id="btnDelete" disabled title="Borrar la entrada seleccionada">Borrar entrada seleccionada</button>
           </div>
         </div>
 
-        <div class="card">
-          <h2>Entradas</h2>
-          <div class="row">
-            <button class="ghost" id="btnNew">Nueva</button>
-          </div>
-          <div class="divider"></div>
+        <div class="card" id="cardList">
+          <h2>Historial y alertas</h2>
+          <button class="ghost" id="btnNew" style="margin-bottom:16px">＋ Nueva entrada</button>
+
+          <div id="alerts"></div>
+          <p class="helper alerts-note">Las alertas son apoyo a la decisión, no un diagnóstico ni una indicación. Tu juicio clínico y tu protocolo institucional prevalecen.</p>
 
           <div class="kpi">
-            <div class="box">
-              <div class="lbl">📅 Última fecha</div>
-              <div class="val" id="k_last">—</div>
-            </div>
-            <div class="box">
-              <div class="lbl">🔬 ANC (k/µL)</div>
+            <div class="box" id="box_anc">
+              <div class="lbl">ANC <span class="u">(x10³/µL)</span></div>
               <div class="val" id="k_anc">—</div>
+              <div class="kpi-state" id="k_anc_state"></div>
             </div>
-            <div class="box">
-              <div class="lbl">🩸 PLT (k/µL)</div>
+            <div class="box" id="box_plt">
+              <div class="lbl">Plaquetas <span class="u">(x10³/µL)</span></div>
               <div class="val" id="k_plt">—</div>
+              <div class="kpi-state" id="k_plt_state"></div>
             </div>
             <div class="box">
-              <div class="lbl">🗓️ Próximo Lab</div>
-              <div class="val" id="k_next"><small style="font-size:10px">Configura inicio</small></div>
+              <div class="lbl">Próximo laboratorio</div>
+              <div class="val" id="k_next"><small style="font-size:12px">Configura el inicio en Ajustes</small></div>
+              <div class="kpi-note" id="k_next_note"></div>
+            </div>
+            <div class="box">
+              <div class="lbl">Último control</div>
+              <div class="val" id="k_last">—</div>
             </div>
           </div>
 
-          <div class="divider"></div>
-          <div id="alerts"></div>
-
-          <div class="divider"></div>
+          <h2 class="sub-title" style="margin-top:24px">Entradas guardadas</h2>
           <div class="list" id="entryList" aria-label="Listado de entradas"></div>
         </div>
       </div>
@@ -2179,91 +2562,145 @@
 
     <!-- Gráficas -->
     <section id="tab-graficas" class="hidden">
-      <div class="card">
-        <h2>Tendencias (x10³/µL)</h2>
-        <p class="note">Gráfica simple (sin librerías externas). Si no hay datos suficientes, no se dibuja.</p>
-        <canvas id="chart"></canvas>
-        <div class="divider"></div>
-        <div class="row">
-          <div>
-            <label>Serie</label>
-            <select id="chartSeries">
-              <option value="anc_k">ANC</option>
-              <option value="wbc_k">Leucocitos</option>
-              <option value="plt_k">Plaquetas</option>
-              <option value="eos_k">Eosinófilos</option>
-            </select>
-          </div>
-          <div>
-            <label>Ventana</label>
-            <select id="chartWindow">
-              <option value="all">Todo</option>
-              <option value="8">Últimas 8</option>
-              <option value="16">Últimas 16</option>
-            </select>
-          </div>
+      <div class="card chart-card">
+        <h2>Tendencia</h2>
+        <div class="seg seg-wrap" id="serieSeg" role="radiogroup" aria-label="Parámetro a graficar">
+          <button type="button" class="seg-btn active" data-serie="anc_k" role="radio" aria-checked="true">ANC</button>
+          <button type="button" class="seg-btn" data-serie="plt_k" role="radio" aria-checked="false">Plaquetas</button>
+          <button type="button" class="seg-btn" data-serie="eos_k" role="radio" aria-checked="false">Eosinófilos</button>
+          <button type="button" class="seg-btn" data-serie="wbc_k" role="radio" aria-checked="false">Leucocitos</button>
         </div>
+        <select id="chartSeries" class="visually-hidden" tabindex="-1" aria-hidden="true">
+          <option value="anc_k">ANC</option>
+          <option value="wbc_k">Leucocitos</option>
+          <option value="plt_k">Plaquetas</option>
+          <option value="eos_k">Eosinófilos</option>
+        </select>
+        <div class="chart-summary" id="chartSummary" aria-live="polite"></div>
+        <canvas id="chart" role="img" aria-label="Gráfica de tendencia"></canvas>
+        <div class="chart-empty hidden" id="chartEmpty">
+          <strong>Aún no hay suficientes datos</strong>
+          <p class="note">Se necesitan al menos 2 controles con este parámetro para dibujar la tendencia.</p>
+          <button class="primary" id="btnChartGoRegistro" type="button">Ir a Registro</button>
+        </div>
+        <div class="chart-legend" id="chartLegend"></div>
+        <div class="chart-controls">
+          <label for="chartWindow">Mostrar</label>
+          <select id="chartWindow">
+            <option value="all">Todos los controles</option>
+            <option value="8">Últimos 8</option>
+            <option value="16">Últimos 16</option>
+          </select>
+        </div>
+        <details class="inline-help">
+          <summary>Ver los datos en tabla</summary>
+          <table class="chart-table"><thead><tr><th>Fecha</th><th>Valor <span class="u">(x10³/µL)</span></th></tr></thead><tbody id="chartTable"></tbody></table>
+        </details>
       </div>
     </section>
 
-
-
     <!-- Ajustes -->
     <section id="tab-ajustes" class="hidden">
-      <div class="grid">
-        <div class="card">
-          <h2>Paciente / configuración</h2>
+      <div class="support-box hidden" id="firstRunHint" role="status">
+        <strong>Bienvenido. Empieza aquí.</strong> Escribe una etiqueta para el paciente (sin nombre real) y la fecha de inicio de clozapina; luego pulsa «Guardar ajustes». Después podrás capturar la primera entrada en Registro.
+      </div>
+      <p class="note settings-intro">Toca una sección para abrirla. Lo más usado está primero; lo delicado, al final.</p>
+      <div class="acc-list">
+
+        <details class="acc" open>
+          <summary><span class="acc-t">Paciente<small>Etiqueta, inicio de clozapina y BEN</small></span></summary>
+          <div class="acc-body">
+            <div class="row">
+              <div>
+                <label for="s_label">Etiqueta (apodo)</label>
+                <input id="s_label" placeholder="p.ej., Paciente A" autocomplete="off" />
+                <div class="helper">No uses nombre real.</div>
+              </div>
+              <div>
+                <label for="s_start">Inicio de clozapina</label>
+                <input type="date" id="s_start" />
+                <div class="helper">Define el calendario de laboratorios.</div>
+              </div>
+              <div>
+                <label for="s_ben">BEN por defecto</label>
+                <select id="s_ben">
+                  <option value="0">No / General</option>
+                  <option value="1">Sí</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="acc">
+          <summary><span class="acc-t">Umbrales de alerta<small>Cambia solo si tu protocolo lo exige</small></span></summary>
+          <div class="acc-body">
+            <div class="support-box support-box--warn-cv">
+              <strong>Atención:</strong> estos valores disparan las alertas clínicas. Los predeterminados siguen ficha técnica y consenso Delphi. Unidades: x10³/µL.
+            </div>
+            <h2 class="sub-title">Neutrófilos (ANC)</h2>
+          <div class="row">
+            <div><label for="t_anc_norm">ANC normal (general) ≥</label><input type="number" step="0.01" id="t_anc_norm" /></div>
+            <div><label for="t_anc_norm_ben">ANC normal (BEN) ≥</label><input type="number" step="0.01" id="t_anc_norm_ben" /></div>
+            <div><label for="t_anc_int">ANC interrumpir (general) &lt;</label><input type="number" step="0.01" id="t_anc_int" /></div>
+            <div><label for="t_anc_sev">ANC grave (def. &lt;)</label><input type="number" step="0.01" id="t_anc_sev" /></div>
+            <div><label for="t_anc_int_ben">ANC interrumpir (BEN) &lt;</label><input type="number" step="0.01" id="t_anc_int_ben" /></div>
+          </div>
+          <h2 class="sub-title">Calendario de ANC</h2>
           <div class="row">
             <div>
-              <label>Etiqueta (apodo)</label>
-              <input id="s_label" placeholder="p.ej., Paciente A" />
-            </div>
-            <div>
-              <label>Fecha de inicio de clozapina</label>
-              <input type="date" id="s_start" />
-            </div>
-            <div>
-              <label>BEN por defecto</label>
-              <select id="s_ben">
-                <option value="0">No / General</option>
-                <option value="1">Sí</option>
+              <label for="s_schedule">Esquema de monitoreo</label>
+              <select id="s_schedule">
+                <option value="fda">Ficha FDA: semanal 6 meses, quincenal hasta el año, mensual</option>
+                <option value="ema">EMA 2025: semanal 18 sem, mensual hasta el año, c/12 sem y anual si no hubo neutropenia</option>
+                <option value="delphi">Delphi 2025: semanal 18 sem, c/4 sem hasta 2 años, luego sin ANC de rutina</option>
               </select>
+              <div class="helper">Solo cambia la fecha sugerida del próximo laboratorio. Sin una norma mexicana específica, elige el esquema que adopte tu institución.</div>
             </div>
           </div>
-          <div class="divider"></div>
-          <h2>Umbrales (editables; unidades x10³/µL)</h2>
-          <p class="note">
-            Valores por defecto basados en ficha técnica/guías: ANC general (1.5/1.0/0.5), BEN (1.0/0.5),
-            eosinófilos &gt;3.0 para suspensión, plaquetas &lt;50 para suspensión.
-          </p>
+          <h2 class="sub-title">Otras células y calendario</h2>
           <div class="row">
-            <div><label>ANC normal (general) ≥</label><input type="number" step="0.01" id="t_anc_norm" /></div>
-            <div><label>ANC normal (BEN) ≥</label><input type="number" step="0.01" id="t_anc_norm_ben" /></div>
-            <div><label>ANC interrumpir (general) &lt;</label><input type="number" step="0.01" id="t_anc_int" /></div>
-            <div><label>ANC grave (def. &lt;)</label><input type="number" step="0.01" id="t_anc_sev" /></div>
-            <div><label>ANC interrumpir (BEN) &lt;</label><input type="number" step="0.01" id="t_anc_int_ben" /></div>
-          </div>
-          <div class="row">
-            <div><label>Eosinófilos suspender &gt;</label><input type="number" step="0.01" id="t_eos_stop" /></div>
-            <div><label>Plaquetas suspender &lt;</label><input type="number" step="1" id="t_plt_stop" /></div>
-            <div><label>Meses para pasar a c/2 sem</label><input type="number" step="1" id="t_mo_2w" /></div>
-            <div><label>Meses para pasar a mensual</label><input type="number" step="1" id="t_mo_4w" /></div>
+            <div><label for="t_eos_watch">Eosinófilos: vigilar &gt;</label><input type="number" step="0.01" id="t_eos_watch" /><div class="helper">Ficha FDA: eosinofilia &gt; 0.7.</div></div>
+            <div><label for="t_eos_stop">Eosinófilos: alerta alta &gt;</label><input type="number" step="0.01" id="t_eos_stop" /><div class="helper">Monografía canadiense (3.0); no figura en la ficha FDA.</div></div>
+            <div><label for="t_plt_stop">Plaquetas: alerta alta &lt;</label><input type="number" step="1" id="t_plt_stop" /><div class="helper">Monografía canadiense (50); no figura en la ficha FDA.</div></div>
+            <div><label for="t_mo_2w">Meses para pasar a c/2 sem (esquema FDA)</label><input type="number" step="1" id="t_mo_2w" /></div>
+            <div><label for="t_mo_4w">Meses para pasar a mensual (esquema FDA)</label><input type="number" step="1" id="t_mo_4w" /></div>
           </div>
 
-          <div style="margin-top: 16px; background: var(--input-bg, rgba(0,0,0,0.04)); padding: 14px; border-radius: 10px; border: 1px solid var(--line);">
-            <div class="checkbox-row">
-              <input type="checkbox" id="s_low_power">
-              <label for="s_low_power" style="margin: 0; font-weight: 500; cursor: pointer;">Modo Ahorro (Desactivar fondo animado)</label>
+          </div>
+        </details>
+
+        <div class="save-row">
+          <button class="primary" id="btnSaveSettings">Guardar ajustes</button>
+          <button class="ghost" id="btnResetSettings">Restaurar valores originales</button>
+          <p class="helper">Guarda Paciente y Umbrales. El tema claro u oscuro se cambia arriba.</p>
+        </div>
+
+        <details class="acc">
+          <summary><span class="acc-t">Respaldo de datos<small>Exportar, importar y borrar</small></span></summary>
+          <div class="acc-body">
+            <p class="note">Tus datos viven solo en este navegador. Exporta un respaldo con regularidad.</p>
+            <div class="row" style="margin-top:12px">
+              <button class="primary" id="btnExportJson">Exportar JSON</button>
+              <button class="ghost" id="btnExportCsv">Exportar CSV (labs)</button>
             </div>
-            <p class="helper" style="margin: 6px 0 0 24px;">Actívalo si sientes lentitud en la aplicación.</p>
+            <label for="importFile" style="margin-top:16px">Importar respaldo (.json)</label>
+            <input type="file" id="importFile" accept="application/json" style="padding:8px;" />
+            <div class="danger-zone">
+              <strong>Zona de riesgo</strong>
+              <div class="row" style="margin-top:10px">
+                <button class="ghost" id="btnLoadDemoManual">Cargar datos de demo</button>
+                <button class="danger" id="btnWipe">Borrar todo (local)</button>
+              </div>
+              <p class="helper">Borrar todo no se puede deshacer. Exporta antes.</p>
+            </div>
           </div>
-          <div class="divider"></div>
-          <div class="row">
-            <button class="primary" id="btnSaveSettings">Guardar ajustes</button>
-            <button class="ghost" id="btnResetSettings">Restaurar defaults</button>
-          </div>
-          <div class="divider"></div>
-          <div class="support-box">
+        </details>
+
+        <details class="acc">
+          <summary><span class="acc-t">Criterios clínicos de referencia<small>FDA vs. Delphi, REMS y tabaco</small></span></summary>
+          <div class="acc-body">
+            <div class="support-box">
             <strong>Comparativa de Criterios (ANC x10³/µL)</strong>
             <table style="margin-top:8px;">
               <thead>
@@ -2287,87 +2724,72 @@
               <tr>
                 <td>Frecuencia ANC</td>
                 <td>Según ficha técnica</td>
-                <td><strong>Hasta 2 años</strong></td>
+                <td><strong>Hasta 2 años</strong>; luego control de efectos adversos c/3 meses</td>
               </tr>
               </tbody>
             </table>
             <p class="note" style="margin-top:8px;">
-              🆕 <strong>Actualización FDA (2025):</strong> El programa REMS de clozapina fue eliminado (vigente desde el
+              <strong>Actualización FDA (2025):</strong> El programa REMS de clozapina fue eliminado (vigente desde el
               13 de junio de 2025). Ya no es obligatorio reportar el ANC para dispensar, pero el <strong>monitoreo de ANC
                 sigue recomendado</strong> según la información de prescripción.
             </p>
             <p class="note" style="margin-top:8px;">
-              ⚠️ <strong>Metabolismo y Tabaco:</strong> Los hidrocarburos del humo inducen la enzima CYP1A2. Iniciar o
+              <strong>Metabolismo y Tabaco:</strong> Los hidrocarburos del humo inducen la enzima CYP1A2. Iniciar o
               suspender el hábito tabáquico puede alterar drásticamente los niveles de clozapina, requiriendo ajuste de
               dosis.
             </p>
-          </div>
-        </div>
-
-        <div style="display:flex; flex-direction:column; gap:20px;">
-          <div class="card">
-            <h2>Exportar e Importar Datos</h2>
-            <p class="note">Descarga o sube un archivo <span class="mono">.json</span> para respaldo o migración.</p>
-            <div class="row" style="margin-top:12px">
-              <button class="primary" id="btnExportJson">Exportar JSON</button>
-              <button class="ghost" id="btnExportCsv">Exportar CSV (labs)</button>
-            </div>
-            <div class="divider"></div>
-            <label>Importar archivo de respaldo (.json)</label>
-            <input type="file" id="importFile" accept="application/json" style="padding:8px;" />
-            <div class="divider"></div>
-            <div class="row">
-              <button class="ghost" id="btnLoadDemoManual" style="flex:1;">Cargar Demo</button>
-              <button class="danger" id="btnWipe" style="flex:1;">Borrar todo (local)</button>
             </div>
           </div>
+        </details>
 
-          <div class="card">
-            <h2>Privacidad operacional</h2>
+        <details class="acc">
+          <summary><span class="acc-t">Privacidad<small>Qué se guarda y qué no capturar</small></span></summary>
+          <div class="acc-body">
             <ul class="note">
-              <li>No hay backend; todo se guarda localmente en este navegador.</li>
-              <li>Si borras datos del navegador, se perderá el registro.</li>
-              <li>Para respaldo, exporta JSON periódicamente.</li>
-              <li>No capturar: nombre, CURP, NSS, teléfono, dirección, etc.</li>
+              <li>No hay servidor: todo se guarda localmente en este navegador.</li>
+              <li>Si borras los datos del navegador, se pierde el registro.</li>
+              <li>No captures nombre, CURP, NSS, teléfono ni dirección.</li>
             </ul>
           </div>
+        </details>
 
-          <div class="card">
-            <h2>App / Actualizaciones</h2>
-          <p class="note">
-            Versión instalada: <strong id="appVersion">—</strong>
-          </p>
-          <p class="note">
-            La app funciona sin conexión. Las nuevas versiones se instalan y aplican de forma
-            automática; también puedes comprobarlo manualmente.
-          </p>
-          <div class="divider"></div>
-          <div class="upd-check-row">
-            <button class="primary" id="btnCheckUpdate" type="button">Buscar actualizaciones</button>
-            <span class="upd-status" id="updCheckStatus">
-              <span class="upd-status-dot" aria-hidden="true"></span> Listo
-            </span>
+        <details class="acc">
+          <summary><span class="acc-t">App y actualizaciones<small>Versión <span id="appVersion">—</span></small></span></summary>
+          <div class="acc-body">
+            <p class="note">Funciona sin conexión. Las nuevas versiones se aplican solas; también puedes comprobarlo aquí.</p>
+            <div style="margin-top:12px">
+              <button class="ghost" id="btnInstall" type="button" disabled>Instalar en este dispositivo</button>
+              <p class="helper">Se activa cuando el navegador permite instalarla (Chrome, Edge, Android). En iPhone: Compartir → Añadir a pantalla de inicio.</p>
+            </div>
+            <div class="upd-check-row" style="margin-top:12px">
+              <button class="primary" id="btnCheckUpdate" type="button">Buscar actualizaciones</button>
+              <span class="upd-status" id="updCheckStatus">
+                <span class="upd-status-dot" aria-hidden="true"></span> Listo
+              </span>
+            </div>
           </div>
-        </div>
+        </details>
       </div>
-    </div>
-  </section>
+    </section>
 
     <!-- Recursos -->
     <section id="tab-recursos" class="hidden">
-      <div class="grid">
-        <div class="card">
-          <h2>Documentos y Recursos</h2>
-          <p class="note" style="margin-bottom: 20px;">
-            Guías y formatos oficiales para tu práctica clínica. Usa <strong>Ver</strong> para abrir el PDF o
-            <strong>Descargar</strong> para guardarlo en tu dispositivo (también funciona sin conexión una vez abierto).
-          </p>
+      <div class="acc-list">
+        <div class="ref-search" id="refSearchCard">
+          <label for="refSearch">Buscar en esta sección</label>
+          <input type="search" id="refSearch" placeholder="p.ej., delphi, REMS, consentimiento" autocomplete="off" />
+          <p class="helper" id="refCount" aria-live="polite"></p>
+        </div>
 
-          <div class="list">
+        <details class="acc ref-block" open>
+          <summary><span class="acc-t">Documentos<small>PDF para la consulta (funcionan sin conexión)</small></span></summary>
+          <div class="acc-body">
+            <p class="note" style="margin-bottom:14px">«Ver» abre el PDF en otra pestaña; «Descargar» lo guarda en el dispositivo.</p>
+            <div class="list">
             <div class="item doc-item">
               <div class="meta">
                 <div class="meta-main">
-                  <strong><span class="doc-icon">📊</span> Infografía de Seguridad</strong>
+                  <strong>Infografía de Seguridad</strong>
                   <div class="note">Resumen visual de umbrales de ANC y banderas rojas de la clozapina.</div>
                   <div class="date">PDF • 425 KB</div>
                 </div>
@@ -2383,7 +2805,7 @@
             <div class="item doc-item">
               <div class="meta">
                 <div class="meta-main">
-                  <strong><span class="doc-icon">📝</span> Consentimiento Informado 2026</strong>
+                  <strong>Consentimiento Informado 2026</strong>
                   <div class="note">Formato para la firma del paciente antes de iniciar el tratamiento.</div>
                   <div class="date">PDF • 1.0 MB</div>
                 </div>
@@ -2399,7 +2821,7 @@
             <div class="item doc-item">
               <div class="meta">
                 <div class="meta-main">
-                  <strong><span class="doc-icon">📋</span> Escala de Efectos Secundarios</strong>
+                  <strong>Escala de Efectos Secundarios</strong>
                   <div class="note">Instrumento para evaluar y registrar los efectos adversos del paciente.</div>
                   <div class="date">PDF • 546 KB</div>
                 </div>
@@ -2411,48 +2833,96 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div style="display:flex; flex-direction:column; gap:20px;">
-          <div class="card">
-            <h2>Buscador Clínico / Info</h2>
-            <div style="margin-bottom: 20px;" id="refSearchCard">
-              <input type="text" id="refSearch" placeholder="Busca síntomas o guías (ej. 'fiebre', 'delphi')"
-                style="width:100%" />
             </div>
-            <div id="refResults">
-              <div class="card">
-                <h2>Funcionalidad incluida</h2>
-                <ul class="note">
-                  <li>Registro local de laboratorios (ANC, leucocitos, plaquetas, eosinófilos) y síntomas.</li>
-                  <li>Alertas informativas según umbrales configurables y condición BEN.</li>
-                  <li>Gráficas simples sin librerías externas, con selección de serie y ventana.</li>
-                  <li>Importación y exportación de datos (JSON y CSV).</li>
-                  <li>Modo offline con Service Worker y almacenamiento local.</li>
-                </ul>
-              </div>
-              <div class="card">
-                <h2>Avisos y autoría</h2>
-                <ul class="note">
-                  <li>Esta PWA es una herramienta de registro y visualización. No es un dispositivo médico ni sustituye el
-                    juicio clínico.</li>
-                  <li>El usuario es responsable de validar datos, interpretar resultados y seguir protocolos institucionales
-                    vigentes.</li>
-                  <li>En caso de urgencias o signos de alarma, priorizar la evaluación clínica y los servicios de
-                    emergencia.
-                  </li>
-                  <li>Evita capturar datos identificables; la información se guarda solo en este navegador.</li>
-                </ul>
-                <p class="note"><strong>Autoría:</strong> Cesar Celada / Mauricio Rosel.</p>
-              </div>
-              <div class="card refs">
-                <h2>Referencias (para los umbrales por defecto)</h2>
-                <p class="note">
-                  Estas referencias se incluyen para transparencia de los defaults. Los protocolos locales/institucionales
-                  pueden diferir.
-                </p>
-                <div class="divider"></div>
+          </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Monografía rápida: advertencias<small>Recuadro de la ficha FDA, resumido</small></span></summary>
+          <div class="acc-body monograph">
+            <ul>
+              <li><strong>Neutropenia grave</strong> (ANC &lt; 500/µL): puede causar infecciones graves y la muerte. ANC basal ≥ 1500/µL (≥ 1000/µL si BEN documentada) y monitoreo regular durante el tratamiento.</li>
+              <li><strong>Hipotensión ortostática, bradicardia y síncope</strong>: el riesgo es mayor al iniciar o reiniciar tras una interrupción, aun breve. Iniciar con 12.5 mg y titular despacio.</li>
+              <li><strong>Convulsiones</strong>: riesgo dependiente de la dosis; precaución con antecedentes o factores de riesgo.</li>
+              <li><strong>Miocarditis, pericarditis y miocardiopatía</strong>: pueden ser mortales. Ante sospecha, suspender y obtener evaluación cardíaca. Considerar si hay dolor torácico, taquicardia, palpitaciones, disnea, fiebre, síntomas gripales, hipotensión o cambios en el ECG.</li>
+              <li><strong>Mortalidad aumentada</strong> en ancianos con psicosis relacionada con demencia: no aprobada para ese uso.</li>
+            </ul>
+            <p class="helper">Fuente: ficha FDA de Clozaril, revisión 1/2025. Resumen en español; consulta la ficha para el texto íntegro.</p>
+          </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Monografía rápida: dosificación<small>Inicio, titulación y reinicio</small></span></summary>
+          <div class="acc-body monograph">
+            <ul>
+              <li><strong>Inicio</strong>: 12.5 mg una o dos veces al día.</li>
+              <li><strong>Titulación</strong>: subir 25 a 50 mg al día si se tolera, hasta 300–450 mg al día (dosis divididas) al final de 2 semanas; después, aumentos de hasta 100 mg una o dos veces por semana.</li>
+              <li><strong>Máximo</strong>: 900 mg al día.</li>
+              <li><strong>Reinicio tras interrupción</strong>: si se omitió 1 día, reanudar con 40–50 % de la dosis establecida; si fueron 2 días, alrededor del 25 %; si fue más tiempo, empezar de nuevo con 12.5 mg una o dos veces al día.</li>
+              <li><strong>Suspensión planeada</strong> sin neutropenia: reducir gradualmente en 1 a 2 semanas y vigilar síntomas de rebote colinérgico (sudoración, cefalea, náusea, vómito, diarrea).</li>
+            </ul>
+            <p class="helper">Fuente: ficha FDA de Clozaril, rev. 1/2025, secciones 2.2 a 2.5. El consenso Delphi de miocarditis (2026) propone titulaciones más lentas para reducir el riesgo; decide con tu protocolo.</p>
+          </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Monografía rápida: monitoreo de ANC<small>Tablas 2 y 3 de la ficha FDA</small></span></summary>
+          <div class="acc-body monograph">
+            <table>
+              <thead><tr><th>ANC <span class="u">(/µL)</span></th><th>Conducta según la ficha</th><th>Monitoreo</th></tr></thead>
+              <tbody>
+                <tr><td>≥ 1500 (BEN ≥ 1000)</td><td>Continuar</td><td>Semanal hasta 6 meses; cada 2 semanas de 6 a 12 meses; mensual después</td></tr>
+                <tr><td>1000–1499 (leve)</td><td>Continuar</td><td>3 veces por semana hasta ≥ 1500</td></tr>
+                <tr><td>500–999 (moderada)</td><td>Hematología; interrumpir si se sospecha causa por clozapina; reanudar con ≥ 1000</td><td>Diario hasta ≥ 1000; luego 3 veces por semana hasta ≥ 1500</td></tr>
+                <tr><td>&lt; 500 (grave)</td><td>Hematología; interrumpir; no reexponer salvo que el beneficio supere el riesgo</td><td>Diario hasta ≥ 1000; luego 3 veces por semana</td></tr>
+                <tr><td>BEN 500–999</td><td>Hematología; continuar</td><td>3 veces por semana hasta ≥ 1000 o su basal</td></tr>
+                <tr><td>BEN &lt; 500</td><td>Hematología; interrumpir</td><td>Diario hasta ≥ 500</td></tr>
+              </tbody>
+            </table>
+            <ul>
+              <li>Confirmar con un segundo ANC en 24 horas todo primer resultado &lt; 1500/µL.</li>
+              <li><strong>Fiebre</strong> ≥ 38.5 °C: la ficha indica interrumpir como precaución y solicitar un ANC.</li>
+              <li>Estos umbrales son los de la ficha FDA. El consenso Delphi 2025 y la EMA 2025 proponen suspender con ANC &lt; 1.0 (0.5 en BEN/DARC-null) y otros calendarios; el selector de Ajustes cambia solo la fecha sugerida.</li>
+            </ul>
+            <p class="helper">Fuente: ficha FDA de Clozaril, rev. 1/2025, sección 5.1.</p>
+          </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Monografía rápida: interacciones<small>Ajuste de dosis, Tabla 1 de la ficha FDA</small></span></summary>
+          <div class="acc-body monograph">
+            <table>
+              <thead><tr><th>Fármaco o factor</th><th>Al iniciar o agregar</th><th>Al suspender</th></tr></thead>
+              <tbody>
+                <tr><td>Inhibidores fuertes de CYP1A2 (fluvoxamina, ciprofloxacino, enoxacino)</td><td>Usar un tercio de la dosis</td><td>Aumentar según respuesta clínica</td></tr>
+                <tr><td>Inhibidores moderados o débiles de CYP1A2 (anticonceptivos orales, cafeína); inhibidores de CYP2D6 o CYP3A4</td><td>Vigilar reacciones adversas; considerar reducir</td><td>Vigilar falta de efecto; considerar aumentar</td></tr>
+                <tr><td>Inductores fuertes de CYP3A4 (fenitoína, carbamazepina, hierba de San Juan, rifampicina)</td><td>No se recomienda; si es necesario, puede requerir más dosis</td><td>Reducir según respuesta clínica</td></tr>
+                <tr><td>Inductores moderados o débiles de CYP1A2 o CYP3A4 (tabaquismo)</td><td>Vigilar falta de efecto; considerar aumentar</td><td>Vigilar reacciones adversas; considerar reducir (p. ej., al dejar de fumar)</td></tr>
+              </tbody>
+            </table>
+            <p class="helper">Fuente: ficha FDA de Clozaril, rev. 1/2025, sección 2.6. La app avisa de tabaquismo, fluvoxamina y cafeína al capturar la entrada.</p>
+          </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Monografía rápida: reacciones frecuentes<small>≥ 5 % en los ensayos clínicos</small></span></summary>
+          <div class="acc-body monograph">
+            <ul>
+              <li><strong>Sistema nervioso</strong>: sedación, mareo o vértigo, cefalea, temblor.</li>
+              <li><strong>Cardiovasculares</strong>: taquicardia, hipotensión, síncope.</li>
+              <li><strong>Autonómicas</strong>: hipersalivación, sudoración, boca seca, alteraciones visuales.</li>
+              <li><strong>Gastrointestinales</strong>: estreñimiento, náusea. El estreñimiento puede avanzar a hipomotilidad grave: pregunta por él en cada control.</li>
+              <li><strong>Otras</strong>: fiebre.</li>
+            </ul>
+            <p class="helper">Fuente: ficha FDA de Clozaril, rev. 1/2025, resumen de reacciones adversas.</p>
+          </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Referencias de los umbrales<small>FDA, Delphi 2025 y 2026, ficha técnica</small></span></summary>
+          <div class="acc-body refs">
+            <p class="note">Respaldan los valores predeterminados. Son referencias internacionales: no se identificó una norma mexicana específica sobre el monitoreo hematológico de clozapina, así que prevalece el protocolo de tu institución.</p>
                 <ol class="note">
                   <li><strong>FDA – Eliminación del REMS de clozapina (2025)</strong>. Desde el 24 de febrero de 2025 la FDA
                     dejó de exigir la participación en el programa REMS, y lo retiró formalmente el 13 de junio de 2025. Las
@@ -2460,23 +2930,58 @@
                       ANC sigue recomendado</strong> según la información de prescripción, y las advertencias sobre
                     neutropenia grave se mantienen (Boxed Warning).</li>
                   <li><strong>Siskind et al., 2025 (Lancet Psychiatry / Global Delphi Consensus)</strong>. Guía clave que
-                    actualiza los umbrales de cese a ANC &lt; 1.0 (General) y &lt; 0.5 (DARC-null). Recomienda cese de
-                    monitoreo
-                    de ANC tras 2 años de estabilidad.</li>
+                    actualiza los umbrales de cese a ANC &lt; 1.0 (General) y &lt; 0.5 (DARC-null). Recomienda dejar el
+                    monitoreo rutinario de ANC tras 2 años y, después, revisar efectos adversos cada 3 meses
+                    (metabólicos, estreñimiento, taquicardia, sialorrea, sedación, entre otros).</li>
                   <li><strong>CLOZARIL (clozapina) – Prescribing Information (FDA)</strong>. Baseline ANC ≥1500/µL (general)
                     y
                     ≥1000/µL (BEN); ANC severa definida como &lt;500/µL.</li>
-                  <li><strong>Kar et al., 2016 / SmPC (Europa, 2024)</strong>. Alertan sobre eosinofilia &gt;3000/mm³ y
-                    plaquetas &lt;50,000/mm³ (3.0 y 50 en x10³/µL).</li>
+                  <li><strong>Eosinófilos y plaquetas (criterios locales)</strong>. La ficha FDA (revisión 1/2025, sección 5.9)
+                    define eosinofilia como &gt;700/µL y guía el manejo según el compromiso de órganos, sin un límite numérico de
+                    suspensión. Los valores 3.0 (eosinófilos, con reinicio solo bajo 1.0) y 50 (plaquetas) provienen de la
+                    <strong>monografía canadiense de Gen-Clozapine (Viatris, 2022)</strong>, que recomienda suspender por encima de 3.0 y por debajo
+                    de 50 respectivamente. Se mantienen como umbrales <em>configurables</em>; no figuran en la ficha FDA. Una síntesis de
+                    literatura (Consensus, 2026) coincide en que la eosinofilia o trombocitopenia aisladas, sin daño de órganos, suelen
+                    ser benignas y permiten continuar con vigilancia.</li>
+                  <li><strong>EMA / PRAC, comunicado DHPC sobre clozapina (julio de 2025)</strong>. Revisa el monitoreo hematológico:
+                    se elimina el requisito de leucocitos (basta el ANC); suspender con ANC &lt;1.0 (&lt;0.5 en BEN); ANC semanal
+                    18 semanas, mensual hasta el año y, sin neutropenia previa, cada 12 semanas y luego anual tras 2 años.</li>
+                  <li><strong>Wagner et al., 2026 (Br J Psychiatry 228:348-356, Delphi de miocarditis)</strong>. Respalda hs-troponina y
+                    PCR como cribado en las primeras 4 a 8 semanas; considera la taquicardia sola de bajo valor diagnóstico y la
+                    eosinofilia un marcador tardío. Las guías difieren en si el cribado es obligatorio o solo ante sospecha.</li>
                   <li><strong>Sultan et al., 2017</strong>. Describe el cambio en la guía FDA que elimina umbrales por
                     leucocitos totales (WBC) del algoritmo de monitoreo.</li>
                 </ol>
-                <p class="small">Esta PWA es una herramienta de registro/visualización. No constituye consejo médico ni un
-                  dispositivo médico.</p>
-              </div>
-            </div>
           </div>
-        </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Avisos y autoría<small>Alcance y responsabilidad de uso</small></span></summary>
+          <div class="acc-body">
+            <ul class="note">
+              <li>Herramienta de registro y visualización. No es un dispositivo médico ni sustituye el juicio clínico.</li>
+              <li>Tú validas los datos, interpretas los resultados y sigues los protocolos institucionales vigentes.</li>
+              <li>Ante urgencias o signos de alarma, prioriza la evaluación clínica y los servicios de emergencia.</li>
+              <li>Evita datos identificables; la información se guarda solo en este navegador.</li>
+            </ul>
+            <p class="note"><strong>Autoría:</strong> Cesar Celada / Mauricio Rosel.</p>
+          </div>
+        </details>
+
+        <details class="acc ref-block">
+          <summary><span class="acc-t">Qué incluye la app<small>Resumen de funciones</small></span></summary>
+          <div class="acc-body">
+            <ul class="note">
+              <li>Registro de laboratorios (ANC, leucocitos, plaquetas, eosinófilos) y síntomas.</li>
+              <li>Alertas con umbrales configurables y condición BEN.</li>
+              <li>Aviso y conversión de unidades (células/µL a x10³/µL) y cálculo del ANC con el % de neutrófilos.</li>
+              <li>Monografía rápida de clozapina: advertencias, dosificación, monitoreo, interacciones y reacciones frecuentes.</li>
+              <li>Gráficas de tendencia con el límite de suspensión.</li>
+              <li>Exportación e importación de datos (JSON y CSV).</li>
+              <li>Funciona sin conexión; los datos quedan en este dispositivo.</li>
+            </ul>
+          </div>
+        </details>
       </div>
     </section>
   </main>
@@ -2501,15 +3006,16 @@
     </div>
   </div>
 
-  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true"
+    aria-labelledby="modalTitle" aria-describedby="modalText">
     <div class="modal">
       <h3 id="modalTitle">Alerta</h3>
-      <p class="note" id="modalText"></p>
-      <ul class="note" id="modalSteps" style="margin-left:20px; margin-top:12px"></ul>
-      <div id="modalFormula" class="note"
-        style="margin-top:16px; padding:10px; background:rgba(0,0,0,0.03); border-radius:8px; display:none; font-family:var(--mono);">
+      <div class="modal-body">
+        <p class="note" id="modalText"></p>
+        <ul class="note" id="modalSteps"></ul>
+        <div id="modalFormula" class="note"></div>
       </div>
-      <div style="margin-top:24px; text-align:right;">
+      <div class="modal-actions">
         <button class="primary" id="btnModalClose">Entendido</button>
         <button class="primary hidden" id="btnModalAction">Confirmar</button>
       </div>
@@ -2554,60 +3060,23 @@
   <script type="module">
     import { analyzeANC, auditSideEffects, checkInteractions } from './engine.js';
 
-    // Defer Galaxy loading to ensure main UI is interactive first
-    let galaxyCleanup = null;
-
-    const loadGalaxy = async () => {
-      // Check Low Power Mode
-      const isLowPower = localStorage.getItem("clz_mini_pwa_low_power") === "true";
-      if (isLowPower) return;
-
-      try {
-        const { initGalaxy } = await import('./galaxy.js');
-        const container = document.body;
-        // visual fade-in
-        galaxyCleanup = initGalaxy(container, {
-          hueShift: 260,
-          starSpeed: 0.05,
-          density: 0.4,
-          transparent: true,
-          glowIntensity: 0.2,
-          speed: 0.5
-        });
-
-        // Find the canvas and animate opacity for smooth entry
-        const canvas = container.querySelector('canvas:last-child');
-        if (canvas) {
-          canvas.style.opacity = '0';
-          canvas.style.transition = 'opacity 1.5s ease';
-          requestAnimationFrame(() => canvas.style.opacity = '1');
-        }
-      } catch (e) {
-        console.warn("Galaxy BG failed to load", e);
-      }
-    };
-
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => {
-        setTimeout(loadGalaxy, 200); // Slight extra buffer
-      });
-    } else {
-      setTimeout(loadGalaxy, 1500); // Fallback
-    }
+    // Limpieza: se eliminó el fondo animado y su ajuste de ahorro
+    try { localStorage.removeItem("clz_mini_pwa_low_power"); } catch (e) { /* sin almacenamiento */ }
 
     (() => {
       const STORAGE_KEY = "clz_mini_pwa_v1";
       const THEME_KEY = "clz_mini_pwa_theme";
       const DEFAULTS = {
         version: "1.5.0",
-        patient: { label: "—", ben: false, start_date: "" },
+        patient: { label: "—", ben: false, start_date: "", schedule: "fda" },
         thresholds: {
-          // Criterios Default: Delphi Global Consensus (Siskind et al. 2022)
+          // Criterios Default: Delphi Global Consensus (Siskind et al., Lancet Psychiatry 2025)
           anc_norm: 1.5,        // general normal >= 1.5
           anc_norm_ben: 1.0,    // BEN normal >= 1.0
           anc_interrupt: 1.0,   // Delphi General: < 1.0
           anc_severe: 0.5,      // Delphi Severe: < 0.5
           anc_interrupt_ben: 0.5, // BEN: interrupt < 0.5
+          eos_watch: 0.7,       // ficha FDA 5.9: eosinofilia > 700/µL
           eos_stop: 3.0,
           plt_stop: 50,
           months_to_2w: 6,
@@ -2700,6 +3169,13 @@
         }
       };
 
+      // Con el modal abierto el resto de la página queda inerte (teclado, lector de pantalla) y sin scroll
+      const MODAL_BG = ".disclaimer-banner, .site-header, main, footer, #floatingNav";
+      const setModalBackground = (on) => {
+        document.querySelectorAll(MODAL_BG).forEach(el => { el.inert = on; });
+        document.body.style.overflow = on ? "hidden" : "";
+      };
+
       const modal = {
         open: ({ title, text, steps, type = "info", formula = null }) => {
           activeElementBeforeModal = document.activeElement;
@@ -2724,14 +3200,17 @@
 
           const fBox = $("modalFormula");
           if (formula) {
-            fBox.innerHTML = `<strong>Lógica/Fórmula:</strong><br><code style="font-size:11px">${formula}</code>`;
+            fBox.innerHTML = `<strong>Criterio aplicado:</strong><br><code style="font-size:11px">${formula}</code>`;
             fBox.style.display = "block";
           } else {
             fBox.style.display = "none";
           }
 
+          $("modalBackdrop").setAttribute("role", type === "critical" ? "alertdialog" : "dialog");
           $("modalBackdrop").style.display = "flex";
           $("modalBackdrop").setAttribute("aria-hidden", "false");
+          $("modalBackdrop").querySelector(".modal-body").scrollTop = 0;
+          setModalBackground(true);
           window.addEventListener("keydown", handleModalKeyDown);
           setTimeout(() => {
             const btn = $("btnModalClose");
@@ -2744,6 +3223,7 @@
           $("modalBackdrop").style.display = "none";
           $("modalBackdrop").setAttribute("aria-hidden", "true");
           $("modalBackdrop").classList.remove("hard-stop-bg");
+          setModalBackground(false);
           container.classList.remove("hard-stop");
           $("btnModalClose").style.display = "inline-flex";
           $("btnModalClose").textContent = "Entendido";
@@ -2804,7 +3284,7 @@
         data: null,
         selectedId: null,
         lastAlertKey: null,
-        swVersion: "1.5.0"
+        swVersion: "1.8.0"
       };
 
       const uid = () => "e_" + Math.random().toString(16).slice(2) + Date.now().toString(16);
@@ -2886,7 +3366,7 @@
         if (!e) return null;
         const s = {
           id: e.id || uid(),
-          date: e.date || new Date().toISOString().slice(0, 10),
+          date: /^\d{4}-\d{2}-\d{2}$/.test(String(e.date || "")) ? String(e.date) : new Date().toISOString().slice(0, 10),
           week: parseNum(e.week),
           ben: !!(e.ben ?? state.data?.patient?.ben),
           labs: {
@@ -2894,6 +3374,9 @@
             wbc_k: clamp(parseNum(e.labs?.wbc_k), 100),
             plt_k: clamp(parseNum(e.labs?.plt_k), 2000),
             eos_k: clamp(parseNum(e.labs?.eos_k), 15),
+            crp_mgl: clamp(parseNum(e.labs?.crp_mgl), 1000),
+            trop: clamp(parseNum(e.labs?.trop), 1000000),
+            trop_unit: ["ng/L", "ng/mL", "µg/L"].includes(e.labs?.trop_unit) ? e.labs.trop_unit : "ng/L",
           },
           dose_mg: clamp(parseNum(e.dose_mg), 2000),
           effects: {
@@ -2910,7 +3393,9 @@
             chest_pain: !!e.effects?.chest_pain,
             dyspnea: !!e.effects?.dyspnea,
             tachycardia: !!e.effects?.tachycardia,
-            unwell: !!e.effects?.unwell
+            unwell: !!e.effects?.unwell,
+            palpitations: !!e.effects?.palpitations,
+            flu_like: !!e.effects?.flu_like
           },
           habits: {
             smoke: !!e.habits?.smoke,
@@ -2969,11 +3454,12 @@ Paciente: ${state.data.patient.label}
 ---
 LABORATORIOS (x10³/µL):
 ANC: ${e.labs.anc_k || "—"} | WBC: ${e.labs.wbc_k || "—"}
-PLT: ${e.labs.plt_k || "—"} | EOS: ${e.labs.eos_k || "—"}
+PLT: ${e.labs.plt_k || "—"} | EOS: ${e.labs.eos_k || "—"}${(e.labs.crp_mgl != null || e.labs.trop != null) ? `
+PCR: ${e.labs.crp_mgl ?? "—"} mg/L | Troponina: ${e.labs.trop ?? "—"} ${e.labs.trop_unit || ""}` : ""}
 Dosis: ${e.dose_mg ? e.dose_mg + " mg" : "—"}
 
 ALERTAS:
-${a.alerts.map(al => `- [${al.tag}] ${al.title}: ${al.text}`).join("\n") || "Sin alertas activas."}
+${a.alerts.map(al => `- [${al.tag}] ${al.title}: ${al.text}${(al.steps && al.steps.length) ? " " + al.steps.join(" ") : ""}`).join("\n") || "Sin alertas activas."}
 
 NOTAS:
 ${e.notes || "Sin notas."}
@@ -2989,6 +3475,9 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
       };
 
       // ---- clinical-ish helpers (transparent + editable thresholds) ----
+      // Escapa texto antes de insertarlo como HTML
+      const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
       const assess = (entry) => {
         const th = state.data.thresholds;
         const ben = entry.ben ?? state.data.patient.ben;
@@ -3004,59 +3493,102 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
           entry.effects?.chest_pain,
           entry.effects?.dyspnea,
           entry.effects?.tachycardia,
-          entry.effects?.unwell
+          entry.effects?.unwell,
+          entry.effects?.palpitations,
+          entry.effects?.flu_like
+        ].some(Boolean);
+        // La taquicardia sola es frecuente al titular y de bajo valor diagnóstico (consenso Delphi 2026)
+        const strongCardiac = [
+          entry.effects?.chest_pain, entry.effects?.dyspnea, entry.effects?.unwell,
+          entry.effects?.palpitations, entry.effects?.flu_like
         ].some(Boolean);
 
         const alerts = [];
+        // Cada alerta: kind, tag, title, text (hallazgo breve), steps (qué considerar), source (de dónde viene el criterio)
+        const add = (kind, tag, title, text, steps = [], source = "") =>
+          alerts.push({ kind, tag, title, text, steps: steps.filter(Boolean), source });
 
         if (anc !== null) {
           const res = analyzeANC(anc, ben, th);
+          const ancSource = "Umbrales por defecto: consenso Delphi 2025 y ficha FDA (editables en Ajustes).";
           if (res.status !== 'OK') {
-            alerts.push({
-              kind: res.status === 'CRITICAL' || res.status === 'SEVERE' ? 'bad' : 'warn',
-              tag: 'ANC',
-              title: res.status === 'SEVERE' ? 'ALERTA CRÍTICA EXTREMA ANC' : (res.status === 'CRITICAL' ? 'ALERTA CRÍTICA ANC' : 'Aviso ANC'),
-              text: `${res.message} ACCIÓN: ${res.action}`
-            });
+            add(res.status === 'CRITICAL' || res.status === 'SEVERE' ? 'bad' : 'warn', 'ANC',
+              res.status === 'SEVERE' ? 'ANC crítico, riesgo extremo' : (res.status === 'CRITICAL' ? 'ANC crítico' : 'ANC a vigilar'),
+              res.message, [res.action], ancSource);
           } else {
-            alerts.push({ kind: "ok", tag: "ANC", title: "ANC en rango", text: res.message });
+            add("ok", "ANC", "ANC en rango", res.message, [res.action]);
           }
         }
 
         if (plt !== null) {
           if (plt < th.plt_stop) {
-            alerts.push({ kind: "bad", tag: "PLT", title: "Plaquetas bajas", text: `PLT ${plt} (<${th.plt_stop}). Considerar suspensión y valoración hematología.` });
+            add("bad", "PLT", "Plaquetas bajas", `PLT ${plt}, por debajo del umbral configurado (${th.plt_stop}).`,
+              ["Considera valoración con hematología y revisar la indicación."],
+              "Monografía canadiense de Gen-Clozapine (2022): suspender por debajo de 50. La ficha FDA no fija un umbral.");
           } else if (plt < (th.plt_stop + 50)) {
-            alerts.push({ kind: "warn", tag: "PLT", title: "Plaquetas a vigilar", text: `PLT ${plt}. Revisar tendencia y clínica.` });
+            add("warn", "PLT", "Plaquetas a vigilar", `PLT ${plt}, cerca del umbral configurado.`, ["Revisa la tendencia y la clínica."]);
           }
         }
 
         const wbc = parseNum(entry.labs?.wbc_k);
-        if (wbc !== null) {
-          if (wbc < 3.0) {
-            alerts.push({ kind: "warn", tag: "WBC", title: "Leucopenia leve", text: `WBC ${wbc} (<3.0). Vigilar tendencia si el ANC es normal.` });
-          }
+        if (wbc !== null && wbc < 3.0) {
+          add("info", "WBC", "Leucocitos bajos (informativo)", `Leucocitos ${wbc}, por debajo de 3.0.`,
+            ["Interprétalos junto con el ANC y tu juicio clínico."],
+            "EMA 2025: se eliminó el monitoreo de leucocitos; basta el ANC.");
         }
 
         if (eos !== null) {
+          const eosOrgans = "Evalúa compromiso de órganos: miocarditis, pancreatitis, hepatitis, colitis, nefritis o DRESS.";
           if (eos > th.eos_stop) {
-            alerts.push({ kind: "bad", tag: "EOS", title: "Eosinofilia de suspensión", text: `EOS ${eos} (>${th.eos_stop}). Considerar suspensión y reinicio cuando <1.0 según guía.` });
+            add("bad", "EOS", "Eosinofilia marcada", `EOS ${eos}, por encima del umbral configurado (${th.eos_stop}).`,
+              [eosOrgans, "Si sospechas enfermedad sistémica, la ficha FDA indica suspender.", "La monografía canadiense indica suspender y reiniciar solo cuando baje de 1.0."],
+              "Ficha FDA 5.9 (sin límite numérico); monografía canadiense de Gen-Clozapine (2022).");
+          } else if (eos > th.eos_watch) {
+            add("warn", "EOS", "Eosinofilia a vigilar", `EOS ${eos}, por encima de ${th.eos_watch} (definición de la ficha FDA).`,
+              [eosOrgans, "Sin compromiso de órganos, la ficha contempla continuar con vigilancia estrecha.", "Si hay fiebre o síntomas cardíacos, intensifica el monitoreo cardíaco: la eosinofilia suele ser un marcador tardío."],
+              "Ficha FDA 5.9; consenso Delphi de miocarditis (2026).");
           }
         }
 
-        if (fever) {
-          alerts.push({ kind: "warn", tag: "FIEBRE", title: "Fiebre reportada", text: "Vigilar signos de infección, síndrome inflamatorio y otras banderas rojas (según protocolo)." });
+        const hasMyoLabs = parseNum(entry.labs?.crp_mgl) !== null || parseNum(entry.labs?.trop) !== null;
+        const wk = parseNum(entry.week);
+        const myoStep = hasMyoLabs
+          ? "PCR y troponina registradas: interprétalas con los límites de tu laboratorio."
+          : "Considera solicitar PCR y troponina (cribado respaldado por el consenso Delphi 2026).";
+        const inWindow = wk !== null && wk >= 1 && wk <= 8;
+        const combined = fever && earlyFlags; // fiebre + signos cardiovasculares: una sola alerta, sin repetir
+        if (fever && !combined) {
+          add("warn", "FIEBRE", "Fiebre reportada", "Fiebre durante el tratamiento.",
+            ["Vigila signos de infección, síndrome inflamatorio y otras banderas rojas.",
+              "Descarta infección neutropénica o miocarditis. Solicita un ANC y considera interrumpir clozapina como precaución si la fiebre es ≥ 38.5 °C.",
+              inWindow ? "Estás en las primeras 8 semanas, cuando es más frecuente la miocarditis." : "",
+              myoStep],
+            "Ficha FDA 5.1; consenso Delphi de miocarditis (2026).");
         }
         if (constipationRed || (constipationDays !== null && constipationDays >= 4)) {
-          alerts.push({ kind: "bad", tag: "GI", title: "Riesgo de Íleo / Obstrucción", text: `Datos de alarma detectados (${constipationDays || 0} días sin evacuar). Requiere evaluación quirúrgica/clínica urgente.` });
+          add("bad", "GI", "Riesgo de íleo u obstrucción", `Datos de alarma: ${constipationDays || 0} días sin evacuar.`,
+            ["Requiere evaluación quirúrgica o clínica urgente."], "Ficha FDA 5.8 (hipomotilidad gastrointestinal).");
         } else if (constipationScore !== null && constipationScore >= 3 || (constipationDays !== null && constipationDays >= 3)) {
-          alerts.push({ kind: "warn", tag: "GI", title: "Estreñimiento severo", text: "Iniciar protocolo laxante agresivo. Vigilancia estrecha de motilidad intestinal." });
+          add("warn", "GI", "Estreñimiento severo", "Estreñimiento de intensidad alta.",
+            ["Inicia un protocolo laxante enérgico.", "Vigila de cerca la motilidad intestinal."], "Ficha FDA 5.8 (hipomotilidad gastrointestinal).");
         }
 
         if (earlyFlags) {
-          alerts.push({ kind: "warn", tag: "CV/RESP", title: "Signos Inflamatorios", text: "Banderas rojas (taquicardia, disnea, dolor torácico). Evaluar miocarditis (sem 2-8) o neumonía." });
-          if (fever) {
-            alerts.push({ kind: "bad", tag: "CRÍTICO", title: "Riesgo Combinado", text: "Fiebre + signos cardiopulmonares. Descartar miocarditis o serositis de clozapina con urgencia." });
+          if (combined) {
+            add("bad", "CRÍTICO", "Fiebre con signos cardiovasculares", "Fiebre más signos cardiovasculares o respiratorios.",
+              ["Considera descartar miocarditis o serositis. La ficha FDA indica suspender clozapina y obtener evaluación cardíaca ante sospecha.",
+                "Solicita un ANC y descarta infección neutropénica; con fiebre ≥ 38.5 °C la ficha indica considerar interrumpir como precaución.",
+                inWindow ? "Estás en las primeras 8 semanas, cuando es más frecuente la miocarditis." : "",
+                myoStep],
+              "Ficha FDA 5.1 y 5.6; consenso Delphi de miocarditis (2026).");
+          } else if (strongCardiac) {
+            add("warn", "CV/RESP", "Datos sugestivos de miocarditis", "Hay banderas rojas cardiovasculares o respiratorias.",
+              ["Ante sospecha de miocarditis, la ficha FDA indica suspender clozapina y obtener evaluación cardíaca.", myoStep],
+              "Ficha FDA 5.6; consenso Delphi de miocarditis (2026).");
+          } else {
+            add("warn", "CV/RESP", "Taquicardia a vigilar", "Taquicardia aislada.",
+              ["Es frecuente al titular y, por sí sola, de bajo valor diagnóstico.", "Vigila fiebre, dolor torácico, disnea o síntomas gripales."],
+              "Consenso Delphi de miocarditis (2026).");
           }
         }
 
@@ -3066,15 +3598,15 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
           fever: fever,
           sialorrhea: parseNum(entry.effects?.sialorrhea)
         });
+        const ENGINE_TAGS = { GI_Ileo: "GI", Sialorrhea: "SIALORREA" };
 
-        engineAlerts.forEach(ea => {
-          alerts.push({
-            kind: ea.severity === 'CRITICAL' || ea.severity === 'HIGH' ? 'bad' : 'warn',
-            tag: ea.type,
-            title: ea.title,
-            text: `${ea.message} ${ea.advice}`
+        engineAlerts
+          .filter(ea => ea.type !== 'Infection_Myocarditis') // la alerta de fiebre ya cubre este caso
+          .forEach(ea => {
+            add(ea.severity === 'CRITICAL' || ea.severity === 'HIGH' ? 'bad' : 'warn',
+              ENGINE_TAGS[ea.type] || String(ea.type).replace(/_/g, " ").toUpperCase(),
+              ea.title.charAt(0) + ea.title.slice(1).toLowerCase(), ea.message, [ea.advice]);
           });
-        });
 
         const interactFindings = checkInteractions({
           smokingCessation: entry.habits?.quit,
@@ -3083,12 +3615,8 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         });
 
         interactFindings.forEach(f => {
-          alerts.push({
-            kind: 'warn',
-            tag: 'INTERACCIÓN',
-            title: f.risk,
-            text: `${f.message} ${f.justification} ACCIÓN: ${f.action}`
-          });
+          add('warn', 'INTERACCIÓN', f.risk.charAt(0) + f.risk.slice(1).toLowerCase(), f.message,
+            [f.justification, "Acción: " + f.action], "Ficha FDA 2.6 (ajuste de dosis con inhibidores e inductores de CYP).");
         });
 
         // overall label
@@ -3108,27 +3636,43 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         const diffDays = Math.floor((lastD - startD) / (1000 * 60 * 60 * 24));
         const weeks = diffDays / 7;
 
-        let intervalDays = 7;
+        const schedule = state.data.patient.schedule || "fda";
+        const th = state.data.thresholds;
+        // ¿Hubo alguna neutropenia (ANC bajo el rango normal)? Relevante para el esquema EMA
+        const hadNeutropenia = state.data.entries.some(en => {
+          const v = parseNum(en.labs?.anc_k);
+          if (v === null) return false;
+          const ben = en.ben ?? state.data.patient.ben;
+          return v < (ben ? th.anc_norm_ben : th.anc_norm);
+        });
 
-        // Protocol logic: Weekly for 1st 18 weeks, then c/2w or monthly
-        // We use weeks for precision in the early phase
-        if (weeks >= 18) {
-          // Check if patient reached a monthly milestone (e.g. 6 months or 1 year)
-          // 4.345 weeks per month average
+        let intervalDays = 7;
+        if (schedule === "ema") {
+          // EMA/PRAC 2025: semanal 18 sem; mensual hasta la sem 52; luego c/12 sem y anual si no hubo neutropenia
+          if (weeks < 18) intervalDays = 7;
+          else if (weeks < 52 || hadNeutropenia) intervalDays = 28;
+          else if (weeks < 104) intervalDays = 84;
+          else intervalDays = 365;
+        } else if (schedule === "delphi") {
+          // Delphi 2025: semanal 18 sem; c/4 sem hasta 2 años; luego sin ANC de rutina
+          if (weeks < 18) intervalDays = 7;
+          else if (weeks < 104) intervalDays = 28;
+          else intervalDays = null;
+        } else if (weeks >= 18) {
+          // Ficha FDA: semanal hasta 6 meses, quincenal hasta 12, mensual después (configurable)
           const months = weeks / 4.345;
-          if (months >= (state.data.thresholds.months_to_4w || 12)) intervalDays = 28;
-          else if (months >= (state.data.thresholds.months_to_2w || 6)) intervalDays = 14;
+          if (months >= (th.months_to_4w || 12)) intervalDays = 28;
+          else if (months >= (th.months_to_2w || 6)) intervalDays = 14;
           else intervalDays = 7;
-        } else {
-          intervalDays = 7;
         }
 
-        // Clinical overriding: if ANC is warning/bad, protocol often dictates more frequent checks
+        // Si el ANC está en vigilancia o crítico, se sugiere control más frecuente en cualquier esquema
         const a = assess(latest);
         const ancAlert = a.alerts.find(x => x.tag === "ANC");
         if (ancAlert && (ancAlert.kind === "warn" || ancAlert.kind === "bad")) {
-          intervalDays = 3; // Suggest 2-3 times per week
+          intervalDays = 3;
         }
+        if (intervalDays === null) return null;
 
         const next = new Date(lastD.getTime() + intervalDays * 24 * 60 * 60 * 1000);
         return next.toISOString().slice(0, 10);
@@ -3249,6 +3793,12 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("f_week").value = "";
         $("f_ben").value = (state.data.patient.ben ? "1" : "0");
 
+        $("f_neut_pct").value = "";
+        $("f_crp").value = "";
+        $("f_trop").value = "";
+        $("f_trop_unit").value = "ng/L";
+        $("myoDetails").open = false;
+
         ["anc", "wbc", "plt", "eos"].forEach(k => {
           const el = $("f_" + k);
           if (el) {
@@ -3279,6 +3829,8 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("f_dyspnea").checked = false;
         $("f_tachy").checked = false;
         $("f_unwell").checked = false;
+        $("f_palp").checked = false;
+        $("f_flu").checked = false;
 
         $("f_habit_smoke").checked = false;
         $("f_habit_quit").checked = false;
@@ -3304,6 +3856,10 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("f_wbc").value = e.labs?.wbc_k ?? "";
         $("f_plt").value = e.labs?.plt_k ?? "";
         $("f_eos").value = e.labs?.eos_k ?? "";
+        $("f_crp").value = e.labs?.crp_mgl ?? "";
+        $("f_trop").value = e.labs?.trop ?? "";
+        $("f_trop_unit").value = e.labs?.trop_unit || "ng/L";
+        if (e.labs?.crp_mgl != null || e.labs?.trop != null) $("myoDetails").open = true;
 
         $("f_sial").value = e.effects?.sialorrhea ?? "";
         $("f_const").value = e.effects?.constipation ?? "";
@@ -3320,6 +3876,8 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("f_dyspnea").checked = !!e.effects?.dyspnea;
         $("f_tachy").checked = !!e.effects?.tachycardia;
         $("f_unwell").checked = !!e.effects?.unwell;
+        $("f_palp").checked = !!e.effects?.palpitations;
+        $("f_flu").checked = !!e.effects?.flu_like;
 
         $("f_habit_smoke").checked = !!e.habits?.smoke;
         $("f_habit_quit").checked = !!e.habits?.quit;
@@ -3362,6 +3920,8 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         if ($("f_dyspnea").checked) return true;
         if ($("f_tachy").checked) return true;
         if ($("f_unwell").checked) return true;
+        if ($("f_palp").checked) return true;
+        if ($("f_flu").checked) return true;
 
         if ($("f_habit_smoke").checked) return true;
         if ($("f_habit_quit").checked) return true;
@@ -3383,6 +3943,9 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             wbc_k: $("f_wbc").value,
             plt_k: $("f_plt").value,
             eos_k: $("f_eos").value,
+            crp_mgl: $("f_crp").value,
+            trop: $("f_trop").value,
+            trop_unit: $("f_trop_unit").value,
           },
           effects: {
             sialorrhea: $("f_sial").value,
@@ -3398,7 +3961,9 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             chest_pain: $("f_chest").checked,
             dyspnea: $("f_dyspnea").checked,
             tachycardia: $("f_tachy").checked,
-            unwell: $("f_unwell").checked
+            unwell: $("f_unwell").checked,
+            palpitations: $("f_palp").checked,
+            flu_like: $("f_flu").checked
           },
           habits: {
             smoke: $("f_habit_smoke").checked,
@@ -3424,6 +3989,10 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("f_wbc").value = e.labs?.wbc_k ?? "";
         $("f_plt").value = e.labs?.plt_k ?? "";
         $("f_eos").value = e.labs?.eos_k ?? "";
+        $("f_crp").value = e.labs?.crp_mgl ?? "";
+        $("f_trop").value = e.labs?.trop ?? "";
+        $("f_trop_unit").value = e.labs?.trop_unit || "ng/L";
+        if (e.labs?.crp_mgl != null || e.labs?.trop != null) $("myoDetails").open = true;
 
         $("f_sial").value = e.effects?.sialorrhea ?? "";
         $("f_const").value = e.effects?.constipation ?? "";
@@ -3440,6 +4009,8 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("f_dyspnea").checked = !!e.effects?.dyspnea;
         $("f_tachy").checked = !!e.effects?.tachycardia;
         $("f_unwell").checked = !!e.effects?.unwell;
+        $("f_palp").checked = !!e.effects?.palpitations;
+        $("f_flu").checked = !!e.effects?.flu_like;
 
         $("f_habit_smoke").checked = !!e.habits?.smoke;
         $("f_habit_quit").checked = !!e.habits?.quit;
@@ -3499,6 +4070,9 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             wbc_k: parseNum($("f_wbc").value),
             plt_k: parseNum($("f_plt").value),
             eos_k: parseNum($("f_eos").value),
+            crp_mgl: parseNum($("f_crp").value),
+            trop: parseNum($("f_trop").value),
+            trop_unit: $("f_trop_unit").value,
           },
           effects: {
             sialorrhea: parseNum($("f_sial").value),
@@ -3514,7 +4088,9 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             chest_pain: $("f_chest").checked,
             dyspnea: $("f_dyspnea").checked,
             tachycardia: $("f_tachy").checked,
-            unwell: $("f_unwell").checked
+            unwell: $("f_unwell").checked,
+            palpitations: $("f_palp").checked,
+            flu_like: $("f_flu").checked
           },
           habits: {
             smoke: $("f_habit_smoke").checked,
@@ -3565,6 +4141,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
 
         save(true, true);
         clearForm();
+        if (window.setRegView) window.setRegView("list");
 
         // Critical Check
         const analysis = assess(entry);
@@ -3574,7 +4151,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             title: "ALERTA CLÍNICA CRÍTICA",
             text: "Se han detectado hallazgos de alto riesgo que requieren acción inmediata.",
             type: "critical",
-            steps: bad.map(a => `<strong>${a.tag}:</strong> ${a.text}`),
+            steps: bad.map(a => `<strong>${esc(a.tag)}</strong> ${esc(a.title)}. ${esc(a.text)}`),
             formula: "ANC < 1.0 (General) | ANC < 0.5 (BEN) | PLT < 50 | EOS > 3.0 | Banderas Rojas GI/CV"
           });
         }
@@ -3603,7 +4180,10 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
           return;
         }
         sortEntries();
-        for (const e of [...state.data.entries].reverse()) {
+        const allEntries = [...state.data.entries].reverse();
+        const LIMIT = 5;
+        const visibleEntries = state.showAllEntries ? allEntries : allEntries.slice(0, LIMIT);
+        for (const e of visibleEntries) {
           const a = assess(e);
           const anc = e.labs?.anc_k;
           const plt = e.labs?.plt_k;
@@ -3626,11 +4206,11 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
           div.innerHTML = `
         <div class="meta">
           <div class="meta-main">
-            <div style="font-weight:650">${fmtDate(e.date)} ${e.week ? `<span class="small">(Sem ${e.week})</span>` : ""}</div>
-            <div class="date">${e.date || ""}</div>
+            <div style="font-weight:650">${esc(fmtDate(e.date))} ${e.week ? `<span class="small">(Sem ${esc(e.week)})</span>` : ""}</div>
+            <div class="date">${esc(e.date || "")}</div>
           </div>
           <div class="tags">
-            ${tags.slice(0, 4).map(t => `<span class="tag ${t.cls}">${t.txt}</span>`).join("")}
+            ${tags.slice(0, 4).map(t => `<span class="tag ${t.cls}">${esc(t.txt)}</span>`).join("")}
           </div>
           <div class="meta-actions" aria-label="Acciones rápidas"></div>
         </div>
@@ -3643,6 +4223,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             div.classList.add("selected");
             fillForm(e);
             setTab("registro");
+            if (window.setRegView) window.setRegView("form");
           });
 
           const shareBtn = document.createElement("button");
@@ -3669,6 +4250,13 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
           root.appendChild(div);
           registerAnimatedItem(div);
         }
+        if (allEntries.length > LIMIT) {
+          const more = document.createElement("button");
+          more.type = "button"; more.className = "ghost list-more";
+          more.textContent = state.showAllEntries ? `Mostrar solo las últimas ${LIMIT}` : `Ver todas las entradas (${allEntries.length})`;
+          more.addEventListener("click", () => { state.showAllEntries = !state.showAllEntries; renderList(); });
+          root.appendChild(more);
+        }
       };
 
       const renderKPIs = () => {
@@ -3677,22 +4265,52 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("k_last").textContent = latest ? fmtDate(latest.date) : "—";
         $("k_anc").textContent = latest?.labs?.anc_k ?? "—";
         $("k_plt").textContent = latest?.labs?.plt_k ?? "—";
+        // Estado clínico con color + texto + símbolo (no solo color)
+        const setKpiState = (key, tag) => {
+          const box = $("box_" + key), lab = $("k_" + key + "_state");
+          const val = latest?.labs?.[key + "_k"];
+          let st = "none", txt = "";
+          if (latest && val != null) {
+            const al = assess(latest).alerts.find(x => x.tag === tag);
+            st = al ? al.kind : "ok";
+            txt = ({ bad: "✕ Crítico", warn: "! Precaución", ok: "✓ Normal", info: "i Informativo" })[st] || "";
+          }
+          box.dataset.state = st;
+          lab.textContent = txt;
+        };
+        setKpiState("anc", "ANC");
+        setKpiState("plt", "PLT");
 
+        // Nota informativa tras 2 años de tratamiento, según el esquema elegido
+        const sd = state.data.patient.start_date;
+        const schedule = state.data.patient.schedule || "fda";
+        const monthsOn = sd ? (Date.now() - new Date(sd + "T00:00:00").getTime()) / (30.44 * 86400000) : 0;
+        const noRoutine = schedule === "delphi" && monthsOn >= 24;
+        $("k_next_note").textContent = monthsOn < 24 ? ""
+          : schedule === "fda" ? "Los esquemas EMA 2025 y Delphi 2025 reducen o suspenden el ANC de rutina tras 2 años sin neutropenia; la ficha FDA no. Puedes cambiar el esquema en Ajustes."
+          : schedule === "ema" ? "Esquema EMA 2025: tras 2 años sin neutropenia, ANC una vez al año."
+          : "Esquema Delphi 2025: sin ANC de rutina tras 2 años; revisa efectos adversos cada 3 meses.";
+
+        const markText = () => { const k = $("k_next"); k.classList.toggle("is-text", !/^\d{1,2} \S{3} \d{4}$/.test(k.textContent.trim())); };
         const next = nextLabDate();
         if (latest) {
           const res = assess(latest);
           if (res.alerts.some(a => a.tag === "ANC" && (a.kind === "warn" || a.kind === "bad"))) {
             $("k_next").textContent = "Más frecuente según protocolo";
+            markText();
             return;
           }
         }
         if (next) {
           $("k_next").textContent = fmtDate(next);
+        } else if (latest && noRoutine) {
+          $("k_next").textContent = "Sin ANC de rutina";
         } else if (latest) {
           $("k_next").textContent = "Según protocolo";
         } else {
           $("k_next").textContent = "—";
         }
+        markText();
       };
 
       const renderAlerts = () => {
@@ -3704,14 +4322,33 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
           return;
         }
         const res = assess(latest);
-        const blocks = res.alerts.map(a => {
-          const cls = a.kind === "bad" ? "bad" : a.kind === "warn" ? "warn" : a.kind === "ok" ? "ok" : "info";
-          const title = `<span class="tag ${cls}">${a.tag}</span> <strong style="margin-left:8px">${a.title}</strong>`;
-          const text = `<div class="note" style="margin-top:6px">${a.text}</div>`;
-          return `<div class="item" style="cursor:default">
-        <div>${title}</div>${text}
-      </div>`;
+        const KIND = { bad: ["Crítico", "✕"], warn: ["Vigilar", "!"], info: ["Informativo", "i"], ok: ["Normal", "✓"] };
+        const rank = { bad: 0, warn: 1, info: 2, ok: 3 };
+        const sorted = res.alerts.map((a, i) => ({ a, i })).sort((x, y) => (rank[x.a.kind] ?? 9) - (rank[y.a.kind] ?? 9) || x.i - y.i).map(x => x.a);
+        const count = (k) => res.alerts.filter(a => a.kind === k).length;
+        const chips = [
+          count("bad") ? `<span class="chip bad">✕ ${count("bad")} ${count("bad") === 1 ? "crítica" : "críticas"}</span>` : "",
+          count("warn") ? `<span class="chip warn">! ${count("warn")} a vigilar</span>` : "",
+          count("info") ? `<span class="chip info">i ${count("info")} ${count("info") === 1 ? "informativa" : "informativas"}</span>` : "",
+          count("ok") && !count("bad") && !count("warn") ? `<span class="chip ok">✓ Sin alertas, en rango</span>` : ""
+        ].join("");
+        const hasProblems = res.alerts.some(a => a.kind !== "ok");
+        const cards = sorted.filter(a => !(a.kind === "ok" && hasProblems)).map(a => {
+          const kind = KIND[a.kind] ? a.kind : "info";
+          const nSteps = (a.steps || []).length;
+          const stepsHtml = nSteps ? `<ul class="alert-steps">${a.steps.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : "";
+          const srcHtml = a.source ? `<div class="alert-src"><strong>Fuente:</strong> ${esc(a.source)}</div>` : "";
+          // Lo crítico se muestra completo; lo demás, solo el hallazgo y un acceso a los pasos
+          const more = (nSteps || a.source)
+            ? `<details class="alert-more"${kind === "bad" ? " open" : ""}><summary>${nSteps ? `Qué considerar (${nSteps})` : "Fuente"}</summary>${stepsHtml}${srcHtml}</details>`
+            : "";
+          return `<article class="alert-card ${kind}" role="group" aria-label="${KIND[kind][0]}: ${esc(a.title)}">
+        <header class="alert-head"><span class="tag ${kind}">${esc(a.tag)}</span><span class="alert-level ${kind}">${KIND[kind][1]} ${KIND[kind][0]}</span></header>
+        <h3 class="alert-title">${esc(a.title)}</h3>
+        <p class="alert-lead">${esc(a.text)}</p>${more}
+      </article>`;
         }).join("");
+        const blocks = cards ? `<div class="alert-summary" role="status">${chips}</div><div class="alert-list">${cards}</div>` : "";
         root.innerHTML = blocks || `<div class="note">Sin señales en la última entrada.</div>`;
         const worst = res.alerts.some(a => a.kind === "bad")
           ? "bad"
@@ -3730,7 +4367,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
               "Contacta a hematología/psiquiatría o referencia urgente si aplica.",
               "Documenta decisiones y plan de seguimiento."
             ],
-            formula: "Assess(latest).worst === 'bad'"
+            formula: "ANC < 1.0 (General) | ANC < 0.5 (BEN) | PLT < 50 | EOS > 3.0 | Banderas rojas"
           });
           state.lastAlertKey = latestKey;
         } else if (shouldShowModal && worst === "warn") {
@@ -3742,7 +4379,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
               "Aumenta frecuencia de control según guía local.",
               "Registra síntomas acompañantes y evolución clínica."
             ],
-            formula: "Assess(latest).worst === 'warn'"
+            formula: "ANC entre umbral de interrupción y normal | PLT o EOS cerca del límite"
           });
           state.lastAlertKey = latestKey;
         }
@@ -3752,6 +4389,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("s_label").value = state.data.patient.label || "";
         $("s_start").value = state.data.patient.start_date || "";
         $("s_ben").value = state.data.patient.ben ? "1" : "0";
+        $("s_schedule").value = state.data.patient.schedule || "fda";
 
         const th = state.data.thresholds;
         $("t_anc_norm").value = th.anc_norm;
@@ -3759,32 +4397,12 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         $("t_anc_int").value = th.anc_interrupt;
         $("t_anc_sev").value = th.anc_severe;
         $("t_anc_int_ben").value = th.anc_interrupt_ben;
+        $("t_eos_watch").value = th.eos_watch;
         $("t_eos_stop").value = th.eos_stop;
         $("t_plt_stop").value = th.plt_stop;
         $("t_mo_2w").value = th.months_to_2w;
         $("t_mo_4w").value = th.months_to_4w;
-
-        // Low Power Mode
-        const isLowPower = localStorage.getItem("clz_mini_pwa_low_power") === "true";
-        $("s_low_power").checked = isLowPower;
       };
-
-      // Low Power Toggle Handler
-      $("s_low_power").addEventListener("change", (e) => {
-        const isLowPower = e.target.checked;
-        localStorage.setItem("clz_mini_pwa_low_power", isLowPower);
-
-        if (isLowPower) {
-          if (galaxyCleanup) {
-            galaxyCleanup();
-            galaxyCleanup = null;
-          }
-          toast("Modo Ahorro activado.");
-        } else {
-          loadGalaxy();
-          toast("Animación activada.");
-        }
-      });
 
       const renderAll = () => {
         renderKPIs();
@@ -3796,6 +4414,7 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
       // ---- chart ----
       const drawChart = () => {
         const canvas = $("chart");
+        canvas.classList.remove("hidden"); // debe ser visible para medir su tamaño
         const ctx = canvas.getContext("2d");
         const W = canvas.width = canvas.clientWidth * devicePixelRatio;
         const H = canvas.height = canvas.clientHeight * devicePixelRatio;
@@ -3818,18 +4437,45 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
 
         const isDark = document.documentElement.getAttribute("data-theme") === "dark";
 
-        if (pts.length < 2) {
-          ctx.font = `${14 * devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
-          ctx.fillStyle = isDark ? "rgba(233, 238, 247, 0.75)" : "rgba(31, 41, 55, 0.75)";
-          ctx.fillText("No hay datos suficientes para graficar.", 16 * devicePixelRatio, 32 * devicePixelRatio);
-          return;
+        const serieName = { anc_k: "ANC", wbc_k: "Leucocitos", plt_k: "Plaquetas", eos_k: "Eosinófilos" }[seriesKey];
+        const tagOf = { anc_k: "ANC", wbc_k: "WBC", plt_k: "PLT", eos_k: "EOS" }[seriesKey];
+        const thr = state.data.thresholds;
+        const ref = (() => {
+          if (seriesKey === "anc_k") {
+            const ben = !!state.data.patient.ben;
+            return { v: ben ? thr.anc_interrupt_ben : thr.anc_interrupt, txt: "Umbral para considerar suspender" };
+          }
+          if (seriesKey === "plt_k") return { v: thr.plt_stop, txt: "Umbral de alerta alta (configurable)" };
+          if (seriesKey === "eos_k") return { v: thr.eos_stop, txt: "Umbral de alerta alta (configurable)" };
+          return null;
+        })();
+        const tbody = $("chartTable");
+        tbody.innerHTML = pts.slice().reverse().map(p => `<tr><td>${fmtDate(p.x)}</td><td>${p.y}</td></tr>`).join("") || '<tr><td colspan="2">Sin datos</td></tr>';
+        const empty = pts.length < 2;
+        $("chartEmpty").classList.toggle("hidden", !empty);
+        canvas.classList.toggle("hidden", empty);
+        $("chartLegend").textContent = "";
+        if (pts.length) {
+          const lastE = [...entries].reverse().find(e => parseNum(e.labs?.[seriesKey]) !== null);
+          const al = lastE ? assess(lastE).alerts.find(x => x.tag === tagOf) : null;
+          const st = al ? al.kind : "ok";
+          const lab = { bad: "✕ Crítico", warn: "! Precaución", ok: "✓ Normal", info: "i Informativo" }[st] || "";
+          const prev = pts.length > 1 ? pts[pts.length - 2].y : null;
+          const cur = pts[pts.length - 1].y;
+          const trend = prev === null ? "" : (cur > prev ? "▲ sube" : cur < prev ? "▼ baja" : "= estable");
+          $("chartSummary").innerHTML = `<span class="cs-val">${serieName} ${cur}</span> <span class="cs-state" data-state="${st}">${lab}</span> <span class="cs-trend">${trend}${prev !== null ? " vs. " + prev : ""}</span>`;
+        } else {
+          $("chartSummary").textContent = "";
         }
+        canvas.setAttribute("aria-label", `Tendencia de ${serieName}: ${pts.map(p => p.y).join(", ")}`);
+        if (empty) return;
 
         const ys = pts.map(p => p.y);
         const ymin = Math.min(...ys);
         const ymax = Math.max(...ys);
-        const pad = (ymax - ymin) * 0.12 || 1;
-        const y0 = ymin - pad, y1 = ymax + pad;
+        const lo = ref ? Math.min(ymin, ref.v) : ymin, hi = ymax;
+        const pad = (hi - lo) * 0.12 || 1;
+        const y0 = lo - pad, y1 = hi + pad;
 
         const left = 54 * devicePixelRatio, right = 16 * devicePixelRatio, top = 14 * devicePixelRatio, bottom = 44 * devicePixelRatio;
         const plotW = W - left - right, plotH = H - top - bottom;
@@ -3840,6 +4486,18 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         for (let i = 0; i <= 4; i++) {
           const y = top + (plotH * i / 4);
           ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(W - right, y); ctx.stroke();
+        }
+
+        // línea de referencia clínica (umbral de suspensión)
+        if (ref && ref.v >= y0 && ref.v <= y1) {
+          const yr = top + plotH * (1 - ((ref.v - y0) / (y1 - y0)));
+          const badC = getComputedStyle(document.documentElement).getPropertyValue("--bad").trim() || "#c00";
+          ctx.save();
+          ctx.setLineDash([6 * devicePixelRatio, 5 * devicePixelRatio]);
+          ctx.strokeStyle = badC; ctx.lineWidth = 2 * devicePixelRatio;
+          ctx.beginPath(); ctx.moveTo(left, yr); ctx.lineTo(W - right, yr); ctx.stroke();
+          ctx.restore();
+          $("chartLegend").innerHTML = `<span class="lg-line"></span> ${ref.txt}: ${ref.v} x10³/µL`;
         }
 
         // axes labels
@@ -3917,12 +4575,13 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
       };
 
       const exportCsvLabs = () => {
-        const rows = [["date", "week", "ben", "anc_k", "wbc_k", "plt_k", "eos_k", "fever", "notes"]];
+        const rows = [["date", "week", "ben", "anc_k", "wbc_k", "plt_k", "eos_k", "crp_mgl", "trop", "trop_unit", "fever", "notes"]];
         const entries = [...state.data.entries].sort((a, b) => (a.date || "").localeCompare(b.date || ""));
         for (const e of entries) {
           rows.push([
             e.date || "", e.week ?? "", e.ben ? 1 : 0,
             e.labs?.anc_k ?? "", e.labs?.wbc_k ?? "", e.labs?.plt_k ?? "", e.labs?.eos_k ?? "",
+            e.labs?.crp_mgl ?? "", e.labs?.trop ?? "", e.labs?.trop_unit ?? "",
             e.effects?.fever ? 1 : 0,
             (e.notes || "").replaceAll("\n", " ").replaceAll("\r", " ")
           ]);
@@ -3961,7 +4620,74 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
       };
 
       // ---- Visual UX Helpers ----
+      const updateMyoHint = () => {
+        const flags = ["f_chest", "f_dyspnea", "f_unwell", "f_palp", "f_flu"].some(id => $(id).checked) || $("f_fever").value === "1";
+        const hasLabs = $("f_crp").value !== "" || $("f_trop").value !== "";
+        const show = flags && !hasLabs;
+        const wasHidden = $("myoHint").classList.contains("hidden");
+        $("myoHint").classList.toggle("hidden", !show);
+        if (show && wasHidden) $("myoDetails").open = true; // deja los campos a la vista
+      };
+      ["f_chest", "f_dyspnea", "f_tachy", "f_unwell", "f_palp", "f_flu", "f_fever", "f_crp", "f_trop"].forEach(id => {
+        $(id).addEventListener("change", updateMyoHint);
+        $(id).addEventListener("input", updateMyoHint);
+      });
+      // Unidades: si el valor parece venir en células/µL, ofrece convertirlo con un toque
+      const UNIT_LIMITS = { f_anc: 25, f_wbc: 100, f_eos: 15, f_plt: 2000 };
+      const checkUnits = () => {
+        for (const id of Object.keys(UNIT_LIMITS)) {
+          const hint = $("uh_" + id);
+          const v = parseNum($(id).value);
+          if (v !== null && v > UNIT_LIMITS[id]) {
+            const conv = Math.round(v / 1000 * 100) / 100;
+            hint.innerHTML = `Parece estar en células/µL. <button type="button" class="link-btn" data-conv="${id}" data-val="${conv}">Convertir a ${conv} x10³/µL</button>`;
+            hint.classList.remove("hidden");
+          } else {
+            hint.classList.add("hidden");
+            hint.textContent = "";
+          }
+        }
+      };
+      document.addEventListener("click", (ev) => {
+        const b = ev.target.closest && ev.target.closest(".link-btn[data-conv]");
+        if (!b) return;
+        const el = $(b.dataset.conv);
+        el.value = b.dataset.val;
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+        checkUnits(); updateAncCalc();
+      });
+      Object.keys(UNIT_LIMITS).forEach(id => $(id).addEventListener("input", checkUnits));
+
+      // Calculadora de ANC a partir de leucocitos y % de neutrófilos
+      const updateAncCalc = () => {
+        const wbc = parseNum($("f_wbc").value), pct = parseNum($("f_neut_pct").value);
+        const out = $("ancCalcOut"), btn = $("btnUseAnc");
+        btn.disabled = true; btn.dataset.val = "";
+        if (wbc === null || pct === null) { out.textContent = "Captura los leucocitos y el porcentaje."; return; }
+        if (wbc > UNIT_LIMITS.f_wbc) { out.textContent = "Convierte primero los leucocitos a x10³/µL."; return; }
+        if (pct < 0 || pct > 100) { out.textContent = "El porcentaje debe estar entre 0 y 100."; return; }
+        const anc = Math.round(wbc * pct) / 100;
+        out.textContent = `ANC = ${wbc} × ${pct} % ÷ 100 = ${anc} x10³/µL`;
+        btn.dataset.val = String(anc); btn.disabled = false;
+      };
+      ["f_wbc", "f_neut_pct"].forEach(id => $(id).addEventListener("input", updateAncCalc));
+      $("btnUseAnc").addEventListener("click", () => {
+        const v = $("btnUseAnc").dataset.val; if (!v) return;
+        $("f_anc").value = v; $("f_anc").dispatchEvent(new Event("input", { bubbles: true }));
+        toast("ANC capturado desde el cálculo.");
+      });
+
+      const updateHabits = (autoOpen) => {
+        const n = ["f_habit_smoke", "f_habit_quit", "f_habit_fluvox"].filter(id => $(id).checked).length + ($("f_habit_caffeine").value !== "0" ? 1 : 0);
+        $("habitsCount").textContent = n ? `(${n} marcado${n === 1 ? "" : "s"})` : "";
+        if (autoOpen) $("habitsDetails").open = n > 0;
+      };
+      ["f_habit_smoke", "f_habit_quit", "f_habit_fluvox", "f_habit_caffeine"].forEach(id => $(id).addEventListener("change", () => updateHabits(false)));
       const updateLikertVisuals = () => {
+        updateHabits(true);
+        updateMyoHint();
+        checkUnits();
+        updateAncCalc();
         document.querySelectorAll(".rating-group").forEach(group => {
           const inputId = group.dataset.input;
           const el = $(inputId);
@@ -4063,12 +4789,27 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
             return;
           }
 
+          // Leucocitos: solo informativo (el monitoreo se basa en el ANC)
+          if (id === "f_wbc") {
+            if (val < 4.0) {
+              badge.textContent = "INFO";
+              badge.style.color = "var(--info)";
+              badge.classList.add("visible");
+            }
+            return;
+          }
+
           // Logic for others
           if (id === "f_eos") {
             if (val > th.eos_stop) {
               el.classList.add("live-bad");
               badge.textContent = "ALTO";
               badge.style.color = "var(--bad)";
+              badge.classList.add("visible");
+            } else if (val > th.eos_watch) {
+              el.classList.add("live-warn");
+              badge.textContent = "VIGILAR";
+              badge.style.color = "var(--warn)";
               badge.classList.add("visible");
             }
             return;
@@ -4135,10 +4876,16 @@ Generado por CLZ Mini PWA v${state.swVersion || "1.4.0"}.
         if ($("f_chest").checked) symptoms.push("Dolor torácico");
         if ($("f_dyspnea").checked) symptoms.push("Disnea");
         if ($("f_tachy").checked) symptoms.push("Taquicardia");
+        if ($("f_palp").checked) symptoms.push("Palpitaciones");
+        if ($("f_flu").checked) symptoms.push("Síntomas gripales");
 
         const analysis = assess({
           labs: { anc_k: anc, wbc_k: wbc, plt_k: plt, eos_k: eos },
-          effects: { fever: $("f_fever").value === "1" },
+          effects: {
+            fever: $("f_fever").value === "1",
+            chest_pain: $("f_chest").checked, dyspnea: $("f_dyspnea").checked, tachycardia: $("f_tachy").checked,
+            unwell: $("f_unwell").checked, palpitations: $("f_palp").checked, flu_like: $("f_flu").checked
+          },
           ben: $("f_ben").value === "1"
         });
         const risk = analysis.overall === "bad" ? "ALTO RIESGO" : analysis.overall === "warn" ? "RIESGO MODERADO" : "Rango seguro";
@@ -4171,7 +4918,31 @@ Notas: ${$("f_notes").value}
         });
       });
       $("btnClear").addEventListener("click", clearForm);
-      $("btnNew").addEventListener("click", () => { clearForm(); toast("Nueva entrada."); });
+      $("btnNew").addEventListener("click", () => { clearForm(); setRegView("form"); toast("Nueva entrada."); });
+      // ---- Registro: vista Nueva entrada / Historial (móvil) ----
+      const setRegView = (v) => {
+        const sec = $("tab-registro");
+        sec.dataset.view = v;
+        document.querySelectorAll("#regSeg .seg-btn").forEach(b => {
+          const on = b.dataset.view === v;
+          b.classList.toggle("active", on);
+          b.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        window.scrollTo({ top: 0 });
+      };
+      document.querySelectorAll("#serieSeg .seg-btn").forEach(b => b.addEventListener("click", () => {
+        $("chartSeries").value = b.dataset.serie;
+        document.querySelectorAll("#serieSeg .seg-btn").forEach(x => {
+          const on = x === b; x.classList.toggle("active", on); x.setAttribute("aria-checked", on ? "true" : "false");
+        });
+        drawChart();
+      }));
+      $("btnChartGoRegistro").addEventListener("click", () => setTab("registro"));
+      $("tab-registro").dataset.view = "form";
+      document.querySelectorAll("#regSeg .seg-btn").forEach(b =>
+        b.addEventListener("click", () => setRegView(b.dataset.view)));
+      window.setRegView = setRegView;
+
       $("btnDelete").addEventListener("click", deleteSelected);
 
       $("btnExportJson").addEventListener("click", exportJson);
@@ -4223,33 +4994,35 @@ Notas: ${$("f_notes").value}
 
       const filterRefs = () => {
         const q = $("refSearch").value.toLowerCase().trim();
-        const cards = document.querySelectorAll("#tab-recursos .card");
+        const blocks = document.querySelectorAll("#tab-recursos .ref-block");
         if (!q) {
-          cards.forEach(c => c.style.display = "block");
+          blocks.forEach(c => { c.style.display = ""; });
+          $("refCount").textContent = "";
           return;
         }
-
-        // Expanded query with synonyms
         const expanded = [q];
         for (const k in SYNONYMS) {
           if (k.includes(q) || q.includes(k)) expanded.push(...SYNONYMS[k]);
         }
-
-        cards.forEach(c => {
-          if (c.id === "refSearchCard") return; // keep search box visible
+        let n = 0;
+        blocks.forEach(c => {
           const text = c.textContent.toLowerCase();
           const match = expanded.some(term => text.includes(term));
-          c.style.display = match ? "block" : "none";
+          c.style.display = match ? "" : "none";
+          if (match) { c.open = true; n++; }
         });
+        $("refCount").textContent = n ? `${n} sección(es) con resultados.` : "Sin resultados. Prueba otra palabra.";
       };
 
       $("refSearch").addEventListener("input", filterRefs);
 
       // settings
       const saveSettings = () => {
+        const wasEmpty = isPatientEmpty(state.data.patient);
         state.data.patient.label = $("s_label").value || "—";
         state.data.patient.start_date = $("s_start").value || "";
         state.data.patient.ben = $("s_ben").value === "1";
+        state.data.patient.schedule = ["fda", "ema", "delphi"].includes($("s_schedule").value) ? $("s_schedule").value : "fda";
 
         updateContextBanner(); /* Refresh banner on save settings */
 
@@ -4259,13 +5032,21 @@ Notas: ${$("f_notes").value}
         th.anc_interrupt = parseNum($("t_anc_int").value) ?? DEFAULTS.thresholds.anc_interrupt;
         th.anc_severe = parseNum($("t_anc_sev").value) ?? DEFAULTS.thresholds.anc_severe;
         th.anc_interrupt_ben = parseNum($("t_anc_int_ben").value) ?? DEFAULTS.thresholds.anc_interrupt_ben;
+        th.eos_watch = parseNum($("t_eos_watch").value) ?? DEFAULTS.thresholds.eos_watch;
         th.eos_stop = parseNum($("t_eos_stop").value) ?? DEFAULTS.thresholds.eos_stop;
         th.plt_stop = parseNum($("t_plt_stop").value) ?? DEFAULTS.thresholds.plt_stop;
         th.months_to_2w = parseNum($("t_mo_2w").value) ?? DEFAULTS.thresholds.months_to_2w;
         th.months_to_4w = parseNum($("t_mo_4w").value) ?? DEFAULTS.thresholds.months_to_4w;
 
         save(true);
-        toast("Ajustes guardados.");
+        const nowEmpty = isPatientEmpty(state.data.patient);
+        $("firstRunHint").classList.toggle("hidden", !nowEmpty);
+        if (wasEmpty && !nowEmpty) {
+          toast("Listo. Ahora captura la primera entrada.");
+          setTab("registro");
+        } else {
+          toast("Ajustes guardados.");
+        }
       };
 
       $("btnSaveSettings").addEventListener("click", saveSettings);
@@ -4313,7 +5094,8 @@ Notas: ${$("f_notes").value}
       });
 
       $("modalBackdrop").addEventListener("click", (event) => {
-        if (event.target.id === "modalBackdrop") modal.close();
+        // Las alertas críticas solo se cierran con el botón: un toque accidental no debe descartarlas
+        if (event.target.id === "modalBackdrop" && !document.querySelector(".modal").classList.contains("critical")) modal.close();
       });
       $("themeSelect").addEventListener("change", (event) => {
         setTheme(event.target.value);
@@ -4323,8 +5105,12 @@ Notas: ${$("f_notes").value}
       const redirectIfNoPatient = () => {
         if (!isPatientEmpty(state.data.patient)) return;
         const current = document.querySelector(".nav-item.active")?.dataset.tab;
+        $("firstRunHint").classList.remove("hidden");
         if (!current || ["registro", "graficas"].includes(current)) {
-          setTab("recursos");
+          // Primera vez: lleva a configurar al paciente, el único paso previo necesario
+          setTab("ajustes");
+          const first = document.querySelector("#tab-ajustes details.acc");
+          if (first) first.open = true;
         }
       };
 
