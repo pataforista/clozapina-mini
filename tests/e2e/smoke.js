@@ -151,7 +151,7 @@ const open = async (browser, opts = {}) => {
     await ctx.setOffline(true); await p.reload(); await p.waitForTimeout(900);
     check('carga sin conexión con el service worker', controlled && (await p.$$eval('.nav-item', e => e.length)) === 4);
     await ctx.setOffline(false);
-    check('solo hay peticiones a Google Fonts fuera del origen', [...p.hosts].every(h => /fonts\.(googleapis|gstatic)\.com/.test(h)), [...p.hosts].join(', ') || 'ninguna');
+    check('ninguna petición fuera del origen (sin CDN ni fuentes externas)', p.hosts.size === 0, [...p.hosts].join(', ') || 'ninguna');
     check('sin errores de página ni de consola', p.errs.length === 0, p.errs.slice(0, 2).join(' / '));
     await ctx.close();
   }

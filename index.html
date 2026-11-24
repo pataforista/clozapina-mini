@@ -7,11 +7,6 @@
   <meta name="theme-color" content="#0D0C12" />
   <title>CLZ Mini PWA</title>
   <link rel="icon" href="icon-192.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap"
-    rel="stylesheet">
 
   <style>
     /* Privacy Overlay */
@@ -39,8 +34,8 @@
     :root {
       --radius: 14px;
       --radius-sm: 8px;
-      --sans: 'Inter', system-ui, -apple-system, sans-serif;
-      --mono: 'JetBrains Mono', monospace;
+      --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
       /* Transitions */
       --ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -2167,6 +2162,33 @@
     @media (pointer: coarse) {
       input:not([type="checkbox"]):not([type="radio"]), select, textarea, #f_habit_caffeine { font-size: 16px; }
     }
+  
+    /* ═══ Tipografía legible: fuentes del sistema, sin mayúsculas sostenidas, tamaños cómodos ═══ */
+    body { font-size: 16px; line-height: 1.55; text-rendering: optimizeLegibility; -webkit-text-size-adjust: 100%; }
+    label, .lbl-group { font-size: 14px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--text); margin-bottom: 6px; }
+    .req { font-size: 12.5px; }
+    .note { font-size: 14.5px; }
+    .helper, .small, .count, .alert-src, .kpi-note { font-size: 13px; }
+    .box .lbl { font-size: 13px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--muted); }
+    .sub-title { font-size: 15px; letter-spacing: 0; text-transform: none; color: var(--text); }
+    table th, .monograph th, .chart-table th { font-size: 13px; letter-spacing: 0; text-transform: none; }
+    .alert-level { font-size: 13px; letter-spacing: 0; text-transform: none; }
+    .tag { font-size: 12px; letter-spacing: .02em; }
+    .modal.critical h3 { text-transform: none; letter-spacing: 0; font-size: 20px; }
+    .kpi-state { font-size: 13.5px; }
+    .nav-label { font-size: 12px; }
+    .step-title { font-size: 17px; }
+    .acc-t { font-size: 16px; }
+    .acc-t small { font-size: 13.5px; }
+    button, .btn-doc { font-size: 15px; }
+    input, select, textarea { font-size: 16px; }
+    #f_habit_caffeine { font-size: 16px; }
+    /* Cifras con la misma tipografía y alineadas; el espaciado fijo solo para código y fórmulas */
+    .box .val, .cs-val, .meta .date, .pill strong, .chart-table td { font-family: var(--sans); font-variant-numeric: tabular-nums; }
+    .box .val { font-size: 24px; font-weight: 700; letter-spacing: 0; }
+    .box .val.is-text { font-size: 16px; }
+    .meta .date { font-size: 13.5px; }
+    #modalFormula, .anc-calc-out .helper { font-family: var(--mono); font-size: 13px; }
   </style>
 </head>
 
@@ -3262,7 +3284,7 @@
         data: null,
         selectedId: null,
         lastAlertKey: null,
-        swVersion: "1.7.0"
+        swVersion: "1.8.0"
       };
 
       const uid = () => "e_" + Math.random().toString(16).slice(2) + Date.now().toString(16);

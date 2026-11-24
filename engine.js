@@ -52,7 +52,7 @@ export function analyzeANC(anc, isBEN = false, thresholds = null) {
         return {
             status: 'SEVERE',
             color: 'var(--bad)',
-            message: 'RIESGO EXTREMO DE AGRANULOCITOSIS (ANC < 0.5 k/µL). Descontinuar inmediatamente.',
+            message: 'Riesgo extremo de agranulocitosis (ANC < 0.5 k/µL). Descontinuar inmediatamente.',
             action: 'Urgencia médica absoluta. Aislamiento protector, valoración hematológica inmediata.'
         };
     }
@@ -61,7 +61,7 @@ export function analyzeANC(anc, isBEN = false, thresholds = null) {
         return {
             status: 'CRITICAL',
             color: 'var(--bad)',
-            message: 'RIESGO DE AGRANULOCITOSIS. Descontinuar inmediatamente.',
+            message: 'Riesgo de agranulocitosis. Descontinuar inmediatamente.',
             action: 'Emergencia médica. No omitir reporte.'
         };
     }
@@ -95,7 +95,7 @@ export function auditSideEffects(effects) {
             title: 'RIESGO DE ÍLEO',
             severity: 'HIGH',
             message: 'Estreñimiento severo detectado. Alto riesgo de obstrucción intestinal.',
-            advice: 'Iniciar laxantes (Senna/Docusate). CONTRAINDICADO el Psyllium.'
+            advice: 'Iniciar laxantes (Senna/Docusate). Psyllium contraindicado.'
         });
     }
 
@@ -151,7 +151,7 @@ export function checkInteractions(habits) {
             risk: 'INTERACCIÓN MAYOR',
             message: 'Uso de Fluvoxamina detectado.',
             justification: 'Inhibidor potente de CYP1A2; puede aumentar niveles de clozapina 5-10 veces.',
-            action: 'REDUCCIÓN CRÍTICA DE DOSIS (~75-90%) requerida bajo supervisión.'
+            action: 'Reducción crítica de dosis (~75-90%) requerida bajo supervisión.'
         });
     }
 

@@ -5,6 +5,8 @@ Cada tarea tiene un identificador `BL-xx`, una prioridad (**0** = bloquea el uso
 **3** = baja), dependencias, descripción y criterios de aceptación. La línea que empieza con `bd create` es el comando de
 Beads para crear la tarea; `bash scripts/beads-seed.sh` extrae y ejecuta esas líneas (ver `AGENTS.md`).
 
+Nota: BL-05 quedó resuelto y se retiró de la lista; los demás identificadores se conservan.
+
 Convención: el título lleva el identificador `BL-xx` para enlazar la tarea de Beads con esta ficha.
 
 ## Prioridad 0: antes de usar con pacientes reales
@@ -54,16 +56,6 @@ bd create "BL-03: Confirmar version final del DHPC de la EMA y la ficha vigente"
 
 ```
 bd create "BL-04: Agregar el protocolo institucional INPRFM como esquema de monitoreo" -p 1
-```
-
-### BL-05 Eliminar la dependencia de Google Fonts
-- **Descripción:** es la única comunicación con terceros que queda (`fonts.googleapis.com`, `fonts.gstatic.com`). Opciones:
-  tipografía del sistema, o autoalojar Inter y JetBrains Mono (agregarlas al caché del service worker). Decidir y aplicar.
-- **Aceptación:** la prueba "solo hay peticiones a Google Fonts" cambia a "ninguna petición fuera del origen"; la app se ve
-  igual de legible; funciona sin conexión desde la primera carga.
-
-```
-bd create "BL-05: Eliminar la dependencia de Google Fonts (autoalojar o fuente del sistema)" -p 1
 ```
 
 ### BL-06 Probar en dispositivos y tecnologías de apoyo reales
@@ -173,6 +165,8 @@ bd create "BL-16: Aserciones de accesibilidad con axe" -p 3
 ```
 
 ## Resuelto en esta ronda (para contexto)
+
+**BL-05** (fuentes de Google): se eliminó la dependencia; ahora la tipografía es la del sistema y la prueba de humo exige cero peticiones externas.
 
 Interfaz ordenada en pasos, modales corregidos, contraste y bordes, tabletas, conversión de unidades, calculadora de ANC,
 monografía rápida, esquema de monitoreo seleccionable, leucocitos informativos, alertas con jerarquía y divulgación

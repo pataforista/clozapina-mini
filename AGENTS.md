@@ -56,8 +56,8 @@ Requiere Node y Playwright (`require('playwright')`). **Ejecuta la prueba de hum
 - Una vista nueva debe funcionar de 320 px a 1440 px y en horizontal con poca altura.
 
 **Privacidad y red**
-- Ninguna petición a terceros salvo la tipografía de Google Fonts (pendiente de eliminar: `BL-05`). No agregues CDN ni
-  analítica. No captures datos identificables (el aviso está en la interfaz).
+- **Ninguna petición a terceros** (la prueba de humo lo verifica). Tipografía del sistema (`--sans`, `--mono`); no agregues
+  CDN, fuentes externas ni analítica. No captures datos identificables (el aviso está en la interfaz).
 - Todo texto que venga de datos importados o escritos por el usuario y entre como HTML pasa por `esc()`. Las fechas
   importadas se validan con `AAAA-MM-DD`.
 
@@ -75,6 +75,7 @@ Requiere Node y Playwright (`require('playwright')`). **Ejecuta la prueba de hum
 - Eosinófilos: vigilar desde 0.7 (ficha FDA); 3.0 y plaquetas 50 son umbrales **configurables** de la monografía
   canadiense, no de la FDA.
 - Se eliminó el fondo animado (dependencia externa y costo de batería). Sin dependencias de CDN.
+- Tipografía del sistema, sin mayúsculas sostenidas en etiquetas, texto base de 16 px y cifras con la misma fuente y alineadas.
 - Primera apertura: lleva a Ajustes con una bienvenida; al guardar el paciente, pasa a Registro.
 
 ## Seguimiento de tareas con Beads
